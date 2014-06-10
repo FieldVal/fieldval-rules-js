@@ -1,0 +1,27 @@
+{
+    "name": "fieldval-rules",
+    "version": "0.0.0",
+    "description": "fieldval-rules",
+    "main": "fieldval-rules.js",
+    "directories": {
+        "example": "examples",
+        "test": "tests"
+    },
+    "scripts": {
+        "test": "mocha test/test.js"
+    },
+    "dependencies": {
+        "tracer" : "*",
+        "fieldval" : "*",
+        "fieldval-basicval" : "*"
+    },
+    "devDependencies": {
+        "gulp-imports" : "git+ssh://git@github.com/MarcusLongmuir/gulp-imports.git",
+        "gulp-util": "^2.2.14",
+        "gulp": "^3.6.1",
+        "gulp-nodemon" : "*",
+        "gulp-watch": "^0.6.2",
+        "gulp-uglify": "^0.2.1",
+        "gulp-concat": "^2.2.0"
+    }
+}
