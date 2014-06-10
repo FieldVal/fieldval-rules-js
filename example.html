@@ -1,0 +1,65 @@
+<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+
+<script src="bower_components/fieldval/fieldval.js"></script>
+<script src="bower_components/fieldval-basicval/fieldval-basicval.js"></script>
+<script src="bower_components/fieldval-ui/fieldval-ui.js"></script>
+<script src="fieldval-rules.js"></script>
+
+<!-- Apply the "minimal" theme to FieldVal-UI -->
+<link rel="stylesheet" type="text/css" href="bower_components/fieldval-ui/themes/minimal.css">
+<script src="bower_components/fieldval-ui/themes/minimal.js"></script>
+
+<script>
+$(document).ready(function(){
+
+    var type_object = {
+        type: "nested",
+        fields:{
+        	"first_name" : {
+        		display_name: "First Name",
+        		type: "text",
+        		min_length: 5
+        	},
+        	"last_name" : {
+        		display_name: "Last Name",
+        		type: "text",
+        		max_length: 3
+        	},
+        	"office_number" : {
+        		display_name: "Office Number",
+        		type: "number",
+                description: "Please enter your office number",
+        		minimum: 1,
+        		maximum: 30,
+        		integer: true
+        	}
+        }
+    }
+
+    var vr = new ValidationRule();
+	console.log(vr.init(type_object));
+
+	var form = vr.create_form();
+
+	$("body").append(
+		form.element.append(
+			$("<button />").text("Submit")
+		),
+		output = $("<pre />")
+	)
+
+	form.on_submit(function(object){
+
+	    var error = vr.validate(object);
+	  
+		if(error){
+			console.log(error);
+			form.error(error)
+			output.text('"error": '+JSON.stringify(error,null,4));
+		} else {
+			form.clear_errors();
+			output.text('"object": '+JSON.stringify(object,null,4));
+		}
+	})
+})
+</script>

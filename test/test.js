@@ -1,6 +1,6 @@
 var assert = require("assert")
 var logger = require('tracer').console();
-var ValidationRule = require('../src/ValidationRule')
+var ValidationRule = require('../fieldval-rules')
 
 describe('ValidationRule', function() {
 
