@@ -7,8 +7,8 @@ function RuleField(json, validator) {
     var field = this;
 
     field.json = json;
-    field.operators = [];
-    field.validator = (typeof validator != 'undefined') ? validator : new Validator(json);
+    field.checks = [];
+    field.validator = (typeof validator != 'undefined') ? validator : new FieldVal(json);
 
     field.name = field.validator.get("name", BasicVal.string(false));
     field.display_name = field.validator.get("display_name", BasicVal.string(false));
@@ -26,6 +26,7 @@ function RuleField(json, validator) {
 
 RuleField.types = {
     text: TextRuleField,
+    string: TextRuleField,
     number: NumberRuleField,
     nested: NestedRuleField,
     choice: ChoiceRuleField
@@ -34,11 +35,9 @@ RuleField.types = {
 RuleField.create_field = function(json) {
     var field = null;
 
-    var validator = new Validator(json);
+    var validator = new FieldVal(json);
 
-    var type = validator.get("type", BasicVal.string(true), BasicVal.one_of([
-        "nested","text","number","choice"//Need to improve structure
-    ]));
+    var type = validator.get("type", BasicVal.string(true), BasicVal.one_of(RuleField.types));
 
     if(type){
         var field_class = RuleField.types[type];
@@ -53,7 +52,7 @@ RuleField.create_field = function(json) {
         return [init_res, null];
     }
 
-    field.create_operators();
+    field.create_checks();
 
     return [null, field];
 }
@@ -61,7 +60,7 @@ RuleField.create_field = function(json) {
 RuleField.prototype.validate_as_field = function(name, validator){
     var field = this;
 
-    var value = validator.get(name, field.operators);
+    var value = validator.get(name, field.checks);
 
     return value;
 }
@@ -69,9 +68,12 @@ RuleField.prototype.validate_as_field = function(name, validator){
 RuleField.prototype.validate = function(value){
     var field = this;
 
-    var validator = new Validator(null);
+    var validator = new FieldVal(null);
 
-    var value = Validator.use_operators(value, field.operators, validator);
+    var error = FieldVal.use_checks(value, field.checks);
+    if(error){
+        validator.error(error);
+    }
 
     return validator.end();
 }

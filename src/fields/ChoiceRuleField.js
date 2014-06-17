@@ -22,11 +22,11 @@ ChoiceRuleField.prototype.init = function() {
     return field.validator.end();
 }
 
-ChoiceRuleField.prototype.create_operators = function(){
+ChoiceRuleField.prototype.create_checks = function(){
     var field = this;
 
-    field.operators.push(Validator.required(true))
+    field.checks.push(FieldVal.required(true))
     if(field.choices){
-        field.operators.push(BasicVal.one_of(field.choices,{stop_on_error:false}));
+        field.checks.push(BasicVal.one_of(field.choices,{stop_on_error:false}));
     }
 }

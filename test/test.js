@@ -54,7 +54,6 @@ describe('ValidationRule', function() {
                     }
                 }
             });
-			logger.log(init_output);
             assert.equal(init_output,null);
 
             var test_object = {
@@ -105,7 +104,29 @@ describe('ValidationRule', function() {
 				error
 			);
 
-            logger.log(JSON.stringify(error,null,4));
+            done();
+        });
+
+        it('should validate a ValidationRule', function(done) {
+            var vr = new ValidationRule();
+            var type_object = {
+                type: "string",
+                maximum: 20//maximum isn't a valid field for a "string" field
+            }
+            var init_result = vr.init(type_object);
+            assert.deepEqual(
+                {
+                    "unrecognized": {
+                        "maximum": {
+                            "error_message": 'Unrecognized field.',
+                            "error": 3 
+                        }
+                    },
+                    "error_message": 'One or more errors.',
+                    "error": 0 
+                },
+                init_result
+            );
 
             done();
         });
@@ -113,19 +134,20 @@ describe('ValidationRule', function() {
 		it('should create a ValidationRule for a single field', function(done) {
             var vr = new ValidationRule();
             var type_object = {
-                description: "A simple number field",
-                name: "my_number",
-                display_name: "My Number",
                 type: "number",
                 maximum: 20
             }
             var init_result = vr.init(type_object);
-            logger.log(JSON.stringify(init_result,null,4));
             assert.equal(init_result,null);
             
             var error = vr.validate(57);
-
-            logger.log(JSON.stringify(error,null,4));
+            assert.deepEqual(
+                {
+                    "error": 103,
+                    "error_message": "Value is greater than 20"
+                },
+                error
+            );
 
             done();
         });

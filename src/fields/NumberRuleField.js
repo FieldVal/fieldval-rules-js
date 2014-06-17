@@ -32,18 +32,18 @@ NumberRuleField.prototype.init = function() {
     return field.validator.end();
 }
 
-NumberRuleField.prototype.create_operators = function(){
+NumberRuleField.prototype.create_checks = function(){
     var field = this;
     
-    field.operators.push(BasicVal.number(field.required));
+    field.checks.push(BasicVal.number(field.required));
 
     if(field.minimum){
-        field.operators.push(BasicVal.minimum(field.minimum,{stop_on_error:false}));
+        field.checks.push(BasicVal.minimum(field.minimum,{stop_on_error:false}));
     }
     if(field.maximum){
-        field.operators.push(BasicVal.maximum(field.maximum,{stop_on_error:false}));
+        field.checks.push(BasicVal.maximum(field.maximum,{stop_on_error:false}));
     }
     if(field.integer){
-        field.operators.push(BasicVal.integer(false,{stop_on_error:false}));
+        field.checks.push(BasicVal.integer(false,{stop_on_error:false}));
     }
 }

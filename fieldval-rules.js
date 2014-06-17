@@ -1,3 +1,8 @@
+if((typeof require) === 'function'){
+    FieldVal = require('fieldval')
+    BasicVal = require('fieldval-basicval')
+}
+
 function fieldval_rules_extend(sub, sup) {
     function emptyclass() {}
     emptyclass.prototype = sup.prototype;
@@ -26,84 +31,28 @@ TextRuleField.prototype.init = function() {
     var field = this;
 
     field.min_length = field.validator.get("min_length", BasicVal.integer(false));
-    if (field.min_length != null) {
-        if (field.for_search) {
-            fieldErrors.getOrMakeInvalid().put("min_length", new ValidatorError(57).error);
-        } else {
-            if (field.min_length < 1) {
-                fieldErrors.getOrMakeInvalid().put("min_length", new ValidatorError(24).error);
-            }
-        }
-    }
-
     field.max_length = field.validator.get("max_length", BasicVal.integer(false));
-    if (field.max_length != null) {
-
-        if (field.for_search) {
-            fieldErrors.getOrMakeInvalid().put("max_length", new ValidatorError(57).error);
-        } else {
-            if (field.max_length < 1) {
-                fieldErrors.getOrMakeInvalid().put("max_length", new ValidatorError(24).error);
-            }
-
-        }
-    }
 
     field.phrase = field.validator.get("phrase", BasicVal.string(false));
-    if (field.phrase != null) {
-        if (!for_search) {
-            fieldErrors.getOrMakeInvalid().put("phrase", new ValidatorError(65).error);
-        }
-    }
-
     field.equal_to = field.validator.get("equal_to", BasicVal.string(false));
-    if (field.equal_to != null) {
-        if (!for_search) {
-            fieldErrors.getOrMakeInvalid().put("equal_to", new ValidatorError(65).error);
-        }
-    }
-
     field.ci_equal_to = field.validator.get("ci_equal_to", BasicVal.string(false));
-    if (field.ci_equal_to != null) {
-        if (!for_search) {
-            fieldErrors.getOrMakeInvalid().put("ci_equal_to", new ValidatorError(65).error);
-        }
-    }
-
     field.prefix = field.validator.get("prefix", BasicVal.string(false));
-    if (field.prefix != null) {
-        if (!for_search) {
-            fieldErrors.getOrMakeInvalid().put("prefix", new ValidatorError(65).error);
-        }
-    }
-
     field.ci_prefix = field.validator.get("ci_prefix", BasicVal.string(false));
-    if (field.ci_prefix != null) {
-        if (!for_search) {
-            fieldErrors.getOrMakeInvalid().put("ci_prefix", new ValidatorError(65).error);
-        }
-    }
-
     field.query = field.validator.get("query", BasicVal.string(false));
-    if (field.query != null) {
-        if (!for_search) {
-            fieldErrors.getOrMakeInvalid().put("query", new ValidatorError(65).error);
-        }
-    }
-
+    
     return field.validator.end();
 }
 
-TextRuleField.prototype.create_operators = function(){
+TextRuleField.prototype.create_checks = function(){
     var field = this;
 
-    field.operators.push(BasicVal.string(field.required));
+    field.checks.push(BasicVal.string(field.required));
 
     if(field.min_length){
-        field.operators.push(BasicVal.min_length(field.min_length,{stop_on_error:false}));
+        field.checks.push(BasicVal.min_length(field.min_length,{stop_on_error:false}));
     }
     if(field.max_length){
-        field.operators.push(BasicVal.max_length(field.max_length,{stop_on_error:false}));
+        field.checks.push(BasicVal.max_length(field.max_length,{stop_on_error:false}));
     }
 }
 fieldval_rules_extend(NumberRuleField, RuleField);
@@ -140,19 +89,19 @@ NumberRuleField.prototype.init = function() {
     return field.validator.end();
 }
 
-NumberRuleField.prototype.create_operators = function(){
+NumberRuleField.prototype.create_checks = function(){
     var field = this;
     
-    field.operators.push(BasicVal.number(field.required));
+    field.checks.push(BasicVal.number(field.required));
 
     if(field.minimum){
-        field.operators.push(BasicVal.minimum(field.minimum,{stop_on_error:false}));
+        field.checks.push(BasicVal.minimum(field.minimum,{stop_on_error:false}));
     }
     if(field.maximum){
-        field.operators.push(BasicVal.maximum(field.maximum,{stop_on_error:false}));
+        field.checks.push(BasicVal.maximum(field.maximum,{stop_on_error:false}));
     }
     if(field.integer){
-        field.operators.push(BasicVal.integer(false,{stop_on_error:false}));
+        field.checks.push(BasicVal.integer(false,{stop_on_error:false}));
     }
 }
 fieldval_rules_extend(NestedRuleField, RuleField);
@@ -192,7 +141,7 @@ NestedRuleField.prototype.init = function() {
 
     var fields_json = field.validator.get("fields", BasicVal.object(false));
     if (fields_json != null) {
-        var fields_validator = new Validator(null);
+        var fields_validator = new FieldVal(null);
 
         //TODO prevent duplicate name keys
 
@@ -223,14 +172,14 @@ NestedRuleField.prototype.init = function() {
     return field.validator.end();
 }
 
-NestedRuleField.prototype.create_operators = function(validator){
+NestedRuleField.prototype.create_checks = function(validator){
     var field = this;
 
-    field.operators.push(BasicVal.object(field.required));
+    field.checks.push(BasicVal.object(field.required));
 
-    field.operators.push(function(value,emit){
+    field.checks.push(function(value,emit){
 
-        var inner_validator = new Validator(value);
+        var inner_validator = new FieldVal(value);
 
         for(var i in field.fields){
             var inner_field = field.fields[i];
@@ -266,12 +215,12 @@ ChoiceRuleField.prototype.init = function() {
     return field.validator.end();
 }
 
-ChoiceRuleField.prototype.create_operators = function(){
+ChoiceRuleField.prototype.create_checks = function(){
     var field = this;
 
-    field.operators.push(Validator.required(true))
+    field.checks.push(FieldVal.required(true))
     if(field.choices){
-        field.operators.push(BasicVal.one_of(field.choices,{stop_on_error:false}));
+        field.checks.push(BasicVal.one_of(field.choices,{stop_on_error:false}));
     }
 }
 
@@ -279,8 +228,8 @@ function RuleField(json, validator) {
     var field = this;
 
     field.json = json;
-    field.operators = [];
-    field.validator = (typeof validator != 'undefined') ? validator : new Validator(json);
+    field.checks = [];
+    field.validator = (typeof validator != 'undefined') ? validator : new FieldVal(json);
 
     field.name = field.validator.get("name", BasicVal.string(false));
     field.display_name = field.validator.get("display_name", BasicVal.string(false));
@@ -298,6 +247,7 @@ function RuleField(json, validator) {
 
 RuleField.types = {
     text: TextRuleField,
+    string: TextRuleField,
     number: NumberRuleField,
     nested: NestedRuleField,
     choice: ChoiceRuleField
@@ -306,11 +256,9 @@ RuleField.types = {
 RuleField.create_field = function(json) {
     var field = null;
 
-    var validator = new Validator(json);
+    var validator = new FieldVal(json);
 
-    var type = validator.get("type", BasicVal.string(true), BasicVal.one_of([
-        "nested","text","number","choice"//Need to improve structure
-    ]));
+    var type = validator.get("type", BasicVal.string(true), BasicVal.one_of(RuleField.types));
 
     if(type){
         var field_class = RuleField.types[type];
@@ -325,7 +273,7 @@ RuleField.create_field = function(json) {
         return [init_res, null];
     }
 
-    field.create_operators();
+    field.create_checks();
 
     return [null, field];
 }
@@ -333,7 +281,7 @@ RuleField.create_field = function(json) {
 RuleField.prototype.validate_as_field = function(name, validator){
     var field = this;
 
-    var value = validator.get(name, field.operators);
+    var value = validator.get(name, field.checks);
 
     return value;
 }
@@ -341,9 +289,12 @@ RuleField.prototype.validate_as_field = function(name, validator){
 RuleField.prototype.validate = function(value){
     var field = this;
 
-    var validator = new Validator(null);
+    var validator = new FieldVal(null);
 
-    var value = Validator.use_operators(value, field.operators, validator);
+    var error = FieldVal.use_checks(value, field.checks);
+    if(error){
+        validator.error(error);
+    }
 
     return validator.end();
 }

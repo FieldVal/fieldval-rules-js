@@ -35,7 +35,7 @@ NestedRuleField.prototype.init = function() {
 
     var fields_json = field.validator.get("fields", BasicVal.object(false));
     if (fields_json != null) {
-        var fields_validator = new Validator(null);
+        var fields_validator = new FieldVal(null);
 
         //TODO prevent duplicate name keys
 
@@ -66,14 +66,14 @@ NestedRuleField.prototype.init = function() {
     return field.validator.end();
 }
 
-NestedRuleField.prototype.create_operators = function(validator){
+NestedRuleField.prototype.create_checks = function(validator){
     var field = this;
 
-    field.operators.push(BasicVal.object(field.required));
+    field.checks.push(BasicVal.object(field.required));
 
-    field.operators.push(function(value,emit){
+    field.checks.push(function(value,emit){
 
-        var inner_validator = new Validator(value);
+        var inner_validator = new FieldVal(value);
 
         for(var i in field.fields){
             var inner_field = field.fields[i];

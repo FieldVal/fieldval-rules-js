@@ -1,3 +1,8 @@
+if((typeof require) === 'function'){
+    FieldVal = require('fieldval')
+    BasicVal = require('fieldval-basicval')
+}
+
 @import("fieldval_rules_extend.js");
 @import("fields/RuleField.js");
 
