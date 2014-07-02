@@ -10,7 +10,9 @@ NumberRuleField.prototype.create_ui = function(parent){
     var field = this;
 
     if(TextField){
-        parent.add_field(field.name, new TextField(field.display_name || field.name, field.json));
+        var ui_field = new TextField(field.display_name || field.name, field.json);
+        parent.add_field(field.name, ui_field);
+        return ui_field;
     }
 }
 

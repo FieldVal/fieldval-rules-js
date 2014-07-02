@@ -1,6 +1,6 @@
 @import("./TextRuleField.js");
 @import("./NumberRuleField.js");
-@import("./NestedRuleField.js");
+@import("./ObjectRuleField.js");
 @import("./ChoiceRuleField.js");
 
 function RuleField(json, validator) {
@@ -28,7 +28,7 @@ RuleField.types = {
     text: TextRuleField,
     string: TextRuleField,
     number: NumberRuleField,
-    nested: NestedRuleField,
+    object: ObjectRuleField,
     choice: ChoiceRuleField
 };
 

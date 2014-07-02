@@ -1,12 +1,12 @@
-fieldval_rules_extend(NestedRuleField, RuleField);
+fieldval_rules_extend(ObjectRuleField, RuleField);
 
-function NestedRuleField(json, validator) {
+function ObjectRuleField(json, validator) {
     var field = this;
 
-    NestedRuleField.superConstructor.call(this, json, validator);
+    ObjectRuleField.superConstructor.call(this, json, validator);
 }
 
-NestedRuleField.prototype.create_ui = function(parent,form){
+ObjectRuleField.prototype.create_ui = function(parent,form){
     var field = this;
 
     if(ObjectField){
@@ -25,10 +25,12 @@ NestedRuleField.prototype.create_ui = function(parent,form){
         if(!form){
             parent.add_field(field.name, object_field);
         }
+
+        return object_field;
     }
 }
 
-NestedRuleField.prototype.init = function() {
+ObjectRuleField.prototype.init = function() {
     var field = this;
 
     field.fields = {};
@@ -66,7 +68,7 @@ NestedRuleField.prototype.init = function() {
     return field.validator.end();
 }
 
-NestedRuleField.prototype.create_checks = function(validator){
+ObjectRuleField.prototype.create_checks = function(validator){
     var field = this;
 
     field.checks.push(BasicVal.object(field.required));

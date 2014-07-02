@@ -23,7 +23,9 @@ TextRuleField.prototype.create_ui = function(parent){
     var field = this;
 
     if(TextField){
-        parent.add_field(field.name, new TextField(field.display_name || field.name, field.json));
+        var ui_field = new TextField(field.display_name || field.name, field.json);
+        parent.add_field(field.name, ui_field);
+        return ui_field;
     }
 }
 
@@ -67,7 +69,9 @@ NumberRuleField.prototype.create_ui = function(parent){
     var field = this;
 
     if(TextField){
-        parent.add_field(field.name, new TextField(field.display_name || field.name, field.json));
+        var ui_field = new TextField(field.display_name || field.name, field.json);
+        parent.add_field(field.name, ui_field);
+        return ui_field;
     }
 }
 
@@ -104,15 +108,15 @@ NumberRuleField.prototype.create_checks = function(){
         field.checks.push(BasicVal.integer(false,{stop_on_error:false}));
     }
 }
-fieldval_rules_extend(NestedRuleField, RuleField);
+fieldval_rules_extend(ObjectRuleField, RuleField);
 
-function NestedRuleField(json, validator) {
+function ObjectRuleField(json, validator) {
     var field = this;
 
-    NestedRuleField.superConstructor.call(this, json, validator);
+    ObjectRuleField.superConstructor.call(this, json, validator);
 }
 
-NestedRuleField.prototype.create_ui = function(parent,form){
+ObjectRuleField.prototype.create_ui = function(parent,form){
     var field = this;
 
     if(ObjectField){
@@ -131,10 +135,12 @@ NestedRuleField.prototype.create_ui = function(parent,form){
         if(!form){
             parent.add_field(field.name, object_field);
         }
+
+        return object_field;
     }
 }
 
-NestedRuleField.prototype.init = function() {
+ObjectRuleField.prototype.init = function() {
     var field = this;
 
     field.fields = {};
@@ -172,7 +178,7 @@ NestedRuleField.prototype.init = function() {
     return field.validator.end();
 }
 
-NestedRuleField.prototype.create_checks = function(validator){
+ObjectRuleField.prototype.create_checks = function(validator){
     var field = this;
 
     field.checks.push(BasicVal.object(field.required));
@@ -203,7 +209,9 @@ ChoiceRuleField.prototype.create_ui = function(parent){
     var field = this;
 
     if(ChoiceField){
-        parent.add_field(field.name, new ChoiceField(field.display_name || field.name, field.choices, field.json));
+        var ui_field = new ChoiceField(field.display_name || field.name, field.choices, field.json);
+        parent.add_field(field.name, ui_field);
+        return ui_field;
     }
 }
 
@@ -249,7 +257,7 @@ RuleField.types = {
     text: TextRuleField,
     string: TextRuleField,
     number: NumberRuleField,
-    nested: NestedRuleField,
+    object: ObjectRuleField,
     choice: ChoiceRuleField
 };
 

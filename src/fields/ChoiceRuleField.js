@@ -10,7 +10,9 @@ ChoiceRuleField.prototype.create_ui = function(parent){
     var field = this;
 
     if(ChoiceField){
-        parent.add_field(field.name, new ChoiceField(field.display_name || field.name, field.choices, field.json));
+        var ui_field = new ChoiceField(field.display_name || field.name, field.choices, field.json);
+        parent.add_field(field.name, ui_field);
+        return ui_field;
     }
 }
 
