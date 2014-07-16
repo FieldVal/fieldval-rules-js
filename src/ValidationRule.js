@@ -28,8 +28,8 @@ ValidationRule.prototype.init = function(json) {
 ValidationRule.prototype.create_form = function(){
     var vr = this;
 
-    if(Form){
-        var form = new Form();
+    if(FVForm){
+        var form = new FVForm();
         vr.field.create_ui(form,form);
         return form;
     }

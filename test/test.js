@@ -13,7 +13,7 @@ describe('ValidationRule', function() {
                 description: "My description",
                 name: "person",
                 display_name: "Person",
-                type: "nested",
+                type: "object",
                 fields: {
                     first_name: {
                         display_name: "First Name",
@@ -29,8 +29,8 @@ describe('ValidationRule', function() {
                     },
                     address: {
                         display_name: "Address",
-                        description: "An address. This is a nested test.",
-                        type: "nested",
+                        description: "An address. This is a object test.",
+                        type: "object",
                         fields: {
                             house_number: {
                                 type: "number",
