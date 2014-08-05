@@ -1,14 +1,35 @@
 if((typeof require) === 'function'){
     FieldVal = require('fieldval')
     BasicVal = require('fieldval-basicval')
+    RuleField = require('./fields/RuleField');
 }
 
-@import("fieldval_rules_extend.js");
-@import("fields/RuleField.js");
+RuleField.add_field_type({
+    name: 'text',
+    display_name: 'Text',
+    class: (typeof TextRuleField) !== 'undefined' ? TextRuleField : require('./fields/TextRuleField')
+});
+RuleField.add_field_type({
+    name: 'number',
+    display_name: 'Number',
+    class: (typeof NumberRuleField) !== 'undefined' ? NumberRuleField : require('./fields/NumberRuleField')
+});
+RuleField.add_field_type({
+    name: 'object',
+    display_name: 'Object',
+    class: (typeof ObjectRuleField) !== 'undefined' ? ObjectRuleField : require('./fields/ObjectRuleField')
+});
+RuleField.add_field_type({
+    name: 'choice',
+    display_name: 'Choice',
+    class: (typeof ChoiceRuleField) !== 'undefined' ? ChoiceRuleField : require('./fields/ChoiceRuleField')
+});
 
 function ValidationRule() {
     var vr = this;
 }
+
+ValidationRule.RuleField = RuleField;
 
 //Performs validation required for saving
 ValidationRule.prototype.init = function(json) {

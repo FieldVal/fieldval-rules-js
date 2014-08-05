@@ -1,4 +1,7 @@
-fieldval_rules_extend(ObjectRuleField, RuleField);
+if((typeof require) === 'function'){
+    extend = require('extend')
+}
+extend(ObjectRuleField, RuleField);
 
 function ObjectRuleField(json, validator) {
     var field = this;
@@ -35,28 +38,25 @@ ObjectRuleField.prototype.init = function() {
 
     field.fields = {};
 
-    var fields_json = field.validator.get("fields", BasicVal.object(false));
+    var fields_json = field.validator.get("fields", BasicVal.array(false));
     if (fields_json != null) {
         var fields_validator = new FieldVal(null);
 
         //TODO prevent duplicate name keys
 
-        for (var name in fields_json) {
-            var field_json = fields_json[name];
-
-            if(!field_json.name){
-                field_json.name = name;
-            }
+        for (var i = 0; i < fields_json.length; i++) {
+            var field_json = fields_json[i];
 
             var field_creation = RuleField.create_field(field_json);
             var err = field_creation[0];
             var nested_field = field_creation[1];
 
             if(err!=null){
-                fields_validator.invalid(name,err);
+                fields_validator.invalid(i,err);
+                continue;
             }
 
-            field.fields[name] = nested_field;
+            field.fields[nested_field.name] = nested_field;
         }
 
         var fields_error = fields_validator.end();
@@ -86,4 +86,8 @@ ObjectRuleField.prototype.create_checks = function(validator){
 
         return inner_error;
     });
+}
+
+if (typeof module != 'undefined') {
+    module.exports = ObjectRuleField;
 }

@@ -1,4 +1,4 @@
-<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="bower_components/jquery/dist/jquery.js"></script>
 
 <script src="bower_components/fieldval/fieldval.js"></script>
 <script src="bower_components/fieldval-basicval/fieldval-basicval.js"></script>
@@ -14,18 +14,19 @@ $(document).ready(function(){
 
     var type_object = {
         type: "object",
-        fields:{
-        	"first_name" : {
+        fields:[
+            {
+            	name: "first_name",
         		display_name: "First Name",
         		type: "text",
         		min_length: 5
-        	},
-        	"last_name" : {
+        	},{
+            	name: "last_name",
         		display_name: "Last Name",
         		type: "text",
         		max_length: 3
-        	},
-        	"office_number" : {
+        	},{
+            	name: "office_number",
         		display_name: "Office Number",
         		type: "number",
                 description: "Please enter your office number",
@@ -33,7 +34,7 @@ $(document).ready(function(){
         		maximum: 30,
         		integer: true
         	}
-        }
+        ]
     }
 
     var vr = new ValidationRule();

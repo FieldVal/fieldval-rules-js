@@ -1,4 +1,7 @@
-fieldval_rules_extend(NumberRuleField, RuleField);
+if((typeof require) === 'function'){
+    extend = require('extend')
+}
+extend(NumberRuleField, RuleField);
 
 function NumberRuleField(json, validator) {
     var field = this;
@@ -48,4 +51,8 @@ NumberRuleField.prototype.create_checks = function(){
     if(field.integer){
         field.checks.push(BasicVal.integer(false,{stop_on_error:false}));
     }
+}
+
+if (typeof module != 'undefined') {
+    module.exports = NumberRuleField;
 }

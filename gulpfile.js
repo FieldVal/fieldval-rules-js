@@ -10,7 +10,7 @@ var path = require('path');
 
 gulp.task('js', function(){
     return gulp.src([
-        'src/ValidationRule.js'
+        'src/ValidationRule_bower.js'
     ])
     .pipe(gulpImports())
     .pipe(concat('fieldval-rules.js'))

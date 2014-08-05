@@ -1,4 +1,7 @@
-fieldval_rules_extend(TextRuleField, RuleField);
+if((typeof require) === 'function'){
+    extend = require('extend')
+}
+extend(TextRuleField, RuleField);
 
 function TextRuleField(json, validator) {
     var field = this;
@@ -43,4 +46,8 @@ TextRuleField.prototype.create_checks = function(){
     if(field.max_length){
         field.checks.push(BasicVal.max_length(field.max_length,{stop_on_error:false}));
     }
+}
+
+if (typeof module != 'undefined') {
+    module.exports = TextRuleField;
 }

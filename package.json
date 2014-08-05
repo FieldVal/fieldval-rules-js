@@ -2,7 +2,7 @@
     "name": "fieldval-rules",
     "version": "0.0.1",
     "description": "fieldval-rules",
-    "main": "fieldval-rules.js",
+    "main": "src/ValidationRule.js",
     "scripts": {
         "test": "mocha test/test.js"
     },

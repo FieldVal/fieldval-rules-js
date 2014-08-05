@@ -1,8 +1,3 @@
-@import("./TextRuleField.js");
-@import("./NumberRuleField.js");
-@import("./ObjectRuleField.js");
-@import("./ChoiceRuleField.js");
-
 function RuleField(json, validator) {
     var field = this;
 
@@ -24,13 +19,14 @@ function RuleField(json, validator) {
     }
 }
 
-RuleField.types = {
-    text: TextRuleField,
-    string: TextRuleField,
-    number: NumberRuleField,
-    object: ObjectRuleField,
-    choice: ChoiceRuleField
-};
+RuleField.types = {};
+
+RuleField.add_field_type = function(field_type_data){
+    RuleField.types[field_type_data.name] = {
+        display_name: field_type_data.display_name,
+        class: field_type_data.class
+    }
+}
 
 RuleField.create_field = function(json) {
     var field = null;
@@ -40,7 +36,8 @@ RuleField.create_field = function(json) {
     var type = validator.get("type", BasicVal.string(true), BasicVal.one_of(RuleField.types));
 
     if(type){
-        var field_class = RuleField.types[type];
+        var field_type_data = RuleField.types[type];
+        var field_class = field_type_data.class;
         field = new field_class(json, validator)
     } else {
         //Create a generic field to create the correct errors for the "RuleField" fields
@@ -76,4 +73,8 @@ RuleField.prototype.validate = function(value){
     }
 
     return validator.end();
+}
+
+if (typeof module != 'undefined') {
+    module.exports = RuleField;
 }

@@ -1,6 +1,6 @@
 var assert = require("assert")
 var logger = require('tracer').console();
-var ValidationRule = require('../fieldval-rules')
+var ValidationRule = require('../src/ValidationRule')
 
 describe('ValidationRule', function() {
 
@@ -14,45 +14,47 @@ describe('ValidationRule', function() {
                 name: "person",
                 display_name: "Person",
                 type: "object",
-                fields: {
-                    first_name: {
+                fields: [
+                    {
+                        name: "first_name",
                         display_name: "First Name",
                         type: "text",
                         min_length: 2,
                         max_length: 32
-                    },
-                    last_name: {
+                    },{
+                        name: "last_name",
                         display_name: "Last Name",
                         type: "text",
                         min_length: 2,
                         max_length: 32
-                    },
-                    address: {
+                    },{
+                        name: "address",
                         display_name: "Address",
                         description: "An address. This is a object test.",
                         type: "object",
-                        fields: {
-                            house_number: {
+                        fields: [
+                            {
+                                name: "house_number",
                                 type: "number",
                                 integer: true,
                                 minimum: 1
-                            },
-                            line_1: {
+                            },{
+                                name: "line_1",
                                 type: "text"
-                            },
-                            line_2: {
+                            },{
+                                name: "line_2",
                                 type: "text"
-                            },
-                            line_3: {
+                            },{
+                                name: "line_3",
                                 type: "text"
-                            },
-                            country: {
+                            },{
+                                name: "country",
                                 type: "choice",
                                 choices: ["UK","US"]
                             }
-                        }
+                        ]
                     }
-                }
+                ]
             });
             assert.equal(init_output,null);
 

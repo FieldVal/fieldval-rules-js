@@ -1,4 +1,7 @@
-fieldval_rules_extend(ChoiceRuleField, RuleField);
+if((typeof require) === 'function'){
+    extend = require('extend')
+}
+extend(ChoiceRuleField, RuleField);
 
 function ChoiceRuleField(json, validator) {
     var field = this;
@@ -31,4 +34,8 @@ ChoiceRuleField.prototype.create_checks = function(){
     if(field.choices){
         field.checks.push(BasicVal.one_of(field.choices,{stop_on_error:false}));
     }
+}
+
+if (typeof module != 'undefined') {
+    module.exports = ChoiceRuleField;
 }
