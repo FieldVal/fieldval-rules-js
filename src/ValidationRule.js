@@ -10,6 +10,11 @@ RuleField.add_field_type({
     class: (typeof TextRuleField) !== 'undefined' ? TextRuleField : require('./fields/TextRuleField')
 });
 RuleField.add_field_type({
+    name: 'string',
+    display_name: 'String',
+    class: (typeof TextRuleField) !== 'undefined' ? TextRuleField : require('./fields/TextRuleField')
+});
+RuleField.add_field_type({
     name: 'number',
     display_name: 'Number',
     class: (typeof NumberRuleField) !== 'undefined' ? NumberRuleField : require('./fields/NumberRuleField')

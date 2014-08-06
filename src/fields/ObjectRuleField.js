@@ -9,25 +9,47 @@ function ObjectRuleField(json, validator) {
     ObjectRuleField.superConstructor.call(this, json, validator);
 }
 
-ObjectRuleField.prototype.create_ui = function(parent,form){
+ObjectRuleField.prototype.create_ui = function(parent){
     var field = this;
 
-    if(ObjectField){
-        var object_field;
-        if(form){
-            object_field = form;
-        } else {
-            object_field = new ObjectField(field.display_name || field.name, field.json);
+    if(field.json.any){
+        var text_field = new TextField(field.display_name || field.name, {type: 'textarea'});//Empty options
+
+        text_field.val = function(set_val){//Override the .val function
+            var field = this;
+            if (arguments.length===0) {
+                var value = field.input.val();
+                if(value.length===0){
+                    return null;
+                }
+                try{
+                    return JSON.parse(value);
+                } catch (e){
+                    console.error("FAILED TO PARSE: ",value);
+                }
+                return value;
+            } else {
+                field.input.val(JSON.stringify(set_val,null,4));
+                return field;
+            }
         }
+
+        parent.add_field(field.name, text_field);
+
+        field.text_field = text_field;
+
+        return text_field;
+    } else {
+        var object_field = new ObjectField(field.display_name || field.name, field.json);
 
         for(var i in field.fields){
             var inner_field = field.fields[i];
             inner_field.create_ui(object_field);
         }
 
-        if(!form){
-            parent.add_field(field.name, object_field);
-        }
+        parent.add_field(field.name, object_field);
+
+        field.object_field = object_field;
 
         return object_field;
     }
@@ -37,6 +59,8 @@ ObjectRuleField.prototype.init = function() {
     var field = this;
 
     field.fields = {};
+
+    field.any = field.validator.get("any", BasicVal.boolean(false));
 
     var fields_json = field.validator.get("fields", BasicVal.array(false));
     if (fields_json != null) {
@@ -73,19 +97,21 @@ ObjectRuleField.prototype.create_checks = function(validator){
 
     field.checks.push(BasicVal.object(field.required));
 
-    field.checks.push(function(value,emit){
+    if(!field.any){
+        field.checks.push(function(value,emit){
 
-        var inner_validator = new FieldVal(value);
+            var inner_validator = new FieldVal(value);
 
-        for(var i in field.fields){
-            var inner_field = field.fields[i];
-            inner_field.validate_as_field(i, inner_validator);
-        }
+            for(var i in field.fields){
+                var inner_field = field.fields[i];
+                inner_field.validate_as_field(i, inner_validator);
+            }
 
-        var inner_error = inner_validator.end();
+            var inner_error = inner_validator.end();
 
-        return inner_error;
-    });
+            return inner_error;
+        });
+    }
 }
 
 if (typeof module != 'undefined') {
