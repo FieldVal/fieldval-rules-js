@@ -1,7 +1,8 @@
 if((typeof require) === 'function'){
     extend = require('extend')
+    BasicRuleField = require('./BasicRuleField');
 }
-extend(TextRuleField, RuleField);
+extend(TextRuleField, BasicRuleField);
 
 function TextRuleField(json, validator) {
     var field = this;
@@ -12,11 +13,10 @@ function TextRuleField(json, validator) {
 TextRuleField.prototype.create_ui = function(parent){
     var field = this;
 
-    if(TextField){
-        var ui_field = new TextField(field.display_name || field.name, field.json);
-        parent.add_field(field.name, ui_field);
-        return ui_field;
-    }
+    field.ui_field = new TextField(field.display_name || field.name, field.json);
+    field.container = field.ui_field.container;
+    parent.add_field(field.name, field);
+    return field.ui_field;
 }
 
 TextRuleField.prototype.init = function() {

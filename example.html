@@ -19,28 +19,81 @@ $(document).ready(function(){
             	name: "first_name",
         		display_name: "First Name",
         		type: "text",
-        		min_length: 5
+        		min_length: 2
         	},{
             	name: "last_name",
         		display_name: "Last Name",
         		type: "text",
-        		max_length: 3
+        		min_length: 2
         	},{
-            	name: "office_number",
-        		display_name: "Office Number",
-        		type: "number",
+                name: "office_number",
+                display_name: "Office Number",
+                type: "number",
                 description: "Please enter your office number",
-        		minimum: 1,
-        		maximum: 30,
-        		integer: true
-        	}
+                minimum: 1,
+                maximum: 30,
+                integer: true
+            },{
+                name: "address",
+                display_name: "Address",
+                type: "object",
+                description: "Please enter your address",
+                fields: [
+                    {
+                        name: "street_address",
+                        display_name: "Street Address",
+                        type: "text"
+                    },{
+                        name: "city",
+                        display_name: "City",
+                        type: "text"
+                    },{
+                        name: "zip_code",
+                        display_name: "Zip Code",
+                        type: "number",
+                        integer: true,
+                        minimum: 1,
+                        maximum: 99999
+                    }
+                ]
+            },{
+                name: "interests",
+                display_name: "Interests",
+                type: "array",
+                description: "Please add your interests",
+                indices: {
+                    "*": {
+                        display_name: "Interest",
+                        type: "text",
+                        description: "An interest"
+                    }
+                }
+            }
         ]
     }
 
     var vr = new ValidationRule();
-	console.log(vr.init(type_object));
+	var rule_error = vr.init(type_object);
+    if(rule_error){
+        console.error(rule_error);
+        return;
+    }
 
 	var form = vr.create_form();
+
+    form.val({
+        "first_name": "John",
+        "last_name": "Smith",
+        "office_number": 17,
+        "address": {
+            "street_address": "33 Green Park Lane",
+            "city": "Fillertextville",
+            "zip_code": 90909
+        },
+        "interests": [
+            "Programming", "Running", "Validation Frameworks"
+        ]
+    })
 
 	$("body").append(
 		form.element.append(

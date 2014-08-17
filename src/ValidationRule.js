@@ -25,6 +25,11 @@ RuleField.add_field_type({
     class: (typeof ObjectRuleField) !== 'undefined' ? ObjectRuleField : require('./fields/ObjectRuleField')
 });
 RuleField.add_field_type({
+    name: 'array',
+    display_name: 'Array',
+    class: (typeof ArrayRuleField) !== 'undefined' ? ArrayRuleField : require('./fields/ArrayRuleField')
+});
+RuleField.add_field_type({
     name: 'choice',
     display_name: 'Choice',
     class: (typeof ChoiceRuleField) !== 'undefined' ? ChoiceRuleField : require('./fields/ChoiceRuleField')

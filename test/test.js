@@ -154,6 +154,34 @@ describe('ValidationRule', function() {
             done();
         });
 
+        it('should create a ValidationRule for an array field', function(done) {
+            var vr = new ValidationRule();
+            var type_object = {
+                type: "array",
+                indices: {
+                    "*": {
+                        type: "text"
+                    },
+                    "1": {
+                        type: "number"
+                    }
+                }
+            }
+            var init_result = vr.init(type_object);
+            assert.equal(init_result,null);
+            
+            var error = vr.validate([
+                "One",2,"Three"
+            ]);
+            logger.log(error);
+            assert.deepEqual(
+                null,
+                error
+            );
+
+            done();
+        });
+
     });
 
 });

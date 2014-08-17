@@ -45,6 +45,11 @@ RuleField.add_field_type = function(field_type_data){
 RuleField.create_field = function(json) {
     var field = null;
 
+    var error = BasicVal.object(true).check(json); 
+    if(error){
+        return [error, null];
+    }
+
     var validator = new FieldVal(json);
 
     var type = validator.get("type", BasicVal.string(true), BasicVal.one_of(RuleField.types));
@@ -70,7 +75,7 @@ RuleField.create_field = function(json) {
 
 RuleField.prototype.validate_as_field = function(name, validator){
     var field = this;
-
+    
     var value = validator.get(name, field.checks);
 
     return value;
@@ -89,14 +94,86 @@ RuleField.prototype.validate = function(value){
     return validator.end();
 }
 
+RuleField.prototype.make_nested = function(){}
+RuleField.prototype.init = function(){}
+RuleField.prototype.remove = function(){}
+RuleField.prototype.view_mode = function(){}
+RuleField.prototype.edit_mode = function(){}
+RuleField.prototype.change_name = function(name) {}
+RuleField.prototype.disable = function() {}
+RuleField.prototype.enable = function() {}
+RuleField.prototype.focus = function() {}
+RuleField.prototype.blur = function() {}
+RuleField.prototype.val = function(set_val) {}
+
 if (typeof module != 'undefined') {
     module.exports = RuleField;
+}
+if((typeof require) === 'function'){
+    extend = require('extend')
+}
+extend(BasicRuleField, RuleField);
+
+function BasicRuleField(json, validator) {
+    var field = this;
+
+    BasicRuleField.superConstructor.call(this, json, validator);
+}
+
+BasicRuleField.prototype.init = function(){
+    var field = this;
+    return field.ui_field.init.apply(field.ui_field, arguments);    
+}
+BasicRuleField.prototype.remove = function(){
+    var field = this;
+    return field.ui_field.remove.apply(field.ui_field, arguments);
+}
+BasicRuleField.prototype.in_array = function(){
+    var field = this;
+    return field.ui_field.in_array.apply(field.ui_field, arguments);
+}
+BasicRuleField.prototype.view_mode = function(){
+    var field = this;
+    return field.ui_field.view_mode.apply(field.ui_field, arguments);    
+}
+BasicRuleField.prototype.edit_mode = function(){
+    var field = this;
+    return field.ui_field.edit_mode.apply(field.ui_field, arguments);
+}
+BasicRuleField.prototype.change_name = function(name) {
+    var field = this;
+    return field.ui_field.change_name.apply(field.ui_field, arguments);
+}
+BasicRuleField.prototype.disable = function() {
+    var field = this;
+    return field.ui_field.disable.apply(field.ui_field, arguments);
+}
+BasicRuleField.prototype.val = function(){
+    var field = this;
+    return field.ui_field.val.apply(field.ui_field, arguments);
+}
+BasicRuleField.prototype.error = function(){
+    var field = this;
+    return field.ui_field.error.apply(field.ui_field, arguments);
+}
+BasicRuleField.prototype.blur = function(){
+    var field = this;
+    return field.ui_field.blur.apply(field.ui_field, arguments);
+}
+BasicRuleField.prototype.focus = function(){
+    var field = this;
+    return field.ui_field.blur.apply(field.ui_field, arguments);
+}
+
+if (typeof module != 'undefined') {
+    module.exports = BasicRuleField;
 }
 
 if((typeof require) === 'function'){
     extend = require('extend')
+    BasicRuleField = require('./BasicRuleField');
 }
-extend(TextRuleField, RuleField);
+extend(TextRuleField, BasicRuleField);
 
 function TextRuleField(json, validator) {
     var field = this;
@@ -107,11 +184,10 @@ function TextRuleField(json, validator) {
 TextRuleField.prototype.create_ui = function(parent){
     var field = this;
 
-    if(TextField){
-        var ui_field = new TextField(field.display_name || field.name, field.json);
-        parent.add_field(field.name, ui_field);
-        return ui_field;
-    }
+    field.ui_field = new TextField(field.display_name || field.name, field.json);
+    field.container = field.ui_field.container;
+    parent.add_field(field.name, field);
+    return field.ui_field;
 }
 
 TextRuleField.prototype.init = function() {
@@ -148,8 +224,9 @@ if (typeof module != 'undefined') {
 }
 if((typeof require) === 'function'){
     extend = require('extend')
+    BasicRuleField = require('./BasicRuleField');
 }
-extend(NumberRuleField, RuleField);
+extend(NumberRuleField, BasicRuleField);
 
 function NumberRuleField(json, validator) {
     var field = this;
@@ -160,11 +237,27 @@ function NumberRuleField(json, validator) {
 NumberRuleField.prototype.create_ui = function(parent){
     var field = this;
 
-    if(TextField){
-        var ui_field = new TextField(field.display_name || field.name, field.json);
-        parent.add_field(field.name, ui_field);
-        return ui_field;
-    }
+    field.ui_field = new TextField(field.display_name || field.name, field.json);
+    field.container = field.ui_field.container;
+    parent.add_field(field.name, field);
+    return field.ui_field;
+}
+
+NumberRuleField.prototype.val = function(){
+    var field = this;
+    return field.ui_field.val.apply(field.ui_field, arguments);
+}
+NumberRuleField.prototype.error = function(){
+    var field = this;
+    return field.ui_field.error.apply(field.ui_field, arguments);
+}
+NumberRuleField.prototype.blur = function(){
+    var field = this;
+    return field.ui_field.blur.apply(field.ui_field, arguments);
+}
+NumberRuleField.prototype.focus = function(){
+    var field = this;
+    return field.ui_field.blur.apply(field.ui_field, arguments);
 }
 
 NumberRuleField.prototype.init = function() {
@@ -206,8 +299,9 @@ if (typeof module != 'undefined') {
 }
 if((typeof require) === 'function'){
     extend = require('extend')
+    BasicRuleField = require('./BasicRuleField');
 }
-extend(ObjectRuleField, RuleField);
+extend(ObjectRuleField, BasicRuleField);
 
 function ObjectRuleField(json, validator) {
     var field = this;
@@ -215,16 +309,16 @@ function ObjectRuleField(json, validator) {
     ObjectRuleField.superConstructor.call(this, json, validator);
 }
 
-ObjectRuleField.prototype.create_ui = function(parent){
+ObjectRuleField.prototype.create_ui = function(parent, form){
     var field = this;
 
     if(field.json.any){
-        var text_field = new TextField(field.display_name || field.name, {type: 'textarea'});//Empty options
+        field.ui_field = new TextField(field.display_name || field.name, {type: 'textarea'});//Empty options
 
-        text_field.val = function(set_val){//Override the .val function
-            var field = this;
+        field.ui_field.val = function(set_val){//Override the .val function
+            var ui_field = this;
             if (arguments.length===0) {
-                var value = field.input.val();
+                var value = ui_field.input.val();
                 if(value.length===0){
                     return null;
                 }
@@ -235,31 +329,51 @@ ObjectRuleField.prototype.create_ui = function(parent){
                 }
                 return value;
             } else {
-                field.input.val(JSON.stringify(set_val,null,4));
-                return field;
+                ui_field.input.val(JSON.stringify(set_val,null,4));
+                return ui_field;
             }
         }
-
-        parent.add_field(field.name, text_field);
-
-        field.text_field = text_field;
-
-        return text_field;
+        field.container = field.ui_field.container;
     } else {
-        var object_field = new ObjectField(field.display_name || field.name, field.json);
+
+        if(form){
+            field.ui_field = form;
+        } else {
+            field.ui_field = new ObjectField(field.display_name || field.name, field.json);
+        }
 
         for(var i in field.fields){
             var inner_field = field.fields[i];
-            inner_field.create_ui(object_field);
+            inner_field.create_ui(field.ui_field);
         }
 
-        parent.add_field(field.name, object_field);
-
-        field.object_field = object_field;
-
-        return object_field;
+        field.container = field.ui_field.container;
     }
+
+    if(!form){
+        parent.add_field(field.name, field.ui_field);
+    }
+
+    return field.ui_field;
 }
+
+ObjectRuleField.prototype.val = function(){
+    var field = this;
+    return field.ui_field.val.apply(field.ui_field, arguments);
+}
+ObjectRuleField.prototype.error = function(){
+    var field = this;
+    return field.ui_field.error.apply(field.ui_field, arguments);
+}
+ObjectRuleField.prototype.blur = function(){
+    var field = this;
+    return field.ui_field.blur.apply(field.ui_field, arguments);
+}
+ObjectRuleField.prototype.focus = function(){
+    var field = this;
+    return field.ui_field.blur.apply(field.ui_field, arguments);
+}
+
 
 ObjectRuleField.prototype.init = function() {
     var field = this;
@@ -291,7 +405,7 @@ ObjectRuleField.prototype.init = function() {
 
         var fields_error = fields_validator.end();
         if(fields_error!=null){
-            field.validator.invalid("fields",fields_error);
+            field.validator.invalid("indices",fields_error);
         }
     }
 
@@ -325,8 +439,146 @@ if (typeof module != 'undefined') {
 }
 if((typeof require) === 'function'){
     extend = require('extend')
+    BasicRuleField = require('./BasicRuleField');
 }
-extend(ChoiceRuleField, RuleField);
+extend(ArrayRuleField, BasicRuleField);
+
+function ArrayRuleField(json, validator) {
+    var field = this;
+
+    ArrayRuleField.superConstructor.call(this, json, validator);
+
+    field.rules = [];
+    field.fields = [];
+}
+
+ArrayRuleField.prototype.create_ui = function(parent, form){
+    var field = this;
+
+    field.ui_field = new ArrayField(field.display_name || field.name, field.json);
+    field.ui_field.new_field = function(index){
+        return field.new_field(index);
+    }
+    var original_remove_field = field.ui_field.remove_field;
+    field.ui_field.remove_field = function(inner_field){
+        for(var i = 0; i < field.fields.length; i++){
+            if(field.fields[i]===inner_field){
+                field.fields.splice(i,1);
+            }
+        }
+        return original_remove_field.call(field.ui_field, inner_field);
+    }
+    field.container = field.ui_field.container;
+    parent.add_field(field.name, field);
+    return field.ui_field;
+}
+
+ArrayRuleField.prototype.new_field = function(index){
+    var field = this;
+
+    var rule = field.rules[index];
+    if(!rule){
+        var rule_json = field.rule_for_index(index);
+        var field_creation = RuleField.create_field(rule_json);
+        var err = field_creation[0];
+        rule = field_creation[1];
+        field.rules[index] = rule;
+    }
+    return rule.create_ui(field.ui_field);
+}
+
+ArrayRuleField.prototype.rule_for_index = function(index){
+    var field = this;
+
+    var rule_json = field.indices[index];
+    if(!rule_json){
+        rule_json = field.indices["*"];
+    }
+
+    return rule_json;
+}
+
+ArrayRuleField.prototype.val = function(){
+    var field = this;
+    return field.ui_field.val.apply(field.ui_field, arguments);
+}
+ArrayRuleField.prototype.error = function(){
+    var field = this;
+    return field.ui_field.error.apply(field.ui_field, arguments);
+}
+ArrayRuleField.prototype.blur = function(){
+    var field = this;
+    return field.ui_field.blur.apply(field.ui_field, arguments);
+}
+ArrayRuleField.prototype.focus = function(){
+    var field = this;
+    return field.ui_field.blur.apply(field.ui_field, arguments);
+}
+
+
+ArrayRuleField.prototype.init = function() {
+    var field = this;
+
+    field.indices = {};
+
+    var indices_json = field.validator.get("indices", BasicVal.object(false));
+    if (indices_json != null) {
+        var indices_validator = new FieldVal(null);
+
+        for(var i in indices_json){
+        	var field_json = indices_json[i];
+
+            //RuleField is created to validate properties, not to use
+        	var field_creation = RuleField.create_field(field_json);
+            var err = field_creation[0];
+
+            console.log(err);
+            if(err!=null){
+                indices_validator.invalid(i,err);
+                continue;
+            }
+
+            field.indices[i] = field_json;
+        }
+
+        var indices_error = indices_validator.end();
+        if(indices_error){
+            field.validator.invalid("indices", indices_error)
+        }
+    }
+
+    return field.validator.end();
+}
+
+ArrayRuleField.prototype.create_checks = function(validator){
+    var field = this;
+
+    field.checks.push(BasicVal.array(field.required));
+
+    field.checks.push(function(value,emit){
+
+        var array_validator = new FieldVal(value);
+
+        for(var i = 0; i < value.length; i++){
+            var rule = field.rules[i];
+
+            rule.validate_as_field(i, array_validator);
+        }
+
+        var array_error = array_validator.end();
+
+        return array_error;
+    });
+}
+
+if (typeof module != 'undefined') {
+    module.exports = ArrayRuleField;
+}
+if((typeof require) === 'function'){
+    extend = require('extend')
+    BasicRuleField = require('./BasicRuleField');
+}
+extend(ChoiceRuleField, BasicRuleField);
 
 function ChoiceRuleField(json, validator) {
     var field = this;
@@ -337,11 +589,27 @@ function ChoiceRuleField(json, validator) {
 ChoiceRuleField.prototype.create_ui = function(parent){
     var field = this;
 
-    if(ChoiceField){
-        var ui_field = new ChoiceField(field.display_name || field.name, field.choices, field.json);
-        parent.add_field(field.name, ui_field);
-        return ui_field;
-    }
+    field.ui_field = new ChoiceField(field.display_name || field.name, field.choices, field.json);
+    field.container = field.ui_field.container;
+    parent.add_field(field.name, field);
+    return field.ui_field;
+}
+
+ChoiceRuleField.prototype.val = function(){
+    var field = this;
+    return field.ui_field.val.apply(field.ui_field, arguments);
+}
+ChoiceRuleField.prototype.error = function(){
+    var field = this;
+    return field.ui_field.error.apply(field.ui_field, arguments);
+}
+ChoiceRuleField.prototype.blur = function(){
+    var field = this;
+    return field.ui_field.blur.apply(field.ui_field, arguments);
+}
+ChoiceRuleField.prototype.focus = function(){
+    var field = this;
+    return field.ui_field.blur.apply(field.ui_field, arguments);
 }
 
 ChoiceRuleField.prototype.init = function() {
@@ -390,6 +658,11 @@ RuleField.add_field_type({
     name: 'object',
     display_name: 'Object',
     class: (typeof ObjectRuleField) !== 'undefined' ? ObjectRuleField : require('./fields/ObjectRuleField')
+});
+RuleField.add_field_type({
+    name: 'array',
+    display_name: 'Array',
+    class: (typeof ArrayRuleField) !== 'undefined' ? ArrayRuleField : require('./fields/ArrayRuleField')
 });
 RuleField.add_field_type({
     name: 'choice',

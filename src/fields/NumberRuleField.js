@@ -1,7 +1,8 @@
 if((typeof require) === 'function'){
     extend = require('extend')
+    BasicRuleField = require('./BasicRuleField');
 }
-extend(NumberRuleField, RuleField);
+extend(NumberRuleField, BasicRuleField);
 
 function NumberRuleField(json, validator) {
     var field = this;
@@ -12,11 +13,27 @@ function NumberRuleField(json, validator) {
 NumberRuleField.prototype.create_ui = function(parent){
     var field = this;
 
-    if(TextField){
-        var ui_field = new TextField(field.display_name || field.name, field.json);
-        parent.add_field(field.name, ui_field);
-        return ui_field;
-    }
+    field.ui_field = new TextField(field.display_name || field.name, field.json);
+    field.container = field.ui_field.container;
+    parent.add_field(field.name, field);
+    return field.ui_field;
+}
+
+NumberRuleField.prototype.val = function(){
+    var field = this;
+    return field.ui_field.val.apply(field.ui_field, arguments);
+}
+NumberRuleField.prototype.error = function(){
+    var field = this;
+    return field.ui_field.error.apply(field.ui_field, arguments);
+}
+NumberRuleField.prototype.blur = function(){
+    var field = this;
+    return field.ui_field.blur.apply(field.ui_field, arguments);
+}
+NumberRuleField.prototype.focus = function(){
+    var field = this;
+    return field.ui_field.blur.apply(field.ui_field, arguments);
 }
 
 NumberRuleField.prototype.init = function() {

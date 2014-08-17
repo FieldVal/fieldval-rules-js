@@ -31,6 +31,11 @@ RuleField.add_field_type = function(field_type_data){
 RuleField.create_field = function(json) {
     var field = null;
 
+    var error = BasicVal.object(true).check(json); 
+    if(error){
+        return [error, null];
+    }
+
     var validator = new FieldVal(json);
 
     var type = validator.get("type", BasicVal.string(true), BasicVal.one_of(RuleField.types));
@@ -56,7 +61,7 @@ RuleField.create_field = function(json) {
 
 RuleField.prototype.validate_as_field = function(name, validator){
     var field = this;
-
+    
     var value = validator.get(name, field.checks);
 
     return value;
@@ -74,6 +79,18 @@ RuleField.prototype.validate = function(value){
 
     return validator.end();
 }
+
+RuleField.prototype.make_nested = function(){}
+RuleField.prototype.init = function(){}
+RuleField.prototype.remove = function(){}
+RuleField.prototype.view_mode = function(){}
+RuleField.prototype.edit_mode = function(){}
+RuleField.prototype.change_name = function(name) {}
+RuleField.prototype.disable = function() {}
+RuleField.prototype.enable = function() {}
+RuleField.prototype.focus = function() {}
+RuleField.prototype.blur = function() {}
+RuleField.prototype.val = function(set_val) {}
 
 if (typeof module != 'undefined') {
     module.exports = RuleField;

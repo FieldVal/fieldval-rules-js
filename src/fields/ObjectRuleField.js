@@ -1,7 +1,8 @@
 if((typeof require) === 'function'){
     extend = require('extend')
+    BasicRuleField = require('./BasicRuleField');
 }
-extend(ObjectRuleField, RuleField);
+extend(ObjectRuleField, BasicRuleField);
 
 function ObjectRuleField(json, validator) {
     var field = this;
@@ -9,16 +10,16 @@ function ObjectRuleField(json, validator) {
     ObjectRuleField.superConstructor.call(this, json, validator);
 }
 
-ObjectRuleField.prototype.create_ui = function(parent){
+ObjectRuleField.prototype.create_ui = function(parent, form){
     var field = this;
 
     if(field.json.any){
-        var text_field = new TextField(field.display_name || field.name, {type: 'textarea'});//Empty options
+        field.ui_field = new TextField(field.display_name || field.name, {type: 'textarea'});//Empty options
 
-        text_field.val = function(set_val){//Override the .val function
-            var field = this;
+        field.ui_field.val = function(set_val){//Override the .val function
+            var ui_field = this;
             if (arguments.length===0) {
-                var value = field.input.val();
+                var value = ui_field.input.val();
                 if(value.length===0){
                     return null;
                 }
@@ -29,31 +30,51 @@ ObjectRuleField.prototype.create_ui = function(parent){
                 }
                 return value;
             } else {
-                field.input.val(JSON.stringify(set_val,null,4));
-                return field;
+                ui_field.input.val(JSON.stringify(set_val,null,4));
+                return ui_field;
             }
         }
-
-        parent.add_field(field.name, text_field);
-
-        field.text_field = text_field;
-
-        return text_field;
+        field.container = field.ui_field.container;
     } else {
-        var object_field = new ObjectField(field.display_name || field.name, field.json);
+
+        if(form){
+            field.ui_field = form;
+        } else {
+            field.ui_field = new ObjectField(field.display_name || field.name, field.json);
+        }
 
         for(var i in field.fields){
             var inner_field = field.fields[i];
-            inner_field.create_ui(object_field);
+            inner_field.create_ui(field.ui_field);
         }
 
-        parent.add_field(field.name, object_field);
-
-        field.object_field = object_field;
-
-        return object_field;
+        field.container = field.ui_field.container;
     }
+
+    if(!form){
+        parent.add_field(field.name, field.ui_field);
+    }
+
+    return field.ui_field;
 }
+
+ObjectRuleField.prototype.val = function(){
+    var field = this;
+    return field.ui_field.val.apply(field.ui_field, arguments);
+}
+ObjectRuleField.prototype.error = function(){
+    var field = this;
+    return field.ui_field.error.apply(field.ui_field, arguments);
+}
+ObjectRuleField.prototype.blur = function(){
+    var field = this;
+    return field.ui_field.blur.apply(field.ui_field, arguments);
+}
+ObjectRuleField.prototype.focus = function(){
+    var field = this;
+    return field.ui_field.blur.apply(field.ui_field, arguments);
+}
+
 
 ObjectRuleField.prototype.init = function() {
     var field = this;
@@ -85,7 +106,7 @@ ObjectRuleField.prototype.init = function() {
 
         var fields_error = fields_validator.end();
         if(fields_error!=null){
-            field.validator.invalid("fields",fields_error);
+            field.validator.invalid("indices",fields_error);
         }
     }
 
