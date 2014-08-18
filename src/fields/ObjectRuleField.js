@@ -113,7 +113,7 @@ ObjectRuleField.prototype.init = function() {
     return field.validator.end();
 }
 
-ObjectRuleField.prototype.create_checks = function(validator){
+ObjectRuleField.prototype.create_checks = function(){
     var field = this;
 
     field.checks.push(BasicVal.object(field.required));

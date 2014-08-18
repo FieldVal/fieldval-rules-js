@@ -62,10 +62,14 @@ $(document).ready(function(){
                 type: "array",
                 description: "Please add your interests",
                 indices: {
-                    "*": {
-                        display_name: "Interest",
-                        type: "text",
-                        description: "An interest"
+                    "3n": {
+                        type: "text"
+                    },
+                    "3n+1": {
+                        type: "boolean"
+                    },
+                    "3n+2": {
+                        type: "number"
                     }
                 }
             }
@@ -91,7 +95,7 @@ $(document).ready(function(){
             "zip_code": 90909
         },
         "interests": [
-            "Programming", "Running", "Validation Frameworks"
+            "One",true,3
         ]
     })
 

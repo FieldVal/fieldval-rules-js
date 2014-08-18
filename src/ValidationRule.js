@@ -4,39 +4,25 @@ if((typeof require) === 'function'){
     RuleField = require('./fields/RuleField');
 }
 
-RuleField.add_field_type({
-    name: 'text',
-    display_name: 'Text',
-    class: (typeof TextRuleField) !== 'undefined' ? TextRuleField : require('./fields/TextRuleField')
-});
-RuleField.add_field_type({
-    name: 'string',
-    display_name: 'String',
-    class: (typeof TextRuleField) !== 'undefined' ? TextRuleField : require('./fields/TextRuleField')
-});
-RuleField.add_field_type({
-    name: 'number',
-    display_name: 'Number',
-    class: (typeof NumberRuleField) !== 'undefined' ? NumberRuleField : require('./fields/NumberRuleField')
-});
-RuleField.add_field_type({
-    name: 'object',
-    display_name: 'Object',
-    class: (typeof ObjectRuleField) !== 'undefined' ? ObjectRuleField : require('./fields/ObjectRuleField')
-});
-RuleField.add_field_type({
-    name: 'array',
-    display_name: 'Array',
-    class: (typeof ArrayRuleField) !== 'undefined' ? ArrayRuleField : require('./fields/ArrayRuleField')
-});
-RuleField.add_field_type({
-    name: 'choice',
-    display_name: 'Choice',
-    class: (typeof ChoiceRuleField) !== 'undefined' ? ChoiceRuleField : require('./fields/ChoiceRuleField')
-});
-
 function ValidationRule() {
     var vr = this;
+}
+
+ValidationRule.errors = {
+    interval_conflict: function(this_interval, existing_interval) {
+        return {
+            error: 501,
+            error_message: "Only one interval can be used.",
+            interval: this_interval,
+            existing: existing_interval
+        }
+    },
+    invalid_indices_format: function(){
+        return {
+            error: 502,
+            error_message: "Invalid format for an indices rule."
+        }    
+    }
 }
 
 ValidationRule.RuleField = RuleField;
@@ -77,3 +63,39 @@ ValidationRule.prototype.validate = function(value) {
 if (typeof module != 'undefined') {
     module.exports = ValidationRule;
 }
+
+RuleField.add_field_type({
+    name: 'text',
+    display_name: 'Text',
+    class: (typeof TextRuleField) !== 'undefined' ? TextRuleField : require('./fields/TextRuleField')
+});
+RuleField.add_field_type({
+    name: 'string',
+    display_name: 'String',
+    class: (typeof TextRuleField) !== 'undefined' ? TextRuleField : require('./fields/TextRuleField')
+});
+RuleField.add_field_type({
+    name: 'boolean',
+    display_name: 'Boolean',
+    class: (typeof BooleanRuleField) !== 'undefined' ? BooleanRuleField : require('./fields/BooleanRuleField')
+});
+RuleField.add_field_type({
+    name: 'number',
+    display_name: 'Number',
+    class: (typeof NumberRuleField) !== 'undefined' ? NumberRuleField : require('./fields/NumberRuleField')
+});
+RuleField.add_field_type({
+    name: 'object',
+    display_name: 'Object',
+    class: (typeof ObjectRuleField) !== 'undefined' ? ObjectRuleField : require('./fields/ObjectRuleField')
+});
+RuleField.add_field_type({
+    name: 'array',
+    display_name: 'Array',
+    class: (typeof ArrayRuleField) !== 'undefined' ? ArrayRuleField : require('./fields/ArrayRuleField')
+});
+RuleField.add_field_type({
+    name: 'choice',
+    display_name: 'Choice',
+    class: (typeof ChoiceRuleField) !== 'undefined' ? ChoiceRuleField : require('./fields/ChoiceRuleField')
+});

@@ -6,3 +6,4 @@
 @import("./ObjectRuleField.js");
 @import("./ArrayRuleField.js");
 @import("./ChoiceRuleField.js");
+@import("./BooleanRuleField.js");

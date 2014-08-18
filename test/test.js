@@ -154,7 +154,7 @@ describe('ValidationRule', function() {
             done();
         });
 
-        it('should create a ValidationRule for an array field', function(done) {
+        it('should create a ValidationRule for an array field with 1 absolute index', function(done) {
             var vr = new ValidationRule();
             var type_object = {
                 type: "array",
@@ -173,7 +173,36 @@ describe('ValidationRule', function() {
             var error = vr.validate([
                 "One",2,"Three"
             ]);
-            logger.log(error);
+            assert.deepEqual(
+                null,
+                error
+            );
+
+            done();
+        });
+
+        it('should create a ValidationRule for an array field with an interval rule', function(done) {
+            var vr = new ValidationRule();
+            var type_object = {
+                type: "array",
+                indices: {
+                    "3n": {
+                        type: "text"
+                    },
+                    "3n+1": {
+                        type: "boolean"
+                    },
+                    "3n+2": {
+                        type: "number"
+                    }
+                }
+            }
+            var init_result = vr.init(type_object);
+            assert.equal(init_result,null);
+            
+            var error = vr.validate([
+                "One",true,3,"Four",true,6,"Seven",false,9
+            ]);
             assert.deepEqual(
                 null,
                 error
