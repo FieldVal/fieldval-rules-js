@@ -34,6 +34,18 @@ $(document).ready(function(){
                 maximum: 30,
                 integer: true
             },{
+                name: "a_choice",
+                display_name: "A Choice",
+                type: "choice",
+                description: "Please select an option using the dropdown below",
+                allow_empty: true,
+                empty_message: "Please select an option...",
+                choices: [
+                    [1, "One"],
+                    [2, "Two"],
+                    [3, "Three"]
+                ]
+            },{
                 name: "address",
                 display_name: "Address",
                 type: "object",
@@ -62,7 +74,7 @@ $(document).ready(function(){
                 type: "array",
                 description: "Please add your interests",
                 indices: {
-                    "3n": {
+                    "3n+0": {
                         type: "text"
                     },
                     "3n+1": {
@@ -89,6 +101,7 @@ $(document).ready(function(){
         "first_name": "John",
         "last_name": "Smith",
         "office_number": 17,
+        "a_choice": "1",
         "address": {
             "street_address": "33 Green Park Lane",
             "city": "Fillertextville",
