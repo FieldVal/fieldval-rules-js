@@ -99,3 +99,8 @@ RuleField.add_field_type({
     display_name: 'Choice',
     class: (typeof ChoiceRuleField) !== 'undefined' ? ChoiceRuleField : require('./fields/ChoiceRuleField')
 });
+RuleField.add_field_type({
+    name: 'email',
+    display_name: 'Email',
+    class: (typeof EmailRuleField) !== 'undefined' ? EmailRuleField : require('./fields/EmailRuleField')
+});

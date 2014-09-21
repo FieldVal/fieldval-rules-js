@@ -21,11 +21,15 @@ $(document).ready(function(){
         		type: "text",
         		min_length: 2
         	},{
-            	name: "last_name",
-        		display_name: "Last Name",
-        		type: "text",
-        		min_length: 2
-        	},{
+                name: "last_name",
+                display_name: "Last Name",
+                type: "text",
+                min_length: 2
+            },{
+                name: "email",
+                display_name: "Email",
+                type: "email"
+            },{
                 name: "office_number",
                 display_name: "Office Number",
                 type: "number",
@@ -100,6 +104,7 @@ $(document).ready(function(){
     form.val({
         "first_name": "John",
         "last_name": "Smith",
+        "email": "john@example.com",
         "office_number": 17,
         "a_choice": "1",
         "address": {

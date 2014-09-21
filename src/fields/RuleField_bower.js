@@ -7,3 +7,4 @@
 @import("./ArrayRuleField.js");
 @import("./ChoiceRuleField.js");
 @import("./BooleanRuleField.js");
+@import("./EmailRuleField.js");

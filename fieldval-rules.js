@@ -2,7 +2,10 @@
 function extend(sub, sup) {
 	function emptyclass() {}
 	emptyclass.prototype = sup.prototype;
-	sub.prototype = new emptyclass();
+	var empty_instance = new emptyclass();
+	for(var i in empty_instance){
+		sub.prototype[i] = empty_instance[i];
+	}
 	sub.prototype.constructor = sub;
 	sub.superConstructor = sup;
 	sub.superClass = sup.prototype;
@@ -23,7 +26,7 @@ function RuleField(json, validator) {
     field.display_name = field.validator.get("display_name", BasicVal.string(false));
     field.description = field.validator.get("description", BasicVal.string(false));
     field.type = field.validator.get("type", BasicVal.string(true));
-    field.required = field.validator.default(true).get("required", BasicVal.boolean(false))
+    field.required = field.validator.default_value(true).get("required", BasicVal.boolean(false))
 
     if (json != null) {
         var exists = field.validator.get("exists", BasicVal.boolean(false));
@@ -731,6 +734,42 @@ BooleanRuleField.prototype.create_checks = function(){
 if (typeof module != 'undefined') {
     module.exports = BooleanRuleField;
 }
+if((typeof require) === 'function'){
+    extend = require('extend')
+    BasicRuleField = require('./BasicRuleField');
+}
+extend(EmailRuleField, BasicRuleField);
+
+function EmailRuleField(json, validator) {
+    var field = this;
+
+    EmailRuleField.superConstructor.call(this, json, validator);
+}
+
+EmailRuleField.prototype.create_ui = function(parent){
+    var field = this;
+
+    field.ui_field = new TextField(field.display_name || field.name, field.json);
+    field.container = field.ui_field.container;
+    parent.add_field(field.name, field);
+    return field.ui_field;
+}
+
+EmailRuleField.prototype.init = function() {
+    var field = this;
+    
+    return field.validator.end();
+}
+
+EmailRuleField.prototype.create_checks = function(){
+    var field = this;
+
+    field.checks.push(BasicVal.string(field.required), BasicVal.email());
+}
+
+if (typeof module != 'undefined') {
+    module.exports = EmailRuleField;
+}
 
 if((typeof require) === 'function'){
     FieldVal = require('fieldval')
@@ -832,4 +871,9 @@ RuleField.add_field_type({
     name: 'choice',
     display_name: 'Choice',
     class: (typeof ChoiceRuleField) !== 'undefined' ? ChoiceRuleField : require('./fields/ChoiceRuleField')
+});
+RuleField.add_field_type({
+    name: 'email',
+    display_name: 'Email',
+    class: (typeof EmailRuleField) !== 'undefined' ? EmailRuleField : require('./fields/EmailRuleField')
 });

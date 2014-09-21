@@ -9,7 +9,7 @@ function RuleField(json, validator) {
     field.display_name = field.validator.get("display_name", BasicVal.string(false));
     field.description = field.validator.get("description", BasicVal.string(false));
     field.type = field.validator.get("type", BasicVal.string(true));
-    field.required = field.validator.default(true).get("required", BasicVal.boolean(false))
+    field.required = field.validator.default_value(true).get("required", BasicVal.boolean(false))
 
     if (json != null) {
         var exists = field.validator.get("exists", BasicVal.boolean(false));

@@ -1,4 +1,4 @@
-@import("../bower_components/extend/extend.js");
+@import("../node_modules/extend/extend.js");
 
 @import("fields/RuleField_bower.js");
 
