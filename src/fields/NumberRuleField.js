@@ -19,55 +19,27 @@ NumberRuleField.prototype.create_ui = function(parent){
     return field.ui_field;
 }
 
-NumberRuleField.prototype.val = function(){
-    var field = this;
-    return field.ui_field.val.apply(field.ui_field, arguments);
-}
-NumberRuleField.prototype.error = function(){
-    var field = this;
-    return field.ui_field.error.apply(field.ui_field, arguments);
-}
-NumberRuleField.prototype.blur = function(){
-    var field = this;
-    return field.ui_field.blur.apply(field.ui_field, arguments);
-}
-NumberRuleField.prototype.focus = function(){
-    var field = this;
-    return field.ui_field.blur.apply(field.ui_field, arguments);
-}
-
 NumberRuleField.prototype.init = function() {
     var field = this;
 
+    field.checks.push(BasicVal.number(field.required));
+
     field.minimum = field.validator.get("minimum", BasicVal.number(false));
     if (field.minimum != null) {
-
+        field.checks.push(BasicVal.minimum(field.minimum,{stop_on_error:false}));
     }
 
     field.maximum = field.validator.get("maximum", BasicVal.number(false));
     if (field.maximum != null) {
-
+        field.checks.push(BasicVal.maximum(field.maximum,{stop_on_error:false}));
     }
 
     field.integer = field.validator.get("integer", BasicVal.boolean(false));
-
-    return field.validator.end();
-}
-
-NumberRuleField.prototype.create_checks = function(){
-    var field = this;
-    
-    field.checks.push(BasicVal.number(field.required));
-
-    if(field.minimum){
-        field.checks.push(BasicVal.minimum(field.minimum,{stop_on_error:false}));
-    }
-    if(field.maximum){
-        field.checks.push(BasicVal.maximum(field.maximum,{stop_on_error:false}));
-    }
-    if(field.integer){
+    if (field.integer) {
         field.checks.push(BasicVal.integer(false,{stop_on_error:false}));
     }
+
+    return field.validator.end();
 }
 
 if (typeof module != 'undefined') {

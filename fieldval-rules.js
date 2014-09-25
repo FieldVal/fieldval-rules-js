@@ -71,8 +71,6 @@ RuleField.create_field = function(json) {
         return [init_res, null];
     }
 
-    field.create_checks();
-
     return [null, field];
 }
 
@@ -196,8 +194,17 @@ TextRuleField.prototype.create_ui = function(parent){
 TextRuleField.prototype.init = function() {
     var field = this;
 
+    field.checks.push(BasicVal.string(field.required));
+
     field.min_length = field.validator.get("min_length", BasicVal.integer(false));
+    if(field.min_length !== undefined){
+        field.checks.push(BasicVal.min_length(field.min_length,{stop_on_error:false}));
+    }
+
     field.max_length = field.validator.get("max_length", BasicVal.integer(false));
+    if(field.max_length !== undefined){
+        field.checks.push(BasicVal.max_length(field.max_length,{stop_on_error:false}));
+    }
 
     field.phrase = field.validator.get("phrase", BasicVal.string(false));
     field.equal_to = field.validator.get("equal_to", BasicVal.string(false));
@@ -207,19 +214,6 @@ TextRuleField.prototype.init = function() {
     field.query = field.validator.get("query", BasicVal.string(false));
     
     return field.validator.end();
-}
-
-TextRuleField.prototype.create_checks = function(){
-    var field = this;
-
-    field.checks.push(BasicVal.string(field.required));
-
-    if(field.min_length){
-        field.checks.push(BasicVal.min_length(field.min_length,{stop_on_error:false}));
-    }
-    if(field.max_length){
-        field.checks.push(BasicVal.max_length(field.max_length,{stop_on_error:false}));
-    }
 }
 
 if (typeof module != 'undefined') {
@@ -246,55 +240,27 @@ NumberRuleField.prototype.create_ui = function(parent){
     return field.ui_field;
 }
 
-NumberRuleField.prototype.val = function(){
-    var field = this;
-    return field.ui_field.val.apply(field.ui_field, arguments);
-}
-NumberRuleField.prototype.error = function(){
-    var field = this;
-    return field.ui_field.error.apply(field.ui_field, arguments);
-}
-NumberRuleField.prototype.blur = function(){
-    var field = this;
-    return field.ui_field.blur.apply(field.ui_field, arguments);
-}
-NumberRuleField.prototype.focus = function(){
-    var field = this;
-    return field.ui_field.blur.apply(field.ui_field, arguments);
-}
-
 NumberRuleField.prototype.init = function() {
     var field = this;
 
+    field.checks.push(BasicVal.number(field.required));
+
     field.minimum = field.validator.get("minimum", BasicVal.number(false));
     if (field.minimum != null) {
-
+        field.checks.push(BasicVal.minimum(field.minimum,{stop_on_error:false}));
     }
 
     field.maximum = field.validator.get("maximum", BasicVal.number(false));
     if (field.maximum != null) {
-
+        field.checks.push(BasicVal.maximum(field.maximum,{stop_on_error:false}));
     }
 
     field.integer = field.validator.get("integer", BasicVal.boolean(false));
-
-    return field.validator.end();
-}
-
-NumberRuleField.prototype.create_checks = function(){
-    var field = this;
-    
-    field.checks.push(BasicVal.number(field.required));
-
-    if(field.minimum){
-        field.checks.push(BasicVal.minimum(field.minimum,{stop_on_error:false}));
-    }
-    if(field.maximum){
-        field.checks.push(BasicVal.maximum(field.maximum,{stop_on_error:false}));
-    }
-    if(field.integer){
+    if (field.integer) {
         field.checks.push(BasicVal.integer(false,{stop_on_error:false}));
     }
+
+    return field.validator.end();
 }
 
 if (typeof module != 'undefined') {
@@ -360,30 +326,12 @@ ObjectRuleField.prototype.create_ui = function(parent, form){
     return field.ui_field;
 }
 
-ObjectRuleField.prototype.val = function(){
-    var field = this;
-    return field.ui_field.val.apply(field.ui_field, arguments);
-}
-ObjectRuleField.prototype.error = function(){
-    var field = this;
-    return field.ui_field.error.apply(field.ui_field, arguments);
-}
-ObjectRuleField.prototype.blur = function(){
-    var field = this;
-    return field.ui_field.blur.apply(field.ui_field, arguments);
-}
-ObjectRuleField.prototype.focus = function(){
-    var field = this;
-    return field.ui_field.blur.apply(field.ui_field, arguments);
-}
-
-
 ObjectRuleField.prototype.init = function() {
     var field = this;
 
-    field.fields = {};
+    field.checks.push(BasicVal.object(field.required));
 
-    field.any = field.validator.get("any", BasicVal.boolean(false));
+    field.fields = {};
 
     var fields_json = field.validator.get("fields", BasicVal.array(false));
     if (fields_json != null) {
@@ -412,14 +360,7 @@ ObjectRuleField.prototype.init = function() {
         }
     }
 
-    return field.validator.end();
-}
-
-ObjectRuleField.prototype.create_checks = function(){
-    var field = this;
-
-    field.checks.push(BasicVal.object(field.required));
-
+    field.any = field.validator.get("any", BasicVal.boolean(false));
     if(!field.any){
         field.checks.push(function(value,emit){
 
@@ -434,7 +375,9 @@ ObjectRuleField.prototype.create_checks = function(){
 
             return inner_error;
         });
-    }
+    }    
+
+    return field.validator.end();
 }
 
 if (typeof module != 'undefined') {
@@ -518,28 +461,12 @@ ArrayRuleField.prototype.rule_json_for_index = function(index){
     return rule_json;
 }
 
-ArrayRuleField.prototype.val = function(){
-    var field = this;
-    return field.ui_field.val.apply(field.ui_field, arguments);
-}
-ArrayRuleField.prototype.error = function(){
-    var field = this;
-    return field.ui_field.error.apply(field.ui_field, arguments);
-}
-ArrayRuleField.prototype.blur = function(){
-    var field = this;
-    return field.ui_field.blur.apply(field.ui_field, arguments);
-}
-ArrayRuleField.prototype.focus = function(){
-    var field = this;
-    return field.ui_field.blur.apply(field.ui_field, arguments);
-}
-
-
 ArrayRuleField.integer_regex = /^(\d+)$/;
 ArrayRuleField.interval_regex = /^(\d+)n(\+(\d+))?$/;
 ArrayRuleField.prototype.init = function() {
     var field = this;
+
+    field.checks.push(BasicVal.array(field.required));
 
     field.indices = {};
 
@@ -603,14 +530,6 @@ ArrayRuleField.prototype.init = function() {
         }
     }
 
-    return field.validator.end();
-}
-
-ArrayRuleField.prototype.create_checks = function(){
-    var field = this;
-
-    field.checks.push(BasicVal.array(field.required));
-
     field.checks.push(function(value,emit){
 
         var array_validator = new FieldVal(value);
@@ -625,6 +544,8 @@ ArrayRuleField.prototype.create_checks = function(){
 
         return array_error;
     });
+
+    return field.validator.end();
 }
 
 if (typeof module != 'undefined') {
@@ -653,23 +574,6 @@ ChoiceRuleField.prototype.create_ui = function(parent){
     return field.ui_field;
 }
 
-ChoiceRuleField.prototype.val = function(){
-    var field = this;
-    return field.ui_field.val.apply(field.ui_field, arguments);
-}
-ChoiceRuleField.prototype.error = function(){
-    var field = this;
-    return field.ui_field.error.apply(field.ui_field, arguments);
-}
-ChoiceRuleField.prototype.blur = function(){
-    var field = this;
-    return field.ui_field.blur.apply(field.ui_field, arguments);
-}
-ChoiceRuleField.prototype.focus = function(){
-    var field = this;
-    return field.ui_field.blur.apply(field.ui_field, arguments);
-}
-
 ChoiceRuleField.prototype.init = function() {
     var field = this;
 
@@ -677,16 +581,11 @@ ChoiceRuleField.prototype.init = function() {
     field.empty_message = field.validator.get("empty_message", BasicVal.string(false));
     field.choices = field.validator.get("choices", BasicVal.array(true));
 
-    return field.validator.end();
-}
-
-ChoiceRuleField.prototype.create_checks = function(){
-    var field = this;
-
-    field.checks.push(FieldVal.required(true))
-    if(field.choices){
+    if(field.choices!==undefined){
         field.checks.push(BasicVal.one_of(field.choices,{stop_on_error:false}));
     }
+
+    return field.validator.end();
 }
 
 if (typeof module != 'undefined') {
@@ -716,19 +615,14 @@ BooleanRuleField.prototype.create_ui = function(parent){
 BooleanRuleField.prototype.init = function() {
     var field = this;
 
-    field.equal_to = field.validator.get("equal_to", BasicVal.boolean(false));
-    
-    return field.validator.end();
-}
-
-BooleanRuleField.prototype.create_checks = function(){
-    var field = this;
-
     field.checks.push(BasicVal.boolean(field.required));
 
-    if(field.equal_to){
+    field.equal_to = field.validator.get("equal_to", BasicVal.boolean(false));
+    if(field.equal_to !== undefined){
         field.checks.push(BasicVal.equal_to(field.equal_to));
     }
+    
+    return field.validator.end();
 }
 
 if (typeof module != 'undefined') {
@@ -757,14 +651,10 @@ EmailRuleField.prototype.create_ui = function(parent){
 
 EmailRuleField.prototype.init = function() {
     var field = this;
-    
-    return field.validator.end();
-}
-
-EmailRuleField.prototype.create_checks = function(){
-    var field = this;
 
     field.checks.push(BasicVal.string(field.required), BasicVal.email());
+    
+    return field.validator.end();
 }
 
 if (typeof module != 'undefined') {

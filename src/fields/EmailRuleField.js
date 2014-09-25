@@ -21,14 +21,10 @@ EmailRuleField.prototype.create_ui = function(parent){
 
 EmailRuleField.prototype.init = function() {
     var field = this;
-    
-    return field.validator.end();
-}
-
-EmailRuleField.prototype.create_checks = function(){
-    var field = this;
 
     field.checks.push(BasicVal.string(field.required), BasicVal.email());
+    
+    return field.validator.end();
 }
 
 if (typeof module != 'undefined') {

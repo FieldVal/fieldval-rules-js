@@ -21,23 +21,6 @@ ChoiceRuleField.prototype.create_ui = function(parent){
     return field.ui_field;
 }
 
-ChoiceRuleField.prototype.val = function(){
-    var field = this;
-    return field.ui_field.val.apply(field.ui_field, arguments);
-}
-ChoiceRuleField.prototype.error = function(){
-    var field = this;
-    return field.ui_field.error.apply(field.ui_field, arguments);
-}
-ChoiceRuleField.prototype.blur = function(){
-    var field = this;
-    return field.ui_field.blur.apply(field.ui_field, arguments);
-}
-ChoiceRuleField.prototype.focus = function(){
-    var field = this;
-    return field.ui_field.blur.apply(field.ui_field, arguments);
-}
-
 ChoiceRuleField.prototype.init = function() {
     var field = this;
 
@@ -45,16 +28,11 @@ ChoiceRuleField.prototype.init = function() {
     field.empty_message = field.validator.get("empty_message", BasicVal.string(false));
     field.choices = field.validator.get("choices", BasicVal.array(true));
 
-    return field.validator.end();
-}
-
-ChoiceRuleField.prototype.create_checks = function(){
-    var field = this;
-
-    field.checks.push(FieldVal.required(true))
-    if(field.choices){
+    if(field.choices!==undefined){
         field.checks.push(BasicVal.one_of(field.choices,{stop_on_error:false}));
     }
+
+    return field.validator.end();
 }
 
 if (typeof module != 'undefined') {

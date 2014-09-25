@@ -22,19 +22,14 @@ BooleanRuleField.prototype.create_ui = function(parent){
 BooleanRuleField.prototype.init = function() {
     var field = this;
 
-    field.equal_to = field.validator.get("equal_to", BasicVal.boolean(false));
-    
-    return field.validator.end();
-}
-
-BooleanRuleField.prototype.create_checks = function(){
-    var field = this;
-
     field.checks.push(BasicVal.boolean(field.required));
 
-    if(field.equal_to){
+    field.equal_to = field.validator.get("equal_to", BasicVal.boolean(false));
+    if(field.equal_to !== undefined){
         field.checks.push(BasicVal.equal_to(field.equal_to));
     }
+    
+    return field.validator.end();
 }
 
 if (typeof module != 'undefined') {

@@ -22,8 +22,17 @@ TextRuleField.prototype.create_ui = function(parent){
 TextRuleField.prototype.init = function() {
     var field = this;
 
+    field.checks.push(BasicVal.string(field.required));
+
     field.min_length = field.validator.get("min_length", BasicVal.integer(false));
+    if(field.min_length !== undefined){
+        field.checks.push(BasicVal.min_length(field.min_length,{stop_on_error:false}));
+    }
+
     field.max_length = field.validator.get("max_length", BasicVal.integer(false));
+    if(field.max_length !== undefined){
+        field.checks.push(BasicVal.max_length(field.max_length,{stop_on_error:false}));
+    }
 
     field.phrase = field.validator.get("phrase", BasicVal.string(false));
     field.equal_to = field.validator.get("equal_to", BasicVal.string(false));
@@ -33,19 +42,6 @@ TextRuleField.prototype.init = function() {
     field.query = field.validator.get("query", BasicVal.string(false));
     
     return field.validator.end();
-}
-
-TextRuleField.prototype.create_checks = function(){
-    var field = this;
-
-    field.checks.push(BasicVal.string(field.required));
-
-    if(field.min_length){
-        field.checks.push(BasicVal.min_length(field.min_length,{stop_on_error:false}));
-    }
-    if(field.max_length){
-        field.checks.push(BasicVal.max_length(field.max_length,{stop_on_error:false}));
-    }
 }
 
 if (typeof module != 'undefined') {

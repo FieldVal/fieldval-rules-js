@@ -54,8 +54,6 @@ RuleField.create_field = function(json) {
         return [init_res, null];
     }
 
-    field.create_checks();
-
     return [null, field];
 }
 

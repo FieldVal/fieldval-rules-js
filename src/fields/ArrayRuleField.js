@@ -76,28 +76,12 @@ ArrayRuleField.prototype.rule_json_for_index = function(index){
     return rule_json;
 }
 
-ArrayRuleField.prototype.val = function(){
-    var field = this;
-    return field.ui_field.val.apply(field.ui_field, arguments);
-}
-ArrayRuleField.prototype.error = function(){
-    var field = this;
-    return field.ui_field.error.apply(field.ui_field, arguments);
-}
-ArrayRuleField.prototype.blur = function(){
-    var field = this;
-    return field.ui_field.blur.apply(field.ui_field, arguments);
-}
-ArrayRuleField.prototype.focus = function(){
-    var field = this;
-    return field.ui_field.blur.apply(field.ui_field, arguments);
-}
-
-
 ArrayRuleField.integer_regex = /^(\d+)$/;
 ArrayRuleField.interval_regex = /^(\d+)n(\+(\d+))?$/;
 ArrayRuleField.prototype.init = function() {
     var field = this;
+
+    field.checks.push(BasicVal.array(field.required));
 
     field.indices = {};
 
@@ -161,14 +145,6 @@ ArrayRuleField.prototype.init = function() {
         }
     }
 
-    return field.validator.end();
-}
-
-ArrayRuleField.prototype.create_checks = function(){
-    var field = this;
-
-    field.checks.push(BasicVal.array(field.required));
-
     field.checks.push(function(value,emit){
 
         var array_validator = new FieldVal(value);
@@ -183,6 +159,8 @@ ArrayRuleField.prototype.create_checks = function(){
 
         return array_error;
     });
+
+    return field.validator.end();
 }
 
 if (typeof module != 'undefined') {

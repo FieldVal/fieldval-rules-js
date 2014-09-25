@@ -58,30 +58,12 @@ ObjectRuleField.prototype.create_ui = function(parent, form){
     return field.ui_field;
 }
 
-ObjectRuleField.prototype.val = function(){
-    var field = this;
-    return field.ui_field.val.apply(field.ui_field, arguments);
-}
-ObjectRuleField.prototype.error = function(){
-    var field = this;
-    return field.ui_field.error.apply(field.ui_field, arguments);
-}
-ObjectRuleField.prototype.blur = function(){
-    var field = this;
-    return field.ui_field.blur.apply(field.ui_field, arguments);
-}
-ObjectRuleField.prototype.focus = function(){
-    var field = this;
-    return field.ui_field.blur.apply(field.ui_field, arguments);
-}
-
-
 ObjectRuleField.prototype.init = function() {
     var field = this;
 
-    field.fields = {};
+    field.checks.push(BasicVal.object(field.required));
 
-    field.any = field.validator.get("any", BasicVal.boolean(false));
+    field.fields = {};
 
     var fields_json = field.validator.get("fields", BasicVal.array(false));
     if (fields_json != null) {
@@ -110,14 +92,7 @@ ObjectRuleField.prototype.init = function() {
         }
     }
 
-    return field.validator.end();
-}
-
-ObjectRuleField.prototype.create_checks = function(){
-    var field = this;
-
-    field.checks.push(BasicVal.object(field.required));
-
+    field.any = field.validator.get("any", BasicVal.boolean(false));
     if(!field.any){
         field.checks.push(function(value,emit){
 
@@ -132,7 +107,9 @@ ObjectRuleField.prototype.create_checks = function(){
 
             return inner_error;
         });
-    }
+    }    
+
+    return field.validator.end();
 }
 
 if (typeof module != 'undefined') {
