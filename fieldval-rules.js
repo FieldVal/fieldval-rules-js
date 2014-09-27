@@ -45,7 +45,7 @@ RuleField.add_field_type = function(field_type_data){
     }
 }
 
-RuleField.create_field = function(json) {
+RuleField.create_field = function(json, options) {
     var field = null;
 
     var error = BasicVal.object(true).check(json); 
@@ -54,6 +54,10 @@ RuleField.create_field = function(json) {
     }
 
     var validator = new FieldVal(json);
+
+    if(options && options.need_name!==undefined && options.need_name===true){
+        validator.get("name", BasicVal.string(true));
+    } 
 
     var type = validator.get("type", BasicVal.string(true), BasicVal.one_of(RuleField.types));
 
@@ -342,7 +346,12 @@ ObjectRuleField.prototype.init = function() {
         for (var i = 0; i < fields_json.length; i++) {
             var field_json = fields_json[i];
 
-            var field_creation = RuleField.create_field(field_json);
+            var field_creation = RuleField.create_field(
+                field_json,
+                {
+                    need_name: true
+                }
+            );
             var err = field_creation[0];
             var nested_field = field_creation[1];
 
@@ -356,7 +365,7 @@ ObjectRuleField.prototype.init = function() {
 
         var fields_error = fields_validator.end();
         if(fields_error!=null){
-            field.validator.invalid("indices",fields_error);
+            field.validator.invalid("fields",fields_error);
         }
     }
 
@@ -471,6 +480,8 @@ ArrayRuleField.prototype.init = function() {
     field.indices = {};
 
     var indices_json = field.validator.get("indices", BasicVal.object(false));
+
+    console.log("indices_json ",indices_json);
     if (indices_json != null) {
         var indices_validator = new FieldVal(null);
 
@@ -691,10 +702,10 @@ ValidationRule.errors = {
 ValidationRule.RuleField = RuleField;
 
 //Performs validation required for saving
-ValidationRule.prototype.init = function(json) {
+ValidationRule.prototype.init = function(json, options) {
     var vr = this;
 
-    var field_res = RuleField.create_field(json);
+    var field_res = RuleField.create_field(json, options);
 
     //There was an error creating the field
     if(field_res[0]){

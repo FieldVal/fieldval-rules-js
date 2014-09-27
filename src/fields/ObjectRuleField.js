@@ -74,7 +74,12 @@ ObjectRuleField.prototype.init = function() {
         for (var i = 0; i < fields_json.length; i++) {
             var field_json = fields_json[i];
 
-            var field_creation = RuleField.create_field(field_json);
+            var field_creation = RuleField.create_field(
+                field_json,
+                {
+                    need_name: true
+                }
+            );
             var err = field_creation[0];
             var nested_field = field_creation[1];
 
@@ -88,7 +93,7 @@ ObjectRuleField.prototype.init = function() {
 
         var fields_error = fields_validator.end();
         if(fields_error!=null){
-            field.validator.invalid("indices",fields_error);
+            field.validator.invalid("fields",fields_error);
         }
     }
 

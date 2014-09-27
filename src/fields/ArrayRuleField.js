@@ -86,6 +86,8 @@ ArrayRuleField.prototype.init = function() {
     field.indices = {};
 
     var indices_json = field.validator.get("indices", BasicVal.object(false));
+
+    console.log("indices_json ",indices_json);
     if (indices_json != null) {
         var indices_validator = new FieldVal(null);
 

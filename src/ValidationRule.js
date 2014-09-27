@@ -28,10 +28,10 @@ ValidationRule.errors = {
 ValidationRule.RuleField = RuleField;
 
 //Performs validation required for saving
-ValidationRule.prototype.init = function(json) {
+ValidationRule.prototype.init = function(json, options) {
     var vr = this;
 
-    var field_res = RuleField.create_field(json);
+    var field_res = RuleField.create_field(json, options);
 
     //There was an error creating the field
     if(field_res[0]){

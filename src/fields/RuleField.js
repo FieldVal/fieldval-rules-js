@@ -28,7 +28,7 @@ RuleField.add_field_type = function(field_type_data){
     }
 }
 
-RuleField.create_field = function(json) {
+RuleField.create_field = function(json, options) {
     var field = null;
 
     var error = BasicVal.object(true).check(json); 
@@ -37,6 +37,10 @@ RuleField.create_field = function(json) {
     }
 
     var validator = new FieldVal(json);
+
+    if(options && options.need_name!==undefined && options.need_name===true){
+        validator.get("name", BasicVal.string(true));
+    } 
 
     var type = validator.get("type", BasicVal.string(true), BasicVal.one_of(RuleField.types));
 
