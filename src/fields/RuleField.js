@@ -39,7 +39,16 @@ RuleField.create_field = function(json, options) {
     var validator = new FieldVal(json);
 
     if(options && options.need_name!==undefined && options.need_name===true){
-        validator.get("name", BasicVal.string(true));
+        var name_checks = [BasicVal.string(true)]
+        if(options.existing_names){
+            name_checks.push(BasicVal.not_one_of(options.existing_names, {
+                error: {
+                    "error": 1000,
+                    "error_message": "Name already used"
+                }
+            }));
+        }
+        validator.get("name", name_checks);
     } 
 
     var type = validator.get("type", BasicVal.string(true), BasicVal.one_of(RuleField.types));

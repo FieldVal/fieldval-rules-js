@@ -77,7 +77,8 @@ ObjectRuleField.prototype.init = function() {
             var field_creation = RuleField.create_field(
                 field_json,
                 {
-                    need_name: true
+                    need_name: true,
+                    existing_names: field.fields
                 }
             );
             var err = field_creation[0];
