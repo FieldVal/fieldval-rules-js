@@ -9,8 +9,8 @@
     "dependencies": {
         "tracer" : "*",
         "extend" : "MarcusLongmuir/extend",
-        "fieldval" : "FieldVal/fieldval-js",
-        "fieldval-basicval" : "FieldVal/fieldval-basicval-js"
+        "fieldval" : "FieldVal/fieldval-js#develop",
+        "fieldval-basicval" : "FieldVal/fieldval-basicval-js#develop"
     },
     "devDependencies": {
         "gulp-imports" : "MarcusLongmuir/gulp-imports",
