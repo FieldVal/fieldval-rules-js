@@ -40,6 +40,7 @@ ValidationRule.prototype.init = function(json, options) {
 
     //Keep the created field
     vr.field = field_res[1];
+    return null;
 }
 
 ValidationRule.prototype.create_form = function(){

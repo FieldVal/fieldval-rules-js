@@ -58,7 +58,6 @@ RuleField.create_field = function(json, options) {
         var field_class = field_type_data.class;
         field = new field_class(json, validator)
     } else {
-        //Create a generic field to create the correct errors for the "RuleField" fields
         return [validator.end(), null];
     }
 

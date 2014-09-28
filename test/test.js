@@ -56,7 +56,7 @@ describe('ValidationRule', function() {
                     }
                 ]
             });
-            assert.strictEqual(init_output,undefined);
+            assert.strictEqual(init_output,null);
 
             var test_object = {
                 first_name: "Marcus",
@@ -140,7 +140,7 @@ describe('ValidationRule', function() {
                 maximum: 20
             }
             var init_result = vr.init(type_object);
-            assert.strictEqual(init_result,undefined);
+            assert.strictEqual(init_result,null);
             
             var error = vr.validate(57);
             assert.deepEqual(
@@ -168,13 +168,13 @@ describe('ValidationRule', function() {
                 }
             }
             var init_result = vr.init(type_object);
-            assert.strictEqual(init_result,undefined);
+            assert.strictEqual(init_result,null);
             
             var error = vr.validate([
                 "One",2,"Three"
             ]);
             assert.deepEqual(
-                undefined,
+                null,
                 error
             );
 
@@ -198,13 +198,13 @@ describe('ValidationRule', function() {
                 }
             }
             var init_result = vr.init(type_object);
-            assert.strictEqual(init_result,undefined);
+            assert.strictEqual(init_result,null);
             
             var error = vr.validate([
                 "One",true,3,"Four",true,6,"Seven",false,9
             ]);
             assert.deepEqual(
-                undefined,
+                null,
                 error
             );
 
