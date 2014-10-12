@@ -32,7 +32,7 @@ ArrayRuleField.prototype.create_ui = function(parent, form){
         }
         return original_remove_field.call(field.ui_field, inner_field);
     }
-    field.container = field.ui_field.container;
+    field.element = field.ui_field.element;
     parent.add_field(field.name, field);
     return field.ui_field;
 }
@@ -158,6 +158,7 @@ ArrayRuleField.prototype.init = function() {
         }
 
         var array_error = array_validator.end();
+        console.log("array_error ",array_error);
 
         return array_error;
     });

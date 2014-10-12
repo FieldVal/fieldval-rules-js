@@ -88,6 +88,8 @@ RuleField.create_field = function(json, options) {
 
 RuleField.prototype.validate_as_field = function(name, validator){
     var field = this;
+
+    console.log("validate_as_field ",name);
     
     var value = validator.get(name, field.checks);
 
@@ -198,7 +200,7 @@ TextRuleField.prototype.create_ui = function(parent){
     var field = this;
 
     field.ui_field = new TextField(field.display_name || field.name, field.json);
-    field.container = field.ui_field.container;
+    field.element = field.ui_field.element;
     parent.add_field(field.name, field);
     return field.ui_field;
 }
@@ -247,7 +249,7 @@ NumberRuleField.prototype.create_ui = function(parent){
     var field = this;
 
     field.ui_field = new TextField(field.display_name || field.name, field.json);
-    field.container = field.ui_field.container;
+    field.element = field.ui_field.element;
     parent.add_field(field.name, field);
     return field.ui_field;
 }
@@ -314,7 +316,7 @@ ObjectRuleField.prototype.create_ui = function(parent, form){
                 return ui_field;
             }
         }
-        field.container = field.ui_field.container;
+        field.element = field.ui_field.element;
     } else {
 
         if(form){
@@ -328,7 +330,7 @@ ObjectRuleField.prototype.create_ui = function(parent, form){
             inner_field.create_ui(field.ui_field);
         }
 
-        field.container = field.ui_field.container;
+        field.element = field.ui_field.element;
     }
 
     if(!form){
@@ -435,7 +437,7 @@ ArrayRuleField.prototype.create_ui = function(parent, form){
         }
         return original_remove_field.call(field.ui_field, inner_field);
     }
-    field.container = field.ui_field.container;
+    field.element = field.ui_field.element;
     parent.add_field(field.name, field);
     return field.ui_field;
 }
@@ -561,6 +563,7 @@ ArrayRuleField.prototype.init = function() {
         }
 
         var array_error = array_validator.end();
+        console.log("array_error ",array_error);
 
         return array_error;
     });
@@ -589,7 +592,7 @@ ChoiceRuleField.prototype.create_ui = function(parent){
     field.json.choices = field.choices;
 
     field.ui_field = new ChoiceField(field.display_name || field.name, field.json);
-    field.container = field.ui_field.container;
+    field.element = field.ui_field.element;
     parent.add_field(field.name, field);
     return field.ui_field;
 }
@@ -627,7 +630,7 @@ BooleanRuleField.prototype.create_ui = function(parent){
     var field = this;
 
     field.ui_field = new BooleanField(field.display_name || field.name, field.json);
-    field.container = field.ui_field.container;
+    field.element = field.ui_field.element;
     parent.add_field(field.name, field);
     return field.ui_field;
 }
@@ -664,7 +667,7 @@ EmailRuleField.prototype.create_ui = function(parent){
     var field = this;
 
     field.ui_field = new TextField(field.display_name || field.name, field.json);
-    field.container = field.ui_field.container;
+    field.element = field.ui_field.element;
     parent.add_field(field.name, field);
     return field.ui_field;
 }

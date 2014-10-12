@@ -34,7 +34,7 @@ ObjectRuleField.prototype.create_ui = function(parent, form){
                 return ui_field;
             }
         }
-        field.container = field.ui_field.container;
+        field.element = field.ui_field.element;
     } else {
 
         if(form){
@@ -48,7 +48,7 @@ ObjectRuleField.prototype.create_ui = function(parent, form){
             inner_field.create_ui(field.ui_field);
         }
 
-        field.container = field.ui_field.container;
+        field.element = field.ui_field.element;
     }
 
     if(!form){

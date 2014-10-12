@@ -16,7 +16,7 @@ ChoiceRuleField.prototype.create_ui = function(parent){
     field.json.choices = field.choices;
 
     field.ui_field = new ChoiceField(field.display_name || field.name, field.json);
-    field.container = field.ui_field.container;
+    field.element = field.ui_field.element;
     parent.add_field(field.name, field);
     return field.ui_field;
 }
