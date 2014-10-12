@@ -88,8 +88,6 @@ RuleField.create_field = function(json, options) {
 
 RuleField.prototype.validate_as_field = function(name, validator){
     var field = this;
-
-    console.log("validate_as_field ",name);
     
     var value = validator.get(name, field.checks);
 
@@ -492,7 +490,6 @@ ArrayRuleField.prototype.init = function() {
 
     var indices_json = field.validator.get("indices", BasicVal.object(false));
 
-    console.log("indices_json ",indices_json);
     if (indices_json != null) {
         var indices_validator = new FieldVal(null);
 
@@ -563,7 +560,6 @@ ArrayRuleField.prototype.init = function() {
         }
 
         var array_error = array_validator.end();
-        console.log("array_error ",array_error);
 
         return array_error;
     });

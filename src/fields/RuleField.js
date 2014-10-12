@@ -71,8 +71,6 @@ RuleField.create_field = function(json, options) {
 
 RuleField.prototype.validate_as_field = function(name, validator){
     var field = this;
-
-    console.log("validate_as_field ",name);
     
     var value = validator.get(name, field.checks);
 

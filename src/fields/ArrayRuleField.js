@@ -87,7 +87,6 @@ ArrayRuleField.prototype.init = function() {
 
     var indices_json = field.validator.get("indices", BasicVal.object(false));
 
-    console.log("indices_json ",indices_json);
     if (indices_json != null) {
         var indices_validator = new FieldVal(null);
 
@@ -158,7 +157,6 @@ ArrayRuleField.prototype.init = function() {
         }
 
         var array_error = array_validator.end();
-        console.log("array_error ",array_error);
 
         return array_error;
     });
