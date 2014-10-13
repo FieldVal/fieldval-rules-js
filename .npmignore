@@ -3,7 +3,6 @@ docs
 docs_src
 examples
 node_modules
-src
 test
 .gitignore
 .travis.yml
