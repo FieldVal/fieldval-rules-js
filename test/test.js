@@ -1,5 +1,4 @@
 var assert = require("assert")
-var logger = require('tracer').console();
 var ValidationRule = require('../src/ValidationRule')
 
 describe('ValidationRule', function() {
@@ -281,8 +280,6 @@ describe('ValidationRule', function() {
 
             var error = object_rule_field.validate(my_data);
 
-            logger.log("\n\n\n\n\n\n");
-            logger.log(JSON.stringify(error,null,4));
 
             var expected_error = {
                 "missing": {
@@ -339,7 +336,6 @@ describe('ValidationRule', function() {
                 "error": 0
             }
 
-            logger.log("\n\n\n\n\n\n");
             assert.deepEqual(
                 expected_error,
                 error
@@ -353,8 +349,6 @@ describe('ValidationRule', function() {
                 expected_error,
                 validator.end()
             )
-
-            logger.log("DIGGING NOW");
             
             var path_to_third_inner = ["first_inner","second_inner","third_inner"];
             var dug = validator.dig(path_to_third_inner);
@@ -367,12 +361,6 @@ describe('ValidationRule', function() {
             validator.invalid(path_to_third_inner, dug.end());
 
             var final_error = validator.end();
-
-
-
-
-
-            logger.log(JSON.stringify(final_error,null,4));
 
             var final_expected_error = {
                 "missing": {
