@@ -1,9 +1,19 @@
 {
-  "name": "fieldval-rules",
-  "version": "0.0.1",
-  "private": true,
-  "dependencies": {
-  	"jquery":"*",
-  	"fieldval":"*"
-  }
+	"name": "fieldval-rules",
+	"version": "0.1.3",
+	"main": "fieldval-rules.js",
+	"ignore": [
+		"bower_components",
+		"docs",
+		"docs_src",
+		"examples",
+		"node_modules",
+		"src",
+		"gulpfile.js",
+		".gitignore"
+	],
+	"devDependencies": {
+		"fieldval":"0.1.2",
+		"jquery": "1.11.1"
+	}
 }
