@@ -1,14 +1,14 @@
 if((typeof require) === 'function'){
     FieldVal = require('fieldval')
     BasicVal = require('fieldval-basicval')
-    RuleField = require('./fields/RuleField');
+    FVRuleField = require('./fields/FVRuleField');
 }
 
-function ValidationRule() {
+function FVRule() {
     var vr = this;
 }
 
-ValidationRule.errors = {
+FVRule.errors = {
     interval_conflict: function(this_interval, existing_interval) {
         return {
             error: 501,
@@ -25,13 +25,13 @@ ValidationRule.errors = {
     }
 }
 
-ValidationRule.RuleField = RuleField;
+FVRule.FVRuleField = FVRuleField;
 
 //Performs validation required for saving
-ValidationRule.prototype.init = function(json, options) {
+FVRule.prototype.init = function(json, options) {
     var vr = this;
 
-    var field_res = RuleField.create_field(json, options);
+    var field_res = FVRuleField.create_field(json, options);
 
     //There was an error creating the field
     if(field_res[0]){
@@ -43,7 +43,7 @@ ValidationRule.prototype.init = function(json, options) {
     return null;
 }
 
-ValidationRule.prototype.create_form = function(){
+FVRule.prototype.create_form = function(){
     var vr = this;
 
     if(FVForm){
@@ -53,7 +53,7 @@ ValidationRule.prototype.create_form = function(){
     }
 }
 
-ValidationRule.prototype.validate = function(value) {
+FVRule.prototype.validate = function(value) {
     var vr = this;
 
     var error = vr.field.validate(value);
@@ -62,46 +62,46 @@ ValidationRule.prototype.validate = function(value) {
 }
 
 if (typeof module != 'undefined') {
-    module.exports = ValidationRule;
+    module.exports = FVRule;
 }
 
-RuleField.add_field_type({
+FVRuleField.add_field_type({
     name: 'text',
     display_name: 'Text',
-    class: (typeof TextRuleField) !== 'undefined' ? TextRuleField : require('./fields/TextRuleField')
+    class: (typeof FVTextRuleField) !== 'undefined' ? FVTextRuleField : require('./fields/FVTextRuleField')
 });
-RuleField.add_field_type({
+FVRuleField.add_field_type({
     name: 'string',
     display_name: 'String',
-    class: (typeof TextRuleField) !== 'undefined' ? TextRuleField : require('./fields/TextRuleField')
+    class: (typeof FVTextRuleField) !== 'undefined' ? FVTextRuleField : require('./fields/FVTextRuleField')
 });
-RuleField.add_field_type({
+FVRuleField.add_field_type({
     name: 'boolean',
     display_name: 'Boolean',
-    class: (typeof BooleanRuleField) !== 'undefined' ? BooleanRuleField : require('./fields/BooleanRuleField')
+    class: (typeof FVBooleanRuleField) !== 'undefined' ? FVBooleanRuleField : require('./fields/FVBooleanRuleField')
 });
-RuleField.add_field_type({
+FVRuleField.add_field_type({
     name: 'number',
     display_name: 'Number',
-    class: (typeof NumberRuleField) !== 'undefined' ? NumberRuleField : require('./fields/NumberRuleField')
+    class: (typeof FVNumberRuleField) !== 'undefined' ? FVNumberRuleField : require('./fields/FVNumberRuleField')
 });
-RuleField.add_field_type({
+FVRuleField.add_field_type({
     name: 'object',
     display_name: 'Object',
-    class: (typeof ObjectRuleField) !== 'undefined' ? ObjectRuleField : require('./fields/ObjectRuleField')
+    class: (typeof FVObjectRuleField) !== 'undefined' ? FVObjectRuleField : require('./fields/FVObjectRuleField')
 });
-RuleField.add_field_type({
+FVRuleField.add_field_type({
     name: 'array',
     display_name: 'Array',
-    class: (typeof ArrayRuleField) !== 'undefined' ? ArrayRuleField : require('./fields/ArrayRuleField')
+    class: (typeof FVArrayRuleField) !== 'undefined' ? FVArrayRuleField : require('./fields/FVArrayRuleField')
 });
-RuleField.add_field_type({
+FVRuleField.add_field_type({
     name: 'choice',
     display_name: 'Choice',
-    class: (typeof ChoiceRuleField) !== 'undefined' ? ChoiceRuleField : require('./fields/ChoiceRuleField')
+    class: (typeof FVChoiceRuleField) !== 'undefined' ? FVChoiceRuleField : require('./fields/FVChoiceRuleField')
 });
-RuleField.add_field_type({
+FVRuleField.add_field_type({
     name: 'email',
     display_name: 'Email',
-    class: (typeof EmailRuleField) !== 'undefined' ? EmailRuleField : require('./fields/EmailRuleField')
+    class: (typeof FVEmailRuleField) !== 'undefined' ? FVEmailRuleField : require('./fields/FVEmailRuleField')
 });

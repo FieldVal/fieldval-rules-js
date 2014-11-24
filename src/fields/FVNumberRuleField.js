@@ -1,25 +1,25 @@
 if((typeof require) === 'function'){
     extend = require('extend')
-    BasicRuleField = require('./BasicRuleField');
+    FVBasicRuleField = require('./FVBasicRuleField');
 }
-extend(NumberRuleField, BasicRuleField);
+extend(FVNumberRuleField, FVBasicRuleField);
 
-function NumberRuleField(json, validator) {
+function FVNumberRuleField(json, validator) {
     var field = this;
 
-    NumberRuleField.superConstructor.call(this, json, validator);
+    FVNumberRuleField.superConstructor.call(this, json, validator);
 }
 
-NumberRuleField.prototype.create_ui = function(parent){
+FVNumberRuleField.prototype.create_ui = function(parent){
     var field = this;
 
-    field.ui_field = new TextField(field.display_name || field.name, field.json);
+    field.ui_field = new FVTextField(field.display_name || field.name, field.json);
     field.element = field.ui_field.element;
     parent.add_field(field.name, field);
     return field.ui_field;
 }
 
-NumberRuleField.prototype.init = function() {
+FVNumberRuleField.prototype.init = function() {
     var field = this;
 
     field.checks.push(BasicVal.number(field.required));
@@ -43,5 +43,5 @@ NumberRuleField.prototype.init = function() {
 }
 
 if (typeof module != 'undefined') {
-    module.exports = NumberRuleField;
+    module.exports = FVNumberRuleField;
 }

@@ -1,6 +1,6 @@
 {
     "name": "fieldval-rules",
-    "version": "0.1.4",
+    "version": "0.2.0",
     "description": "fieldval-rules",
     "main": "src/ValidationRule.js",
     "scripts": {
@@ -8,12 +8,13 @@
     },
     "dependencies": {
         "extend" : "MarcusLongmuir/extend",
-        "fieldval" : "^0.1.0",
+        "fieldval" : "^0.1.5",
         "fieldval-basicval" : "^0.1.0",
         "fieldval-dateval" : "^0.1.0"
     },
     "devDependencies": {
         "mocha": "*",
+        "fieldval-ui": "0.2.0",
         "gulp-imports" : "MarcusLongmuir/gulp-imports",
         "gulp": "^3.6.1",
         "gulp-util": "^2.2.14",

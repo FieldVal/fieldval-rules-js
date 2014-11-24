@@ -1,13 +1,13 @@
 var assert = require("assert")
-var ValidationRule = require('../src/ValidationRule')
+var FVRule = require('../src/FVRule')
 
-describe('ValidationRule', function() {
+describe('FVRule', function() {
 
     describe('Construction', function() {
 
-        it('should create a ValidationRule for a basic field', function(done) {
+        it('should create a FVRule for a basic field', function(done) {
 
-        	var vr = new ValidationRule();
+        	var vr = new FVRule();
         	var init_output = vr.init({
                 description: "My description",
                 name: "person",
@@ -108,8 +108,8 @@ describe('ValidationRule', function() {
             done();
         });
 
-        it('should validate a ValidationRule', function(done) {
-            var vr = new ValidationRule();
+        it('should validate a FVRule', function(done) {
+            var vr = new FVRule();
             var type_object = {
                 "type": "string",
                 maximum: 20//maximum isn't a valid field for a "string" field
@@ -132,8 +132,8 @@ describe('ValidationRule', function() {
             done();
         });
 
-		it('should create a ValidationRule for a single field', function(done) {
-            var vr = new ValidationRule();
+		it('should create a FVRule for a single field', function(done) {
+            var vr = new FVRule();
             var type_object = {
                 "type": "number",
                 maximum: 20
@@ -153,8 +153,8 @@ describe('ValidationRule', function() {
             done();
         });
 
-        it('should create a ValidationRule for an array field with 1 absolute index', function(done) {
-            var vr = new ValidationRule();
+        it('should create a FVRule for an array field with 1 absolute index', function(done) {
+            var vr = new FVRule();
             var type_object = {
                 "type": "array",
                 "indices": {
@@ -180,8 +180,8 @@ describe('ValidationRule', function() {
             done();
         });
 
-        it('should create a ValidationRule for an array field with an interval rule', function(done) {
-            var vr = new ValidationRule();
+        it('should create a FVRule for an array field with an interval rule', function(done) {
+            var vr = new FVRule();
             var type_object = {
                 "type": "array",
                 "indices": {
@@ -260,7 +260,7 @@ describe('ValidationRule', function() {
                 ]
             }
 
-            var ObjectRuleField = ValidationRule.RuleField.types['object'].class;
+            var ObjectRuleField = FVRule.FVRuleField.types['object'].class;
             var object_rule_field = new ObjectRuleField(type_object);
             object_rule_field.init();
             

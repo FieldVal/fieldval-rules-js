@@ -12,7 +12,7 @@ var mocha = require('gulp-mocha');
 
 gulp.task('js', function(){
     return gulp.src([
-        'src/ValidationRule_bower.js'
+        'src/FVRule_bower.js'
     ])
     .pipe(gulpImports())
     .pipe(concat('fieldval-rules.js'))

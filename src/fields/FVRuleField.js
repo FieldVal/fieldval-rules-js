@@ -1,4 +1,4 @@
-function RuleField(json, validator) {
+function FVRuleField(json, validator) {
     var field = this;
 
     field.json = json;
@@ -19,16 +19,16 @@ function RuleField(json, validator) {
     }
 }
 
-RuleField.types = {};
+FVRuleField.types = {};
 
-RuleField.add_field_type = function(field_type_data){
-    RuleField.types[field_type_data.name] = {
+FVRuleField.add_field_type = function(field_type_data){
+    FVRuleField.types[field_type_data.name] = {
         display_name: field_type_data.display_name,
         class: field_type_data.class
     }
 }
 
-RuleField.create_field = function(json, options) {
+FVRuleField.create_field = function(json, options) {
     var field = null;
 
     var error = BasicVal.object(true).check(json); 
@@ -37,9 +37,16 @@ RuleField.create_field = function(json, options) {
     }
 
     var validator = new FieldVal(json);
+    var name_checks = [BasicVal.string(false)];
 
-    if(options && options.need_name!==undefined && options.need_name===true){
-        var name_checks = [BasicVal.string(true)]
+    if(options){
+        if(options.need_name!==undefined && options.need_name===true){
+            name_checks.push(BasicVal.string(true));
+        }
+        if(options.allow_dots!==undefined && options.allow_dots===false){
+            name_checks.push(BasicVal.does_not_contain(["."]));
+        }
+
         if(options.existing_names){
             name_checks.push(BasicVal.not_one_of(options.existing_names, {
                 error: {
@@ -48,13 +55,14 @@ RuleField.create_field = function(json, options) {
                 }
             }));
         }
-        validator.get("name", name_checks);
-    } 
+    }
 
-    var type = validator.get("type", BasicVal.string(true), BasicVal.one_of(RuleField.types));
+    validator.get("name", name_checks);
+
+    var type = validator.get("type", BasicVal.string(true), BasicVal.one_of(FVRuleField.types));
 
     if(type){
-        var field_type_data = RuleField.types[type];
+        var field_type_data = FVRuleField.types[type];
         var field_class = field_type_data.class;
         field = new field_class(json, validator)
     } else {
@@ -69,7 +77,7 @@ RuleField.create_field = function(json, options) {
     return [null, field];
 }
 
-RuleField.prototype.validate_as_field = function(name, validator){
+FVRuleField.prototype.validate_as_field = function(name, validator){
     var field = this;
     
     var value = validator.get(name, field.checks);
@@ -77,7 +85,7 @@ RuleField.prototype.validate_as_field = function(name, validator){
     return value;
 }
 
-RuleField.prototype.validate = function(value){
+FVRuleField.prototype.validate = function(value){
     var field = this;
 
     var validator = new FieldVal(null);
@@ -90,18 +98,18 @@ RuleField.prototype.validate = function(value){
     return validator.end();
 }
 
-RuleField.prototype.make_nested = function(){}
-RuleField.prototype.init = function(){}
-RuleField.prototype.remove = function(){}
-RuleField.prototype.view_mode = function(){}
-RuleField.prototype.edit_mode = function(){}
-RuleField.prototype.change_name = function(name) {}
-RuleField.prototype.disable = function() {}
-RuleField.prototype.enable = function() {}
-RuleField.prototype.focus = function() {}
-RuleField.prototype.blur = function() {}
-RuleField.prototype.val = function(set_val) {}
+FVRuleField.prototype.make_nested = function(){}
+FVRuleField.prototype.init = function(){}
+FVRuleField.prototype.remove = function(){}
+FVRuleField.prototype.view_mode = function(){}
+FVRuleField.prototype.edit_mode = function(){}
+FVRuleField.prototype.change_name = function(name) {}
+FVRuleField.prototype.disable = function() {}
+FVRuleField.prototype.enable = function() {}
+FVRuleField.prototype.focus = function() {}
+FVRuleField.prototype.blur = function() {}
+FVRuleField.prototype.val = function(set_val) {}
 
 if (typeof module != 'undefined') {
-    module.exports = RuleField;
+    module.exports = FVRuleField;
 }

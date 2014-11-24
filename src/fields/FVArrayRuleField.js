@@ -1,14 +1,14 @@
 if((typeof require) === 'function'){
     extend = require('extend')
-    BasicRuleField = require('./BasicRuleField');
-    ValidationRule = require('../ValidationRule');
+    FVBasicRuleField = require('./FVBasicRuleField');
+    FVRule = require('../FVRule');
 }
-extend(ArrayRuleField, BasicRuleField);
+extend(FVArrayRuleField, FVBasicRuleField);
 
-function ArrayRuleField(json, validator) {
+function FVArrayRuleField(json, validator) {
     var field = this;
 
-    ArrayRuleField.superConstructor.call(this, json, validator);
+    FVArrayRuleField.superConstructor.call(this, json, validator);
 
     field.rules = [];
     field.fields = [];
@@ -16,10 +16,10 @@ function ArrayRuleField(json, validator) {
     field.interval_offsets = [];
 }
 
-ArrayRuleField.prototype.create_ui = function(parent, form){
+FVArrayRuleField.prototype.create_ui = function(parent, form){
     var field = this;
 
-    field.ui_field = new ArrayField(field.display_name || field.name, field.json);
+    field.ui_field = new FVArrayField(field.display_name || field.name, field.json);
     field.ui_field.new_field = function(index){
         return field.new_field(index);
     }
@@ -37,7 +37,7 @@ ArrayRuleField.prototype.create_ui = function(parent, form){
     return field.ui_field;
 }
 
-ArrayRuleField.prototype.new_field = function(index){
+FVArrayRuleField.prototype.new_field = function(index){
     var field = this;
 
     var rule = field.rule_for_index(index);
@@ -45,13 +45,13 @@ ArrayRuleField.prototype.new_field = function(index){
     return rule.create_ui(field.ui_field);
 }
 
-ArrayRuleField.prototype.rule_for_index = function(index){
+FVArrayRuleField.prototype.rule_for_index = function(index){
     var field = this;
 
     var rule = field.rules[index];
     if(!rule){
         var rule_json = field.rule_json_for_index(index);
-        var field_creation = RuleField.create_field(rule_json);
+        var field_creation = FVRuleField.create_field(rule_json);
         var err = field_creation[0];
         rule = field_creation[1];
         field.rules[index] = rule;
@@ -59,7 +59,7 @@ ArrayRuleField.prototype.rule_for_index = function(index){
     return rule;
 }
 
-ArrayRuleField.prototype.rule_json_for_index = function(index){
+FVArrayRuleField.prototype.rule_json_for_index = function(index){
     var field = this;
 
     var rule_json = field.indices[index];
@@ -76,9 +76,9 @@ ArrayRuleField.prototype.rule_json_for_index = function(index){
     return rule_json;
 }
 
-ArrayRuleField.integer_regex = /^(\d+)$/;
-ArrayRuleField.interval_regex = /^(\d+)n(\+(\d+))?$/;
-ArrayRuleField.prototype.init = function() {
+FVArrayRuleField.integer_regex = /^(\d+)$/;
+FVArrayRuleField.interval_regex = /^(\d+)n(\+(\d+))?$/;
+FVArrayRuleField.prototype.init = function() {
     var field = this;
 
     field.checks.push(BasicVal.array(field.required));
@@ -93,8 +93,8 @@ ArrayRuleField.prototype.init = function() {
         for(var index_string in indices_json){
         	var field_json = indices_json[index_string];
 
-            //RuleField is created to validate properties, not to use
-        	var field_creation = RuleField.create_field(field_json);
+            //FVRuleField is created to validate properties, not to use
+        	var field_creation = FVRuleField.create_field(field_json);
             var err = field_creation[0];
 
             if(err!=null){
@@ -102,7 +102,7 @@ ArrayRuleField.prototype.init = function() {
                 continue;
             }
 
-            var interval_match = index_string.match(ArrayRuleField.interval_regex);
+            var interval_match = index_string.match(FVArrayRuleField.interval_regex);
             if(interval_match){
                 //Matched
                 var interval = interval_match[1];
@@ -122,7 +122,7 @@ ArrayRuleField.prototype.init = function() {
                 field.interval = interval;
                 field.interval_offsets[offset] = field_json;
             } else {
-                var integer_match = index_string.match(ArrayRuleField.integer_regex);
+                var integer_match = index_string.match(FVArrayRuleField.integer_regex);
                 if(integer_match){
                     var integer_index = integer_match[1];
                     field.indices[integer_index] = field_json;
@@ -165,5 +165,5 @@ ArrayRuleField.prototype.init = function() {
 }
 
 if (typeof module != 'undefined') {
-    module.exports = ArrayRuleField;
+    module.exports = FVArrayRuleField;
 }

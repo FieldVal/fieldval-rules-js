@@ -1,20 +1,20 @@
 if((typeof require) === 'function'){
     extend = require('extend')
-    BasicRuleField = require('./BasicRuleField');
+    FVBasicRuleField = require('./FVBasicRuleField');
 }
-extend(ObjectRuleField, BasicRuleField);
+extend(FVObjectRuleField, FVBasicRuleField);
 
-function ObjectRuleField(json, validator) {
+function FVObjectRuleField(json, validator) {
     var field = this;
 
-    ObjectRuleField.superConstructor.call(this, json, validator);
+    FVObjectRuleField.superConstructor.call(this, json, validator);
 }
 
-ObjectRuleField.prototype.create_ui = function(parent, form){
+FVObjectRuleField.prototype.create_ui = function(parent, form){
     var field = this;
 
     if(field.json.any){
-        field.ui_field = new TextField(field.display_name || field.name, {type: 'textarea'});//Empty options
+        field.ui_field = new FVTextField(field.display_name || field.name, {type: 'textarea'});//Empty options
 
         field.ui_field.val = function(set_val){//Override the .val function
             var ui_field = this;
@@ -40,7 +40,7 @@ ObjectRuleField.prototype.create_ui = function(parent, form){
         if(form){
             field.ui_field = form;
         } else {
-            field.ui_field = new ObjectField(field.display_name || field.name, field.json);
+            field.ui_field = new FVObjectField(field.display_name || field.name, field.json);
         }
 
         for(var i in field.fields){
@@ -58,7 +58,7 @@ ObjectRuleField.prototype.create_ui = function(parent, form){
     return field.ui_field;
 }
 
-ObjectRuleField.prototype.init = function() {
+FVObjectRuleField.prototype.init = function() {
     var field = this;
 
     field.checks.push(BasicVal.object(field.required));
@@ -69,12 +69,10 @@ ObjectRuleField.prototype.init = function() {
     if (fields_json != null) {
         var fields_validator = new FieldVal(null);
 
-        //TODO prevent duplicate name keys
-
         for (var i = 0; i < fields_json.length; i++) {
             var field_json = fields_json[i];
 
-            var field_creation = RuleField.create_field(
+            var field_creation = FVRuleField.create_field(
                 field_json,
                 {
                     need_name: true,
@@ -119,5 +117,5 @@ ObjectRuleField.prototype.init = function() {
 }
 
 if (typeof module != 'undefined') {
-    module.exports = ObjectRuleField;
+    module.exports = FVObjectRuleField;
 }
