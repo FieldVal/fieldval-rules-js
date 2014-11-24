@@ -1,16 +1,16 @@
 if((typeof require) === 'function'){
     extend = require('extend')
-    BasicRuleField = require('./BasicRuleField');
+    FVBasicRuleField = require('./FVBasicRuleField');
 }
-extend(TextRuleField, BasicRuleField);
+extend(FVTextRuleField, FVBasicRuleField);
 
-function TextRuleField(json, validator) {
+function FVTextRuleField(json, validator) {
     var field = this;
 
-    TextRuleField.superConstructor.call(this, json, validator);
+    FVTextRuleField.superConstructor.call(this, json, validator);
 }
 
-TextRuleField.prototype.create_ui = function(parent){
+FVTextRuleField.prototype.create_ui = function(parent){
     var field = this;
 
     var type = field.json.type;
@@ -18,7 +18,7 @@ TextRuleField.prototype.create_ui = function(parent){
         type = "textarea";
     }
 
-    field.ui_field = new TextField(field.display_name || field.name, {
+    field.ui_field = new FVTextField(field.display_name || field.name, {
         name: field.json.name,
         display_name: field.json.display_name,
         type: type
@@ -28,7 +28,7 @@ TextRuleField.prototype.create_ui = function(parent){
     return field.ui_field;
 }
 
-TextRuleField.prototype.init = function() {
+FVTextRuleField.prototype.init = function() {
     var field = this;
 
     field.checks.push(BasicVal.string(field.required));
@@ -57,5 +57,5 @@ TextRuleField.prototype.init = function() {
 }
 
 if (typeof module != 'undefined') {
-    module.exports = TextRuleField;
+    module.exports = FVTextRuleField;
 }

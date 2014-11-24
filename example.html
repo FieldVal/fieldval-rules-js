@@ -1,7 +1,7 @@
 <script src="bower_components/jquery/dist/jquery.js"></script>
 
-<script src="bower_components/fieldval/fieldval.js"></script>
-<script src="bower_components/fieldval-basicval/fieldval-basicval.js"></script>
+<script src="node_modules/fieldval/fieldval.js"></script>
+<script src="node_modules/fieldval-basicval/fieldval-basicval.js"></script>
 <script src="bower_components/fieldval-ui/fieldval-ui.js"></script>
 <script src="fieldval-rules.js"></script>
 
@@ -97,7 +97,7 @@ $(document).ready(function(){
         ]
     }
 
-    var vr = new ValidationRule();
+    var vr = new FVRule();
 	var rule_error = vr.init(type_object);
     if(rule_error){
         console.error(rule_error);

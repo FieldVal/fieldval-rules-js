@@ -1,25 +1,25 @@
 if((typeof require) === 'function'){
     extend = require('extend')
-    BasicRuleField = require('./BasicRuleField');
+    FVBasicRuleField = require('./FVBasicRuleField');
 }
-extend(BooleanRuleField, BasicRuleField);
+extend(FVBooleanRuleField, FVBasicRuleField);
 
-function BooleanRuleField(json, validator) {
+function FVBooleanRuleField(json, validator) {
     var field = this;
 
-    BooleanRuleField.superConstructor.call(this, json, validator);
+    FVBooleanRuleField.superConstructor.call(this, json, validator);
 }
 
-BooleanRuleField.prototype.create_ui = function(parent){
+FVBooleanRuleField.prototype.create_ui = function(parent){
     var field = this;
 
-    field.ui_field = new BooleanField(field.display_name || field.name, field.json);
+    field.ui_field = new FVBooleanField(field.display_name || field.name, field.json);
     field.element = field.ui_field.element;
     parent.add_field(field.name, field);
     return field.ui_field;
 }
 
-BooleanRuleField.prototype.init = function() {
+FVBooleanRuleField.prototype.init = function() {
     var field = this;
 
     field.checks.push(BasicVal.boolean(field.required));
@@ -33,5 +33,5 @@ BooleanRuleField.prototype.init = function() {
 }
 
 if (typeof module != 'undefined') {
-    module.exports = BooleanRuleField;
+    module.exports = FVBooleanRuleField;
 }

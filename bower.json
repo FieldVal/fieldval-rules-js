@@ -1,6 +1,6 @@
 {
 	"name": "fieldval-rules",
-	"version": "0.1.4",
+	"version": "0.2.0",
 	"main": "fieldval-rules.js",
 	"ignore": [
 		"bower_components",
@@ -13,7 +13,6 @@
 		".gitignore"
 	],
 	"devDependencies": {
-		"fieldval":"0.1.2",
 		"jquery": "1.11.1"
 	}
 }
