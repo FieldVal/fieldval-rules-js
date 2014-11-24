@@ -111,7 +111,7 @@ FVArrayRuleField.prototype.init = function() {
                     indices_validator.invalid(
                         index_string,
                         FieldVal.create_error(
-                            ValidationRule.errors.interval_conflict,
+                            FVRule.errors.interval_conflict,
                             {},
                             interval,
                             field.interval
@@ -132,7 +132,7 @@ FVArrayRuleField.prototype.init = function() {
                     indices_validator.invalid(
                         index_string,
                         FieldVal.create_error(
-                            ValidationRule.errors.invalid_indices_format,
+                            FVRule.errors.invalid_indices_format,
                             {}
                         )
                     );
