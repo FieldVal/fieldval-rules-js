@@ -21,6 +21,10 @@ FVBasicRuleField.prototype.in_array = function(){
     var field = this;
     return field.ui_field.in_array.apply(field.ui_field, arguments);
 }
+FVBasicRuleField.prototype.in_key_value = function(){
+    var field = this;
+    return field.ui_field.in_key_value.apply(field.ui_field, arguments);
+}
 FVBasicRuleField.prototype.change_name = function(name) {
     var field = this;
     return field.ui_field.change_name.apply(field.ui_field, arguments);
@@ -32,6 +36,10 @@ FVBasicRuleField.prototype.disable = function() {
 FVBasicRuleField.prototype.enable = function() {
     var field = this;
     return field.ui_field.enable.apply(field.ui_field, arguments);
+}
+FVBasicRuleField.prototype.name_val = function(){
+    var field = this;
+    return field.ui_field.name_val.apply(field.ui_field, arguments);
 }
 FVBasicRuleField.prototype.val = function(){
     var field = this;
