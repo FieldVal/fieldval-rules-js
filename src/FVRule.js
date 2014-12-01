@@ -22,6 +22,12 @@ FVRule.errors = {
             error: 502,
             error_message: "Invalid format for an indices rule."
         }    
+    },
+    field_type_without_any: function(){
+        return {
+            error: 503,
+            error_message: "field_type can't be used with setting any to true."
+        }    
     }
 }
 

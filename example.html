@@ -55,6 +55,14 @@ $(document).ready(function(){
                     [3, "Three"]
                 ]
             },{
+                name: "key_value",
+                display_name: "Key Value",
+                type: "object",
+                any: true,
+                field_type: {
+                    type: "number"
+                }
+            },{
                 name: "address",
                 display_name: "Address",
                 type: "object",
@@ -110,8 +118,13 @@ $(document).ready(function(){
         "first_name": "John",
         "last_name": "Smith",
         "email": "john@example.com",
+        "description": "Some description",
         "office_number": 17,
-        "a_choice": "1",
+        "a_choice": 1,
+        "key_value":{
+            "key_one": 135,
+            "key_two": 199
+        },
         "address": {
             "street_address": "33 Green Park Lane",
             "city": "Fillertextville",
