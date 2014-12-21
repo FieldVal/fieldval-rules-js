@@ -3,7 +3,7 @@ var FVRule = require('../src/FVRule')
 
 describe('FVRule', function() {
 
-    describe('Construction', function() {
+    describe('Basic usage', function() {
 
         it('should create a FVRule for a basic field', function(done) {
 
@@ -68,44 +68,42 @@ describe('FVRule', function() {
                 }
             };
             
-            var error = vr.validate(test_object);
-            assert.deepEqual(
-            	{
-				    "invalid": {
-				        "last_name": {
-				            "error": 100,
-				            "error_message": "Length is less than 2"
-				        },
-				        "address": {
-				            "missing": {
-				                "line_2": {
-				                    "error_message": "Field missing.",
-				                    "error": 1
-				                }
-				            },
-				            "invalid": {
-				                "house_number": {
-				                    "error_message": "Incorrect field type. Expected integer.",
-				                    "error": 2,
-				                    "expected": "integer",
-				                    "received": "number"
-				                },
-				                "country": {
-				                    "error": 104,
-				                    "error_message": "Value is not a valid choice"
-				                }
-				            },
-				            "error_message": "One or more errors.",
-				            "error": 0
-				        }
-				    },
-				    "error_message": "One or more errors.",
-				    "error": 0
-				},
-				error
-			);
+            vr.validate(test_object, function(error){
+                assert.deepEqual({
+                    "invalid": {
+                        "last_name": {
+                            "error": 100,
+                            "error_message": "Length is less than 2"
+                        },
+                        "address": {
+                            "missing": {
+                                "line_2": {
+                                    "error_message": "Field missing.",
+                                    "error": 1
+                                }
+                            },
+                            "invalid": {
+                                "house_number": {
+                                    "error_message": "Incorrect field type. Expected integer.",
+                                    "error": 2,
+                                    "expected": "integer",
+                                    "received": "number"
+                                },
+                                "country": {
+                                    "error": 104,
+                                    "error_message": "Value is not a valid choice"
+                                }
+                            },
+                            "error_message": "One or more errors.",
+                            "error": 0
+                        }
+                    },
+                    "error_message": "One or more errors.",
+                    "error": 0
+                },error);
 
-            done();
+                done();
+            });
         });
 
         it('should validate a FVRule', function(done) {
@@ -141,16 +139,16 @@ describe('FVRule', function() {
             var init_result = vr.init(type_object);
             assert.strictEqual(init_result,null);
             
-            var error = vr.validate(57);
-            assert.deepEqual(
-                {
-                    "error": 103,
-                    "error_message": "Value is greater than 20"
-                },
-                error
-            );
-
-            done();
+            vr.validate(57, function(error){
+                assert.deepEqual(
+                    {
+                        "error": 103,
+                        "error_message": "Value is greater than 20"
+                    },
+                    error
+                );
+                done();
+            });
         });
 
         it('should create a FVRule for an array field with 1 absolute index', function(done) {
@@ -169,15 +167,15 @@ describe('FVRule', function() {
             var init_result = vr.init(type_object);
             assert.strictEqual(init_result,null);
             
-            var error = vr.validate([
+            vr.validate([
                 "One",2,"Three"
-            ]);
-            assert.deepEqual(
-                null,
-                error
-            );
-
-            done();
+            ],function(error){
+                assert.deepEqual(
+                    null,
+                    error
+                );
+                done();    
+            });
         });
 
         it('should create a FVRule for an array field with an interval rule', function(done) {
@@ -199,15 +197,16 @@ describe('FVRule', function() {
             var init_result = vr.init(type_object);
             assert.strictEqual(init_result,null);
             
-            var error = vr.validate([
+            vr.validate([
                 "One",true,3,"Four",true,6,"Seven",false,9
-            ]);
-            assert.deepEqual(
-                null,
-                error
-            );
+            ], function(error){
+                assert.deepEqual(
+                    null,
+                    error
+                );
 
-            done();
+                done();
+            });
         });
 
         it('should allow continuing validation after use of a rule', function(done) {
@@ -278,157 +277,293 @@ describe('FVRule', function() {
                 }
             }
 
-            var error = object_rule_field.validate(my_data);
-
-
-            var expected_error = {
-                "missing": {
-                    "two": {
-                        "error_message": "Field missing.",
-                        "error": 1
-                    }
-                },
-                "invalid": {
-                    "one": {
-                        "error_message": "Incorrect field type. Expected number.",
-                        "error": 2,
-                        "expected": "number",
-                        "received": "string"
+            object_rule_field.validate(my_data, function(error){
+                var expected_error = {
+                    "missing": {
+                        "two": {
+                            "error_message": "Field missing.",
+                            "error": 1
+                        }
                     },
-                    "first_inner": {
-                        "missing": {
-                            "shallow_3": {
-                                "error_message": "Field missing.",
-                                "error": 1
-                            }
+                    "invalid": {
+                        "one": {
+                            "error_message": "Incorrect field type. Expected number.",
+                            "error": 2,
+                            "expected": "number",
+                            "received": "string"
                         },
-                        "invalid": {
-                            "shallow_2": {
-                                "error_message": "Incorrect field type. Expected string.",
-                                "error": 2,
-                                "expected": "string",
-                                "received": "number"
+                        "first_inner": {
+                            "missing": {
+                                "shallow_3": {
+                                    "error_message": "Field missing.",
+                                    "error": 1
+                                }
                             },
-                            "second_inner": {
-                                "invalid": {
-                                    "third_inner": {
-                                        "invalid": {
-                                            "another_deep_key": {
-                                                "error_message": "Incorrect field type. Expected number.",
-                                                "error": 2,
-                                                "expected": "number",
-                                                "received": "string"
-                                            }
-                                        },
-                                        "error_message": "One or more errors.",
-                                        "error": 0
-                                    }
+                            "invalid": {
+                                "shallow_2": {
+                                    "error_message": "Incorrect field type. Expected string.",
+                                    "error": 2,
+                                    "expected": "string",
+                                    "received": "number"
                                 },
-                                "error_message": "One or more errors.",
-                                "error": 0
-                            }
-                        },
-                        "error_message": "One or more errors.",
-                        "error": 0
-                    }
-                },
-                "error_message": "One or more errors.",
-                "error": 0
-            }
-
-            assert.deepEqual(
-                expected_error,
-                error
-            );
-
-
-
-
-            var validator = new FieldVal(my_data, error);
-            assert.deepEqual(
-                expected_error,
-                validator.end()
-            )
-            
-            var path_to_third_inner = ["first_inner","second_inner","third_inner"];
-            var dug = validator.dig(path_to_third_inner);
-
-            dug.invalid("deep_key", {
-                "error_message": "This is an error added after rule validation",
-                "error": 1000
-            })
-
-            validator.invalid(path_to_third_inner, dug.end());
-
-            var final_error = validator.end();
-
-            var final_expected_error = {
-                "missing": {
-                    "two": {
-                        "error_message": "Field missing.",
-                        "error": 1
-                    }
-                },
-                "invalid": {
-                    "one": {
-                        "error_message": "Incorrect field type. Expected number.",
-                        "error": 2,
-                        "expected": "number",
-                        "received": "string"
-                    },
-                    "first_inner": {
-                        "missing": {
-                            "shallow_3": {
-                                "error_message": "Field missing.",
-                                "error": 1
-                            }
-                        },
-                        "invalid": {
-                            "shallow_2": {
-                                "error_message": "Incorrect field type. Expected string.",
-                                "error": 2,
-                                "expected": "string",
-                                "received": "number"
-                            },
-                            "second_inner": {
-                                "invalid": {
-                                    "third_inner": {
-                                        "invalid": {
-                                            "deep_key": {
-                                                "error_message": "This is an error added after rule validation",
-                                                "error": 1000
+                                "second_inner": {
+                                    "invalid": {
+                                        "third_inner": {
+                                            "invalid": {
+                                                "another_deep_key": {
+                                                    "error_message": "Incorrect field type. Expected number.",
+                                                    "error": 2,
+                                                    "expected": "number",
+                                                    "received": "string"
+                                                }
                                             },
-                                            "another_deep_key": {
-                                                "error_message": "Incorrect field type. Expected number.",
-                                                "error": 2,
-                                                "expected": "number",
-                                                "received": "string"
-                                            }
-                                        },
-                                        "error_message": "One or more errors.",
-                                        "error": 0
-                                    }
-                                },
-                                "error_message": "One or more errors.",
-                                "error": 0
-                            }
+                                            "error_message": "One or more errors.",
+                                            "error": 0
+                                        }
+                                    },
+                                    "error_message": "One or more errors.",
+                                    "error": 0
+                                }
+                            },
+                            "error_message": "One or more errors.",
+                            "error": 0
+                        }
+                    },
+                    "error_message": "One or more errors.",
+                    "error": 0
+                }
+
+                assert.deepEqual(
+                    expected_error,
+                    error
+                );
+
+                var validator = new FieldVal(my_data, error);
+                assert.deepEqual(
+                    expected_error,
+                    validator.end()
+                )
+                
+                var path_to_third_inner = ["first_inner","second_inner","third_inner"];
+                var dug = validator.dig(path_to_third_inner);
+
+                dug.invalid("deep_key", {
+                    "error_message": "This is an error added after rule validation",
+                    "error": 1000
+                })
+
+                validator.invalid(path_to_third_inner, dug.end());
+
+                var final_error = validator.end();
+
+                var final_expected_error = {
+                    "missing": {
+                        "two": {
+                            "error_message": "Field missing.",
+                            "error": 1
+                        }
+                    },
+                    "invalid": {
+                        "one": {
+                            "error_message": "Incorrect field type. Expected number.",
+                            "error": 2,
+                            "expected": "number",
+                            "received": "string"
                         },
-                        "error_message": "One or more errors.",
-                        "error": 0
-                    }
-                },
-                "error_message": "One or more errors.",
-                "error": 0
-            }
+                        "first_inner": {
+                            "missing": {
+                                "shallow_3": {
+                                    "error_message": "Field missing.",
+                                    "error": 1
+                                }
+                            },
+                            "invalid": {
+                                "shallow_2": {
+                                    "error_message": "Incorrect field type. Expected string.",
+                                    "error": 2,
+                                    "expected": "string",
+                                    "received": "number"
+                                },
+                                "second_inner": {
+                                    "invalid": {
+                                        "third_inner": {
+                                            "invalid": {
+                                                "deep_key": {
+                                                    "error_message": "This is an error added after rule validation",
+                                                    "error": 1000
+                                                },
+                                                "another_deep_key": {
+                                                    "error_message": "Incorrect field type. Expected number.",
+                                                    "error": 2,
+                                                    "expected": "number",
+                                                    "received": "string"
+                                                }
+                                            },
+                                            "error_message": "One or more errors.",
+                                            "error": 0
+                                        }
+                                    },
+                                    "error_message": "One or more errors.",
+                                    "error": 0
+                                }
+                            },
+                            "error_message": "One or more errors.",
+                            "error": 0
+                        }
+                    },
+                    "error_message": "One or more errors.",
+                    "error": 0
+                }
 
-            assert.deepEqual(
-                final_expected_error,
-                final_error
-            );
+                assert.deepEqual(
+                    final_expected_error,
+                    final_error
+                );
 
-            done();
+                done();
+            });
         });
 
+    });
+
+    describe('Custom fields', function(){
+        it('should allow adding custom field types', function(){
+
+            extend(CustomLocationRuleField, FVRule.FVRuleField);
+            function CustomLocationRuleField(json, validator) {
+                var field = this;
+
+                CustomLocationRuleField.superConstructor.call(this, json, validator);
+            }
+
+            CustomLocationRuleField.prototype.init = function() {
+                var field = this;
+
+                field.minimum = field.validator.get("minimum", BasicVal.number(false));
+                field.maximum = field.validator.get("maximum", BasicVal.number(false));
+                field.integer = field.validator.get("integer", BasicVal.boolean(false));
+                
+                field.checks.push(BasicVal.object(field.required), function(val, emit){
+                    var inner_validator = new FieldVal(val);
+
+                    var inner_checks = [BasicVal.number(true)];
+
+                    if(field.minimum){
+                        inner_checks.push(BasicVal.minimum(field.minimum,{stop_on_error:false}));
+                    }
+                    if(field.maximum){
+                        inner_checks.push(BasicVal.maximum(field.maximum,{stop_on_error:false}));
+                    }
+                    if(field.integer){
+                        inner_checks.push(BasicVal.integer(true,{stop_on_error:false}));
+                    }
+
+                    inner_validator.get("x", inner_checks);
+                    inner_validator.get("y", inner_checks);
+
+                    var error = inner_validator.end();
+                    if(error) return error;
+                });
+
+                return field.validator.end();
+            }
+
+            FVRule.FVRuleField.add_field_type({
+                name: "custom_location_field",
+                display_name: "Custom Location Field",
+                class: CustomLocationRuleField
+            });
+
+            var vr = new FVRule();
+            var init_output = vr.init({
+                name: "location",
+                display_name: "Location",
+                type: "custom_location_field",
+                integer: true
+            });
+
+            var error = vr.validate({
+                "x": 123.4,
+                "y": "abc"
+            }, function(error){
+                assert.deepEqual(error, {
+                    invalid:{
+                        x:{
+                            error_message: 'Incorrect field type. Expected integer.',
+                            error: 2,
+                            expected: 'integer',
+                            received: 'number' 
+                        },
+                        y:{
+                            error_message: 'Incorrect field type. Expected number.',
+                            error: 2,
+                            expected: 'number',
+                            received: 'string' 
+                        }
+                    },
+                    error_message: 'One or more errors.',
+                    error: 0 
+                });
+            });
+        })
+
+        it('should support async checks', function(done){
+
+            extend(CustomRuleField, FVRule.FVRuleField);
+            function CustomRuleField(json, validator) {
+                var field = this;
+
+                CustomRuleField.superConstructor.call(this, json, validator);
+            }
+
+            CustomRuleField.prototype.init = function() {
+                var field = this;
+                
+                field.checks.push(BasicVal.number(field.required), function(val, emit, done){
+                    setTimeout(function(){
+                        done({
+                            "error": 1000,
+                            "error_message": "Delayed error"
+                        });
+                    },10);
+                });
+
+                return field.validator.end();
+            }
+
+            FVRule.FVRuleField.add_field_type({
+                name: "custom_field",
+                display_name: "Custom Field",
+                class: CustomRuleField
+            });
+
+            var vr = new FVRule();
+            var init_output = vr.init({
+                name: "place",
+                type: "object",
+                fields:[{
+                    name: "async_test",
+                    display_name: "Async Test",
+                    type: "custom_field"
+                }]
+            });
+
+            var sync_error = vr.validate({
+                async_test: 123
+            }, function(error){
+                assert.deepEqual(error, {
+                    "error": 0,
+                    "error_message": "One or more errors.",
+                    "invalid": {
+                        "async_test": {
+                            "error": 1000,
+                            "error_message": "Delayed error"
+                        }
+                    }
+                });
+                done();
+            });
+        })
     });
 
 });

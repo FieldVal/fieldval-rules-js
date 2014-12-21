@@ -1,6 +1,6 @@
 {
     "name": "fieldval-rules",
-    "version": "0.2.2",
+    "version": "0.3.0",
     "description": "fieldval-rules",
     "main": "src/FVRule.js",
     "scripts": {
@@ -14,7 +14,7 @@
     },
     "devDependencies": {
         "mocha": "*",
-        "fieldval-ui": "0.2.0",
+        "fieldval-ui": "0.2.4",
         "gulp-imports" : "MarcusLongmuir/gulp-imports",
         "gulp": "^3.6.1",
         "gulp-util": "^2.2.14",

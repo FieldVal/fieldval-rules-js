@@ -59,12 +59,9 @@ FVRule.prototype.create_form = function(){
     }
 }
 
-FVRule.prototype.validate = function(value) {
+FVRule.prototype.validate = function() {
     var vr = this;
-
-    var error = vr.field.validate(value);
-
-    return error;
+    return vr.field.validate.apply(vr.field,arguments);
 }
 
 if (typeof module != 'undefined') {

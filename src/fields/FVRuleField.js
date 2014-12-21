@@ -80,22 +80,19 @@ FVRuleField.create_field = function(json, options) {
 FVRuleField.prototype.validate_as_field = function(name, validator){
     var field = this;
     
-    var value = validator.get(name, field.checks);
-
-    return value;
+    validator.get_async(name, field.checks);
 }
 
-FVRuleField.prototype.validate = function(value){
+FVRuleField.prototype.validate = function(value, callback){
     var field = this;
 
-    var validator = new FieldVal(null);
-
-    var error = FieldVal.use_checks(value, field.checks);
-    if(error){
-        validator.error(error);
+    if(!callback){
+        throw new Error("No callback specified");
     }
 
-    return validator.end();
+    return FieldVal.use_checks(value, field.checks, {}, function(error){
+        callback(error);
+    });
 }
 
 FVRuleField.prototype.make_nested = function(){}
