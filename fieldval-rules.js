@@ -2,10 +2,7 @@
 function extend(sub, sup) {
 	function emptyclass() {}
 	emptyclass.prototype = sup.prototype;
-	var empty_instance = new emptyclass();
-	for(var i in empty_instance){
-		sub.prototype[i] = empty_instance[i];
-	}
+	sub.prototype = new emptyclass();
 	sub.prototype.constructor = sub;
 	sub.superConstructor = sup;
 	sub.superClass = sup.prototype;
@@ -97,22 +94,19 @@ FVRuleField.create_field = function(json, options) {
 FVRuleField.prototype.validate_as_field = function(name, validator){
     var field = this;
     
-    var value = validator.get(name, field.checks);
-
-    return value;
+    validator.get_async(name, field.checks);
 }
 
-FVRuleField.prototype.validate = function(value){
+FVRuleField.prototype.validate = function(value, callback){
     var field = this;
 
-    var validator = new FieldVal(null);
-
-    var error = FieldVal.use_checks(value, field.checks);
-    if(error){
-        validator.error(error);
+    if(!callback){
+        throw new Error("No callback specified");
     }
 
-    return validator.end();
+    return FieldVal.use_checks(value, field.checks, {}, function(error){
+        callback(error);
+    });
 }
 
 FVRuleField.prototype.make_nested = function(){}
@@ -432,7 +426,7 @@ FVObjectRuleField.prototype.init = function() {
 
     field.any = field.validator.get("any", BasicVal.boolean(false));
     if(!field.any){
-        field.checks.push(function(value,emit){
+        field.checks.push(function(value,emit,done){
 
             var inner_validator = new FieldVal(value);
 
@@ -441,9 +435,9 @@ FVObjectRuleField.prototype.init = function() {
                 inner_field.validate_as_field(i, inner_validator);
             }
 
-            var inner_error = inner_validator.end();
-
-            return inner_error;
+            return inner_validator.end(function(error){
+                done(error);
+            });
         });
     }    
 
@@ -471,9 +465,7 @@ FVObjectRuleField.prototype.init = function() {
                 }
             }
 
-            var inner_error = inner_validator.end();
-
-            return inner_error;
+            return inner_validator.end();
         });
     });
 
@@ -823,12 +815,9 @@ FVRule.prototype.create_form = function(){
     }
 }
 
-FVRule.prototype.validate = function(value) {
+FVRule.prototype.validate = function() {
     var vr = this;
-
-    var error = vr.field.validate(value);
-
-    return error;
+    return vr.field.validate.apply(vr.field,arguments);
 }
 
 if (typeof module != 'undefined') {

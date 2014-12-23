@@ -128,7 +128,7 @@ FVObjectRuleField.prototype.init = function() {
 
     field.any = field.validator.get("any", BasicVal.boolean(false));
     if(!field.any){
-        field.checks.push(function(value,emit){
+        field.checks.push(function(value,emit,done){
 
             var inner_validator = new FieldVal(value);
 
@@ -137,9 +137,9 @@ FVObjectRuleField.prototype.init = function() {
                 inner_field.validate_as_field(i, inner_validator);
             }
 
-            var inner_error = inner_validator.end();
-
-            return inner_error;
+            return inner_validator.end(function(error){
+                done(error);
+            });
         });
     }    
 
@@ -167,9 +167,7 @@ FVObjectRuleField.prototype.init = function() {
                 }
             }
 
-            var inner_error = inner_validator.end();
-
-            return inner_error;
+            return inner_validator.end();
         });
     });
 

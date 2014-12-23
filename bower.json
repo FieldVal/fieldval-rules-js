@@ -1,6 +1,6 @@
 {
 	"name": "fieldval-rules",
-	"version": "0.2.2",
+	"version": "0.3.0",
 	"main": "fieldval-rules.js",
 	"ignore": [
 		"bower_components",
