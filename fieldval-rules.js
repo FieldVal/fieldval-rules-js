@@ -203,16 +203,12 @@ function FVTextRuleField(json, validator) {
 FVTextRuleField.prototype.create_ui = function(parent){
     var field = this;
 
-    var type = field.json.type;
-    if(field.json.textarea===true){
-        type = "textarea";
-    }
-
     field.ui_field = new FVTextField(field.display_name || field.name, {
         name: field.json.name,
         display_name: field.json.display_name,
-        type: type
+        type: field.json.ui_type
     });
+
     field.element = field.ui_field.element;
     parent.add_field(field.name, field);
     return field.ui_field;
@@ -233,7 +229,7 @@ FVTextRuleField.prototype.init = function() {
         field.checks.push(BasicVal.max_length(field.max_length,{stop_on_error:false}));
     }
 
-    field.textarea = field.validator.get("textarea", BasicVal.boolean(false));
+    field.ui_type = field.validator.get("ui_type", BasicVal.string(false));
 
     //Currently unused
     field.phrase = field.validator.get("phrase", BasicVal.string(false));
