@@ -23,7 +23,10 @@ function FVRuleField(json, validator) {
     field.display_name = field.validator.get("display_name", BasicVal.string(false));
     field.description = field.validator.get("description", BasicVal.string(false));
     field.type = field.validator.get("type", BasicVal.string(true));
-    field.required = field.validator.default_value(true).get("required", BasicVal.boolean(false))
+    field.required = field.validator.get("required", BasicVal.boolean(false));
+    if(field.required===undefined){
+        field.required = true;//Default to true
+    }
 
     if (json != null) {
         var exists = field.validator.get("exists", BasicVal.boolean(false));
@@ -210,7 +213,6 @@ FVTextRuleField.prototype.create_ui = function(parent){
     });
 
     field.element = field.ui_field.element;
-    parent.add_field(field.name, field);
     return field.ui_field;
 }
 
@@ -229,7 +231,11 @@ FVTextRuleField.prototype.init = function() {
         field.checks.push(BasicVal.max_length(field.max_length,{stop_on_error:false}));
     }
 
-    field.ui_type = field.validator.get("ui_type", BasicVal.string(false));
+    field.ui_type = field.validator.get("ui_type", BasicVal.string(false), BasicVal.one_of([
+        "text",
+        "textarea",
+        "password"
+    ]));
 
     //Currently unused
     field.phrase = field.validator.get("phrase", BasicVal.string(false));
@@ -262,7 +268,6 @@ FVNumberRuleField.prototype.create_ui = function(parent){
 
     field.ui_field = new FVTextField(field.display_name || field.name, field.json);
     field.element = field.ui_field.element;
-    parent.add_field(field.name, field);
     return field.ui_field;
 }
 
@@ -359,14 +364,11 @@ FVObjectRuleField.prototype.create_ui = function(parent, form){
 
         for(var i in field.fields){
             var inner_field = field.fields[i];
-            inner_field.create_ui(field.ui_field);
+            var inner_ui_field = inner_field.create_ui(field.ui_field);
+            field.ui_field.add_field(inner_field.name, inner_ui_field);
         }
 
         field.element = field.ui_field.element;
-    }
-
-    if(!form){
-        parent.add_field(field.name, field.ui_field);
     }
 
     return field.ui_field;
@@ -506,7 +508,6 @@ FVArrayRuleField.prototype.create_ui = function(parent, form){
         return original_remove_field.call(field.ui_field, inner_field);
     }
     field.element = field.ui_field.element;
-    parent.add_field(field.name, field);
     return field.ui_field;
 }
 
@@ -659,7 +660,6 @@ FVChoiceRuleField.prototype.create_ui = function(parent){
 
     field.ui_field = new FVChoiceField(field.display_name || field.name, field.json);
     field.element = field.ui_field.element;
-    parent.add_field(field.name, field);
     return field.ui_field;
 }
 
@@ -697,7 +697,6 @@ FVBooleanRuleField.prototype.create_ui = function(parent){
 
     field.ui_field = new FVBooleanField(field.display_name || field.name, field.json);
     field.element = field.ui_field.element;
-    parent.add_field(field.name, field);
     return field.ui_field;
 }
 
@@ -734,7 +733,6 @@ FVEmailRuleField.prototype.create_ui = function(parent){
 
     field.ui_field = new FVTextField(field.display_name || field.name, field.json);
     field.element = field.ui_field.element;
-    parent.add_field(field.name, field);
     return field.ui_field;
 }
 
@@ -811,9 +809,23 @@ FVRule.prototype.create_form = function(){
     }
 }
 
+FVRule.prototype.create_ui = function(){
+    var vr = this;
+
+    return vr.field.create_ui();
+}
+
 FVRule.prototype.validate = function() {
     var vr = this;
     return vr.field.validate.apply(vr.field,arguments);
+}
+
+FVRule.prototype.check = function(val, emit, done) {
+    var vr = this;
+    
+    vr.field.validate(val,function(err){
+        done(err);
+    });
 }
 
 if (typeof module != 'undefined') {

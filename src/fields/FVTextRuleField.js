@@ -20,7 +20,6 @@ FVTextRuleField.prototype.create_ui = function(parent){
     });
 
     field.element = field.ui_field.element;
-    parent.add_field(field.name, field);
     return field.ui_field;
 }
 
@@ -39,7 +38,11 @@ FVTextRuleField.prototype.init = function() {
         field.checks.push(BasicVal.max_length(field.max_length,{stop_on_error:false}));
     }
 
-    field.ui_type = field.validator.get("ui_type", BasicVal.string(false));
+    field.ui_type = field.validator.get("ui_type", BasicVal.string(false), BasicVal.one_of([
+        "text",
+        "textarea",
+        "password"
+    ]));
 
     //Currently unused
     field.phrase = field.validator.get("phrase", BasicVal.string(false));

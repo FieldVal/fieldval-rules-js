@@ -15,7 +15,6 @@ FVBooleanRuleField.prototype.create_ui = function(parent){
 
     field.ui_field = new FVBooleanField(field.display_name || field.name, field.json);
     field.element = field.ui_field.element;
-    parent.add_field(field.name, field);
     return field.ui_field;
 }
 

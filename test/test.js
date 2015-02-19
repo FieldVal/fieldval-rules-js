@@ -95,11 +95,11 @@ describe('FVRule', function() {
                                 }
                             },
                             "error_message": "One or more errors.",
-                            "error": 0
+                            "error": 5
                         }
                     },
                     "error_message": "One or more errors.",
-                    "error": 0
+                    "error": 5
                 },error);
 
                 done();
@@ -122,7 +122,7 @@ describe('FVRule', function() {
                         }
                     },
                     "error_message": 'One or more errors.',
-                    "error": 0 
+                    "error": 5 
                 },
                 init_result
             );
@@ -318,19 +318,19 @@ describe('FVRule', function() {
                                                 }
                                             },
                                             "error_message": "One or more errors.",
-                                            "error": 0
+                                            "error": 5
                                         }
                                     },
                                     "error_message": "One or more errors.",
-                                    "error": 0
+                                    "error": 5
                                 }
                             },
                             "error_message": "One or more errors.",
-                            "error": 0
+                            "error": 5
                         }
                     },
                     "error_message": "One or more errors.",
-                    "error": 0
+                    "error": 5
                 }
 
                 assert.deepEqual(
@@ -400,19 +400,19 @@ describe('FVRule', function() {
                                                 }
                                             },
                                             "error_message": "One or more errors.",
-                                            "error": 0
+                                            "error": 5
                                         }
                                     },
                                     "error_message": "One or more errors.",
-                                    "error": 0
+                                    "error": 5
                                 }
                             },
                             "error_message": "One or more errors.",
-                            "error": 0
+                            "error": 5
                         }
                     },
                     "error_message": "One or more errors.",
-                    "error": 0
+                    "error": 5
                 }
 
                 assert.deepEqual(
@@ -486,7 +486,7 @@ describe('FVRule', function() {
                 "x": 123.4,
                 "y": "abc"
             }, function(error){
-                assert.deepEqual(error, {
+                var expected = {
                     invalid:{
                         x:{
                             error_message: 'Incorrect field type. Expected integer.',
@@ -502,8 +502,9 @@ describe('FVRule', function() {
                         }
                     },
                     error_message: 'One or more errors.',
-                    error: 0 
-                });
+                    error: 5
+                }
+                assert.deepEqual(error, expected);
             });
         })
 
@@ -552,7 +553,7 @@ describe('FVRule', function() {
                 async_test: 123
             }, function(error){
                 assert.deepEqual(error, {
-                    "error": 0,
+                    "error": 5,
                     "error_message": "One or more errors.",
                     "invalid": {
                         "async_test": {

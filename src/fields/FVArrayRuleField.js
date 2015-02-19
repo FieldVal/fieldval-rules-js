@@ -33,7 +33,6 @@ FVArrayRuleField.prototype.create_ui = function(parent, form){
         return original_remove_field.call(field.ui_field, inner_field);
     }
     field.element = field.ui_field.element;
-    parent.add_field(field.name, field);
     return field.ui_field;
 }
 

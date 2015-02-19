@@ -1,7 +1,6 @@
 <script src="bower_components/jquery/dist/jquery.js"></script>
 
 <script src="node_modules/fieldval/fieldval.js"></script>
-<script src="node_modules/fieldval-basicval/fieldval-basicval.js"></script>
 <script src="node_modules/fieldval-ui/fieldval-ui.js"></script>
 <script src="fieldval-rules.js"></script>
 
@@ -33,7 +32,7 @@ $(document).ready(function(){
                 name: "description",
                 display_name: "Description",
                 type: "text",
-                textarea: true
+                ui_type: "textarea"
             },{
                 name: "office_number",
                 display_name: "Office Number",
@@ -144,16 +143,17 @@ $(document).ready(function(){
 
 	form.on_submit(function(object){
 
-	    var error = vr.validate(object);
-	  
-		if(error){
-			console.log(error);
-			form.error(error)
-			output.text('"error": '+JSON.stringify(error,null,4));
-		} else {
-			form.clear_errors();
-			output.text('"object": '+JSON.stringify(object,null,4));
-		}
+	    vr.validate(object,function(error){
+    	  
+    		if(error){
+    			console.log(error);
+    			form.error(error)
+    			output.text('"error": '+JSON.stringify(error,null,4));
+    		} else {
+    			form.clear_errors();
+    			output.text('"object": '+JSON.stringify(object,null,4));
+    		}
+        });
 	})
 })
 </script>

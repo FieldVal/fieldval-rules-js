@@ -59,9 +59,23 @@ FVRule.prototype.create_form = function(){
     }
 }
 
+FVRule.prototype.create_ui = function(){
+    var vr = this;
+
+    return vr.field.create_ui();
+}
+
 FVRule.prototype.validate = function() {
     var vr = this;
     return vr.field.validate.apply(vr.field,arguments);
+}
+
+FVRule.prototype.check = function(val, emit, done) {
+    var vr = this;
+    
+    vr.field.validate(val,function(err){
+        done(err);
+    });
 }
 
 if (typeof module != 'undefined') {

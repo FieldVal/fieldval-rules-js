@@ -65,14 +65,11 @@ FVObjectRuleField.prototype.create_ui = function(parent, form){
 
         for(var i in field.fields){
             var inner_field = field.fields[i];
-            inner_field.create_ui(field.ui_field);
+            var inner_ui_field = inner_field.create_ui(field.ui_field);
+            field.ui_field.add_field(inner_field.name, inner_ui_field);
         }
 
         field.element = field.ui_field.element;
-    }
-
-    if(!form){
-        parent.add_field(field.name, field.ui_field);
     }
 
     return field.ui_field;
