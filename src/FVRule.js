@@ -1,6 +1,6 @@
 if((typeof require) === 'function'){
     FieldVal = require('fieldval')
-    BasicVal = require('fieldval-basicval')
+    BasicVal = FieldVal.BasicVal
     FVRuleField = require('./fields/FVRuleField');
 }
 
