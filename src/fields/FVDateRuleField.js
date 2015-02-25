@@ -26,7 +26,7 @@ FVDateRuleField.prototype.create_ui = function(parent){
 FVDateRuleField.prototype.init = function() {
     var field = this;
 
-    field.date_format = field.validator.get("format", BasicVal.string(true), BasicVal.date_format({emit_string:true}));
+    field.date_format = field.validator.get("format", BasicVal.string(true), BasicVal.date_format({emit:FieldVal.DateVal.EMIT_STRING}));
     if (field.date_format !== undefined) {
         field.checks.push(BasicVal.date(field.date_format));
     }
