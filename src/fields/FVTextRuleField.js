@@ -94,6 +94,15 @@ var FVTextRuleField = (function(){
         return field.validator.end();
     }
 
+    FVTextRuleField.create_editor_ui = function(value, form) {
+        var field = this;
+
+        form.add_field("min_length", new FVTextField("Minimum Length", {type: "number"}));
+        form.add_field("max_length", new FVTextField("Maximum Length", {type: "number"}));
+        form.fields.min_length.val(value.min_length);
+        form.fields.max_length.val(value.max_length);
+    }
+
     return FVTextRuleField;
 }).call((typeof window !== 'undefined')?window:null);
 
