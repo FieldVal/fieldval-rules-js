@@ -424,6 +424,21 @@ describe('FVRule', function() {
             });
         });
 
+        it('should validate a FVDateRuleField', function(done) {
+            var vr = new FVRule();
+            var error = vr.init({
+                name: "date_value",
+                type: "date",
+                format: "yyyy-MM-dd"
+            });
+            assert.equal(error, null);
+
+            vr.validate("2013-12-12", function(error) {
+                assert.equal(error, null);
+                done();
+            })
+        })
+
     });
 
     describe('Custom fields', function(){

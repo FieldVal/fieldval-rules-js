@@ -122,3 +122,8 @@ FVRuleField.add_field_type({
     display_name: 'Email',
     class: (typeof FVEmailRuleField) !== 'undefined' ? FVEmailRuleField : require('./fields/FVEmailRuleField')
 });
+FVRuleField.add_field_type({
+    name: 'date',
+    display_name: 'Date',
+    class: (typeof FVDateRuleField) !== 'undefined' ? FVDateRuleField : require('./fields/FVDateRuleField')
+});

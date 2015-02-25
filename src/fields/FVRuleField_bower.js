@@ -8,3 +8,4 @@
 @import("./FVChoiceRuleField.js");
 @import("./FVBooleanRuleField.js");
 @import("./FVEmailRuleField.js");
+@import("./FVDateRuleField.js");
