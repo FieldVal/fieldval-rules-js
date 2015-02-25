@@ -1,30 +1,72 @@
-if((typeof require) === 'function'){
-    extend = require('extend')
-    FVBasicRuleField = require('./FVBasicRuleField');
-}
-extend(FVEmailRuleField, FVBasicRuleField);
+var FVEmailRuleField = (function(){
 
-function FVEmailRuleField(json, validator) {
-    var field = this;
+    var _FieldVal;
+    if(this.FieldVal !== undefined){
+        _FieldVal = this.FieldVal;
+    } else if((typeof require) === 'function'){
+        _FieldVal = require('fieldval');
+    } else {
+        throw new Error("FieldVal Rules requires FieldVal");
+    }
+    var FieldVal = _FieldVal;
+    var BasicVal = FieldVal.BasicVal;
 
-    FVEmailRuleField.superConstructor.call(this, json, validator);
-}
+    var _FVBasicRuleField;
+    if(this.FVRuleField !== undefined){
+        _FVBasicRuleField = this.FVBasicRuleField;
+    } else if((typeof require) === 'function'){
+        _FVBasicRuleField = require('./FVBasicRuleField');    
+    } else {
+        throw new Error("FVBasicRuleField is missing");
+    }
+    var FVBasicRuleField = _FVBasicRuleField;
 
-FVEmailRuleField.prototype.create_ui = function(parent){
-    var field = this;
+    var _FVRuleField;
+    if(this.FVRuleField !== undefined){
+        _FVRuleField = this.FVRuleField;
+    } else if((typeof require) === 'function'){
+        _FVRuleField = require('./FVRuleField');    
+    } else {
+        throw new Error("FVRuleField is missing");
+    }
+    var FVRuleField = _FVRuleField;
 
-    field.ui_field = new FVTextField(field.display_name || field.name, field.json);
-    field.element = field.ui_field.element;
-    return field.ui_field;
-}
+    var _extend;
+    if(this.extend !== undefined){
+        _extend = this.extend;
+    } else if((typeof require) === 'function'){
+        _extend = require('extend');
+    } else {
+        throw new Error("extend() is missing");
+    }
+    var extend = _extend;
 
-FVEmailRuleField.prototype.init = function() {
-    var field = this;
+    extend(FVEmailRuleField, FVBasicRuleField);
 
-    field.checks.push(BasicVal.string(field.required), BasicVal.email());
-    
-    return field.validator.end();
-}
+    function FVEmailRuleField(json, validator) {
+        var field = this;
+
+        FVEmailRuleField.superConstructor.call(this, json, validator);
+    }
+
+    FVEmailRuleField.prototype.create_ui = function(parent){
+        var field = this;
+
+        field.ui_field = new FVTextField(field.display_name || field.name, field.json);
+        field.element = field.ui_field.element;
+        return field.ui_field;
+    }
+
+    FVEmailRuleField.prototype.init = function() {
+        var field = this;
+
+        field.checks.push(BasicVal.string(field.required), BasicVal.email());
+        
+        return field.validator.end();
+    }
+
+    return FVEmailRuleField;
+}).call((typeof window !== 'undefined')?window:null);
 
 if (typeof module != 'undefined') {
     module.exports = FVEmailRuleField;

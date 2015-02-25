@@ -1,6 +1,11 @@
 var assert = require("assert")
 var FVRule = require('../src/FVRule')
 
+var extend = require('extend');
+
+var FieldVal = require('fieldval');
+var BasicVal = FieldVal.BasicVal;
+
 describe('FVRule', function() {
 
     describe('Basic usage', function() {
