@@ -1,0 +1,123 @@
+<script src="bower_components/jquery/dist/jquery.js"></script>
+
+<script src="node_modules/fieldval/fieldval.js"></script>
+<script src="node_modules/fieldval-ui/fieldval-ui.js"></script>
+<script src="fieldval-rules.js"></script>
+
+<!-- Apply the "minimal" theme to FieldVal-UI -->
+<link rel="stylesheet" type="text/css" href="node_modules/fieldval-ui/themes/minimal.css">
+<script src="node_modules/fieldval-ui/themes/minimal.js"></script>
+
+<script>
+
+var event_rule =  {
+    "name": "event",
+    "display_name": "Event",
+    "type": "object",
+    "fields": [
+        {
+            "name": "title",
+            "display_name": "Title",
+            "type": "text",
+            "min_length": 2,
+            "max_length": null
+        },
+        {
+            "name": "allDay",
+            "display_name": "All day",
+            "type": "boolean"
+        },
+        {
+            "name": "start",
+            "display_name": "Start time",
+            "type": "date",
+            "format": "yyyy-MM-dd"
+        },
+        {
+            "name": "end",
+            "display_name": "End time",
+            "type": "date",
+            "format": "yyyy-MM-dd"
+        }
+    ]
+}
+
+var event_vr = new FVRule();
+event_vr.init(event_rule);
+
+$(document).ready(function(){
+
+    extend(CustomAsyncClass, FVBasicRuleField);
+    function CustomAsyncClass(json,validator){
+        var field = this;
+
+        CustomAsyncClass.superConstructor.call(this, json, validator);
+    }
+    CustomAsyncClass.prototype.create_ui = function(parent,form){
+        var field = this;
+
+        field.ui_field = new FVProxyField(field.display_name || field.name, field.json);
+        field.ui_field.on_change(function(){
+            console.log("UI FIELD ON CHANGE",arguments);
+        })
+
+        setTimeout(function(){
+            console.log(form.ui_field);
+            var inner_field = event_vr.create_ui();
+            console.log(inner_field);
+            field.ui_field.replace(inner_field);
+        },500);
+
+
+        //Have to do this because FVProxyField doesn't act like FVObjectField and can't be at the top level of the form
+        if (form) {
+            form.add_field(field.name, field.ui_field);
+        }
+
+        return field.ui_field;
+    }
+    CustomAsyncClass.prototype.init = function(){
+        var field = this;
+        field.checks.push(BasicVal.string())
+        return field.validator.end();
+    }
+
+    FVRuleField.add_field_type({
+        name: 'custom_async',
+        display_name: 'Custom Async',
+        class: CustomAsyncClass
+    });
+
+    var type_object = {
+        name: "event",
+        display_name: "Event",
+        type: "custom_async"
+    }
+
+    var vr = new FVRule();
+	var rule_error = vr.init(type_object);
+    if(rule_error){
+        console.error(rule_error);
+        return;
+    }
+
+	var form = vr.create_form();
+
+	$("body").append(
+        $("<h1/>").text("Current (read create_ui comment)"),
+		form.element.append(
+			$("<button />").text("Submit")
+		),
+		output = $("<pre />")
+	)
+
+    form.init();
+
+
+    var form_desired = event_vr.create_form();
+    $("body").append(
+        $("<h1/>").text("Desired"),
+        form_desired.element
+    )
+})
+</script>
