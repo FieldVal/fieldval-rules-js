@@ -11,6 +11,52 @@
 <script>
 $(document).ready(function(){
 
+    extend(CustomAsyncClass, FVBasicRuleField);
+    function CustomAsyncClass(json,validator){
+        var field = this;
+
+        CustomAsyncClass.superConstructor.call(this, json, validator);
+    }
+    CustomAsyncClass.prototype.create_ui = function(parent,form){
+        var field = this;
+
+        field.ui_field = new FVProxyField(field.display_name || field.name, field.json);
+        field.ui_field.on_change(function(){
+            console.log("UI FIELD ON CHANGE",arguments);
+        })
+
+        setTimeout(function(){
+            var inner_field = new FVTextField(field.display_name || field.name, field.json);
+
+            field.ui_field.replace(inner_field);
+        },500);
+
+        return field.ui_field;
+    }
+    CustomAsyncClass.prototype.init = function(){
+        var field = this;
+
+        field.checks.push(BasicVal.string())
+
+        // field.checks.push(function(val, emit, done){
+        //     setTimeout(function(){
+        //         console.log("GOING THROUGH VALIDATION",val);
+        //         done({
+        //             "error": 1000,
+        //             "error_message": "ASYNC ERROR!"
+        //         });
+        //     },500);
+        // });
+        
+        return field.validator.end();
+    }
+
+    FVRuleField.add_field_type({
+        name: 'custom_async',
+        display_name: 'Custom Async',
+        class: CustomAsyncClass
+    });
+
     var type_object = {
         type: "object",
         fields:[
@@ -22,8 +68,8 @@ $(document).ready(function(){
         	},{
                 name: "last_name",
                 display_name: "Last Name",
-                type: "text",
-                min_length: 2
+                type: "custom_async",
+                // min_length: 3
             },{
                 name: "email",
                 display_name: "Email",
@@ -130,7 +176,9 @@ $(document).ready(function(){
             "zip_code": 90909
         },
         "interests": [
-            "One",true,3
+            "One",
+            true,
+            3
         ]
     })
 
@@ -141,7 +189,22 @@ $(document).ready(function(){
 		output = $("<pre />")
 	)
 
+    form.disable();
+    setTimeout(function(){
+        form.enable();
+
+        setTimeout(function(){
+            form.disable();
+
+            setTimeout(function(){
+                form.enable();
+            },1000);
+        },1000);
+    },1000);
+
 	form.on_submit(function(object){
+
+        form.error(null);
 
 	    vr.validate(object,function(error){
     	  
@@ -155,5 +218,7 @@ $(document).ready(function(){
     		}
         });
 	})
+
+    form.init();
 })
 </script>
