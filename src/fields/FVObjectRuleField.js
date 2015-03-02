@@ -49,12 +49,12 @@ var FVObjectRuleField = (function(){
         FVObjectRuleField.superConstructor.call(this, json, validator);
     }
 
-    FVObjectRuleField.prototype.create_ui = function(parent, form){
+    FVObjectRuleField.prototype.create_ui = function(form){
         var field = this;
 
         if(field.any){
             if(field.field_type){
-                field.ui_field = new FVKeyValueField(field.display_name || field.name, field.json);
+                field.ui_field = new FVKeyValueField(field.display_name || field.name, {"form": form});
 
                 field.element = field.ui_field.element;
 
@@ -71,7 +71,7 @@ var FVObjectRuleField = (function(){
                     return original_remove_field.call(field.ui_field, inner_field);
                 }
             } else {
-                field.ui_field = new FVTextField(field.display_name || field.name, {type: 'textarea'});//Empty options
+                field.ui_field = new FVTextField(field.display_name || field.name, {"type": 'textarea', "form": form});//Empty options
 
                 field.ui_field.val = function(set_val){//Override the .val function
                     var ui_field = this;
@@ -95,11 +95,7 @@ var FVObjectRuleField = (function(){
             }
         } else {
 
-            if(form){
-                field.ui_field = form;
-            } else {
-                field.ui_field = new FVObjectField(field.display_name || field.name, field.json);
-            }
+            field.ui_field = new FVObjectField(field.display_name || field.name, {"form": form});
 
             for(var i in field.fields){
                 var inner_field = field.fields[i];
