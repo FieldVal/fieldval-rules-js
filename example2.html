@@ -30,14 +30,14 @@ var event_rule =  {
         {
             "name": "start",
             "display_name": "Start time",
-            "type": "date",
-            "format": "yyyy-MM-dd"
+            "type": "text",
+            // "format": "yyyy-MM-dd"
         },
         {
             "name": "end",
             "display_name": "End time",
-            "type": "date",
-            "format": "yyyy-MM-dd"
+            "type": "text",
+            // "format": "yyyy-MM-dd"
         }
     ]
 }
@@ -56,13 +56,16 @@ $(document).ready(function(){
     CustomAsyncClass.prototype.create_ui = function(parent,form){
         var field = this;
 
+        console.log("CREATING ASYNC UI")
+
         field.ui_field = new FVProxyField(field.display_name || field.name, field.json);
         field.ui_field.on_change(function(){
             console.log("UI FIELD ON CHANGE",arguments);
         })
 
         setTimeout(function(){
-            console.log(form.ui_field);
+            console.log(field.ui_field);
+            console.log(event_rule);
             var inner_field = event_vr.create_ui();
             console.log(inner_field);
             field.ui_field.replace(inner_field);
@@ -70,9 +73,9 @@ $(document).ready(function(){
 
 
         //Have to do this because FVProxyField doesn't act like FVObjectField and can't be at the top level of the form
-        if (form) {
-            form.add_field(field.name, field.ui_field);
-        }
+        // if (form) {
+        //     form.add_field(field.name, field.ui_field);
+        // }
 
         return field.ui_field;
     }
@@ -101,23 +104,41 @@ $(document).ready(function(){
         return;
     }
 
-	var form = vr.create_form();
+	var form = vr.create_ui();
+    ////Form submission won't work unless its actually an FVForm
+    // form.on_submit(function(val){
+    //     console.log(JSON.stringify(val));
+    // })
 
 	$("body").append(
         $("<h1/>").text("Current (read create_ui comment)"),
-		form.element.append(
-			$("<button />").text("Submit")
-		),
-		output = $("<pre />")
+		form.element
 	)
+
+    setTimeout(function(){
+        form.element.append(
+            $("<button />").text("Submit").click(function(){
+                console.log(JSON.stringify(form.val()));
+            })
+        )
+    },1000);
 
     form.init();
 
 
-    var form_desired = event_vr.create_form();
+    var form_desired = event_vr.create_ui();
+    ////Form submission won't work unless its actually an FVForm
+    // form_desired.on_submit(function(val){
+    //     console.log(JSON.stringify(val));
+    // })
     $("body").append(
         $("<h1/>").text("Desired"),
-        form_desired.element
+        form_desired.element.append(
+            $("<button />").text("Submit").click(function(){
+                console.log(JSON.stringify(form_desired.val()));
+            })
+        ),
+        output = $("<pre />")
     )
 })
 </script>
