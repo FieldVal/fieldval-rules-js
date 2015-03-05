@@ -69,17 +69,13 @@ var FVRule = (function(){
     FVRule.prototype.create_form = function(){
         var vr = this;
 
-        if(FVForm){
-            var form = new FVForm();
-            vr.field.create_ui(form,form);
-            return form;
-        }
+        return vr.create_ui(true);
     }
 
-    FVRule.prototype.create_ui = function(){
+    FVRule.prototype.create_ui = function(form){
         var vr = this;
 
-        return vr.field.create_ui();
+        return vr.field.create_ui(form);
     }
 
     FVRule.prototype.validate = function() {

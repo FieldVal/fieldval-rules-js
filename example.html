@@ -15,11 +15,11 @@ $(document).ready(function(){
         type: "object",
         fields:[
             {
-            	name: "first_name",
-        		display_name: "First Name",
-        		type: "text",
-        		min_length: 2
-        	},{
+                name: "first_name",
+                display_name: "First Name",
+                type: "text",
+                min_length: 2
+            },{
                 name: "last_name",
                 display_name: "Last Name",
                 type: "text",
@@ -105,13 +105,13 @@ $(document).ready(function(){
     }
 
     var vr = new FVRule();
-	var rule_error = vr.init(type_object);
+    var rule_error = vr.init(type_object);
     if(rule_error){
         console.error(rule_error);
         return;
     }
 
-	var form = vr.create_form();
+    var form = vr.create_form();
 
     form.val({
         "first_name": "John",
@@ -134,26 +134,26 @@ $(document).ready(function(){
         ]
     })
 
-	$("body").append(
-		form.element.append(
-			$("<button />").text("Submit")
-		),
-		output = $("<pre />")
-	)
+    $("body").append(
+        form.element.append(
+            $("<button />").text("Submit")
+        ),
+        output = $("<pre />")
+    )
 
-	form.on_submit(function(object){
+    form.on_submit(function(object){
 
-	    vr.validate(object,function(error){
-    	  
-    		if(error){
-    			console.log(error);
-    			form.error(error)
-    			output.text('"error": '+JSON.stringify(error,null,4));
-    		} else {
-    			form.clear_errors();
-    			output.text('"object": '+JSON.stringify(object,null,4));
-    		}
+        vr.validate(object,function(error){
+          
+            if(error){
+                console.log(error);
+                form.error(error)
+                output.text('"error": '+JSON.stringify(error,null,4));
+            } else {
+                form.clear_errors();
+                output.text('"object": '+JSON.stringify(object,null,4));
+            }
         });
-	})
+    })
 })
 </script>

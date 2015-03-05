@@ -81,15 +81,13 @@ describe('FVRule', function() {
                             "error_message": "Length is less than 2"
                         },
                         "address": {
-                            "missing": {
+                            "invalid": {
                                 "line_2": {
                                     "error_message": "Field missing.",
                                     "error": 1
-                                }
-                            },
-                            "invalid": {
+                                },
                                 "house_number": {
-                                    "error_message": "Incorrect field type. Expected integer.",
+                                    "error_message": "Incorrect field type. Expected integer, but received number.",
                                     "error": 2,
                                     "expected": "integer",
                                     "received": "number"
@@ -120,7 +118,7 @@ describe('FVRule', function() {
             var init_result = vr.init(type_object);
             assert.deepEqual(
                 {
-                    "unrecognized": {
+                    "invalid": {
                         "maximum": {
                             "error_message": 'Unrecognized field.',
                             "error": 3 
@@ -284,29 +282,25 @@ describe('FVRule', function() {
 
             object_rule_field.validate(my_data, function(error){
                 var expected_error = {
-                    "missing": {
+                    "invalid": {
                         "two": {
                             "error_message": "Field missing.",
                             "error": 1
-                        }
-                    },
-                    "invalid": {
+                        },
                         "one": {
-                            "error_message": "Incorrect field type. Expected number.",
+                            "error_message": "Incorrect field type. Expected number, but received string.",
                             "error": 2,
                             "expected": "number",
                             "received": "string"
                         },
                         "first_inner": {
-                            "missing": {
+                            "invalid": {
                                 "shallow_3": {
                                     "error_message": "Field missing.",
                                     "error": 1
-                                }
-                            },
-                            "invalid": {
+                                },
                                 "shallow_2": {
-                                    "error_message": "Incorrect field type. Expected string.",
+                                    "error_message": "Incorrect field type. Expected string, but received number.",
                                     "error": 2,
                                     "expected": "string",
                                     "received": "number"
@@ -316,7 +310,7 @@ describe('FVRule', function() {
                                         "third_inner": {
                                             "invalid": {
                                                 "another_deep_key": {
-                                                    "error_message": "Incorrect field type. Expected number.",
+                                                    "error_message": "Incorrect field type. Expected number, but received string.",
                                                     "error": 2,
                                                     "expected": "number",
                                                     "received": "string"
@@ -362,29 +356,25 @@ describe('FVRule', function() {
                 var final_error = validator.end();
 
                 var final_expected_error = {
-                    "missing": {
+                    "invalid": {
                         "two": {
                             "error_message": "Field missing.",
                             "error": 1
-                        }
-                    },
-                    "invalid": {
+                        },
                         "one": {
-                            "error_message": "Incorrect field type. Expected number.",
+                            "error_message": "Incorrect field type. Expected number, but received string.",
                             "error": 2,
                             "expected": "number",
                             "received": "string"
                         },
                         "first_inner": {
-                            "missing": {
+                            "invalid": {
                                 "shallow_3": {
                                     "error_message": "Field missing.",
                                     "error": 1
-                                }
-                            },
-                            "invalid": {
+                                },
                                 "shallow_2": {
-                                    "error_message": "Incorrect field type. Expected string.",
+                                    "error_message": "Incorrect field type. Expected string, but received number.",
                                     "error": 2,
                                     "expected": "string",
                                     "received": "number"
@@ -398,7 +388,7 @@ describe('FVRule', function() {
                                                     "error": 1000
                                                 },
                                                 "another_deep_key": {
-                                                    "error_message": "Incorrect field type. Expected number.",
+                                                    "error_message": "Incorrect field type. Expected number, but received string.",
                                                     "error": 2,
                                                     "expected": "number",
                                                     "received": "string"
@@ -494,13 +484,13 @@ describe('FVRule', function() {
                 var expected = {
                     invalid:{
                         x:{
-                            error_message: 'Incorrect field type. Expected integer.',
+                            error_message: 'Incorrect field type. Expected integer, but received number.',
                             error: 2,
                             expected: 'integer',
                             received: 'number' 
                         },
                         y:{
-                            error_message: 'Incorrect field type. Expected number.',
+                            error_message: 'Incorrect field type. Expected number, but received string.',
                             error: 2,
                             expected: 'number',
                             received: 'string' 
