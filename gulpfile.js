@@ -20,8 +20,11 @@ gulp.task('js', function(){
     .pipe(uglify())
     .pipe(concat('fieldval-rules.min.js'))
     .pipe(gulp.dest('./'))
-    .on('error', gutil.log);
-})
+    .on('error', gutil.log)
+    .on('end', function(){
+        return gulp.start('test');
+    });
+});
 
 gulp.task('test', function(){
     gulp.src(['test/test.js'])
@@ -29,7 +32,7 @@ gulp.task('test', function(){
 });
 
 gulp.task('default', function(){
-    gulp.start('js','test');
-    gulp.watch(['src/**/*.js'], ['js','test']);
+    gulp.watch(['src/**/*.js'], ['js']);
     gulp.watch(['test/**/*.js'], ['test']);
+    gulp.start('js');
 });
