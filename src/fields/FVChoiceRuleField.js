@@ -73,6 +73,23 @@ var FVChoiceRuleField = (function(){
         return field.validator.end();
     }
 
+    FVChoiceRuleField.create_editor_ui = function(value, form) {
+        var field = this;
+
+        var choices_array_field = new FVArrayField("Choices");
+        choices_array_field.new_field = function() {
+            return new FVTextField();
+        }
+
+        form.add_field("choices", choices_array_field);
+        form.add_field("allow_empty", new FVBooleanField("Allow empty"));
+        form.add_field("empty_message", new FVTextField("Empty message"));
+
+        form.fields.choices.val(value.choices);
+        form.fields.allow_empty.val(value.allow_empty);
+        form.fields.empty_message.val(value.empty_message);
+    }
+
     return FVChoiceRuleField;
 
 }).call((typeof window !== 'undefined')?window:null);
