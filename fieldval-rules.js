@@ -327,13 +327,15 @@ var FVTextRuleField = (function(){
         return field.validator.end();
     }
 
-    FVTextRuleField.create_editor_ui = function(value, form) {
+    FVTextRuleField.add_editor_params = function(editor) {
         var field = this;
 
-        form.add_field("min_length", new FVTextField("Minimum Length", {type: "number"}));
-        form.add_field("max_length", new FVTextField("Maximum Length", {type: "number"}));
-        form.fields.min_length.val(value.min_length);
-        form.fields.max_length.val(value.max_length);
+        editor.add_field("min_length", new FVTextField("Minimum Length", {type: "number"}));
+        editor.add_field("max_length", new FVTextField("Maximum Length", {type: "number"}));
+        
+        var value = editor.val();
+        editor.fields.min_length.val(value.min_length);
+        editor.fields.max_length.val(value.max_length);
     }
 
     return FVTextRuleField;
@@ -424,16 +426,17 @@ var FVNumberRuleField = (function(){
         return field.validator.end();
     }
 
-    FVNumberRuleField.create_editor_ui = function(value, form) {
+    FVNumberRuleField.add_editor_params = function(editor) {
         var field = this;
 
-        form.add_field("minimum", new FVTextField("Minimum", {type: "number"}));
-        form.add_field("maximum", new FVTextField("Maximum", {type: "number"}));
-        form.add_field("integer", new FVBooleanField("Integer"));
+        editor.add_field("minimum", new FVTextField("Minimum", {type: "number"}));
+        editor.add_field("maximum", new FVTextField("Maximum", {type: "number"}));
+        editor.add_field("integer", new FVBooleanField("Integer"));
 
-        form.fields.minimum.val(value.minimum);
-        form.fields.maximum.val(value.maximum);
-        form.fields.integer.val(value.integer);
+        var value = editor.val();
+        editor.fields.minimum.val(value.minimum);
+        editor.fields.maximum.val(value.maximum);
+        editor.fields.integer.val(value.integer);
     }
 
     return FVNumberRuleField;
@@ -553,7 +556,7 @@ var FVObjectRuleField = (function(){
         return field.ui_field;
     }
 
-    FVObjectRuleField.create_editor_ui = function(value, editor) {
+    FVObjectRuleField.add_editor_params = function(editor) {
         var field = this;
 
         var fields_field = new FVArrayField("Fields");
@@ -563,10 +566,11 @@ var FVObjectRuleField = (function(){
         }
         editor.add_field("fields", fields_field);
 
+        var value = editor.val();
         var inner_fields = value.fields;
         if(inner_fields){
-            for(var i = 0; i < editor.value.fields.length; i++){
-                var field_data = editor.value.fields[i];
+            for(var i = 0; i < value.fields.length; i++){
+                var field_data = value.fields[i];
 
                 var inner_field = new editor.constructor(field_data, editor);
                 fields_field.add_field(null, inner_field);
@@ -960,7 +964,7 @@ var FVChoiceRuleField = (function(){
         return field.validator.end();
     }
 
-    FVChoiceRuleField.create_editor_ui = function(value, form) {
+    FVChoiceRuleField.add_editor_params = function(editor) {
         var field = this;
 
         var choices_array_field = new FVArrayField("Choices");
@@ -968,13 +972,14 @@ var FVChoiceRuleField = (function(){
             return new FVTextField();
         }
 
-        form.add_field("choices", choices_array_field);
-        form.add_field("allow_empty", new FVBooleanField("Allow empty"));
-        form.add_field("empty_message", new FVTextField("Empty message"));
+        editor.add_field("choices", choices_array_field);
+        editor.add_field("allow_empty", new FVBooleanField("Allow empty"));
+        editor.add_field("empty_message", new FVTextField("Empty message"));
 
-        form.fields.choices.val(value.choices);
-        form.fields.allow_empty.val(value.allow_empty);
-        form.fields.empty_message.val(value.empty_message);
+        var value = editor.val();
+        editor.fields.choices.val(value.choices);
+        editor.fields.allow_empty.val(value.allow_empty);
+        editor.fields.empty_message.val(value.empty_message);
     }
 
     return FVChoiceRuleField;
@@ -1056,12 +1061,13 @@ var FVBooleanRuleField = (function(){
         return field.validator.end();
     }
 
-    FVBooleanRuleField.create_editor_ui = function(value, form) {
+    FVBooleanRuleField.add_editor_params = function(editor) {
         var field = this;
 
-        form.add_field("equal_to", new FVChoiceField("Equal to", {choices: [true, false]} ));
+        editor.add_field("equal_to", new FVChoiceField("Equal to", {choices: [true, false]} ));
         
-        form.fields.equal_to.val(value.equal_to);
+        var value = editor.val();
+        editor.fields.equal_to.val(value.equal_to);
     }
 
     return FVBooleanRuleField;
@@ -1217,11 +1223,13 @@ var FVDateRuleField = (function(){
         return field.validator.end();
     }
 
-    FVDateRuleField.create_editor_ui = function(value, form) {
+    FVDateRuleField.add_editor_params = function(editor) {
         var field = this;
 
-        form.add_field("format", new FVTextField("Date format"));
-        form.fields.format.val(value.format);
+        editor.add_field("format", new FVTextField("Date format"));
+        
+        var value = editor.val();
+        editor.fields.format.val(value.format);
     }
 
     return FVDateRuleField;
@@ -1432,8 +1440,8 @@ FVRuleEditor.prototype.update_type_fields = function(){
 
 	if (type) {
 		var rule_field = FVRule.FVRuleField.types[type].class;
-		if (rule_field.create_editor_ui !== undefined) {
-			rule_field.create_editor_ui(editor.val(), editor);
+		if (rule_field.add_editor_params !== undefined) {
+			rule_field.add_editor_params(editor);
 		}
 	}
 }

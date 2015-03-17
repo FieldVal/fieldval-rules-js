@@ -72,11 +72,13 @@ var FVDateRuleField = (function(){
         return field.validator.end();
     }
 
-    FVDateRuleField.create_editor_ui = function(value, form) {
+    FVDateRuleField.add_editor_params = function(editor) {
         var field = this;
 
-        form.add_field("format", new FVTextField("Date format"));
-        form.fields.format.val(value.format);
+        editor.add_field("format", new FVTextField("Date format"));
+        
+        var value = editor.val();
+        editor.fields.format.val(value.format);
     }
 
     return FVDateRuleField;

@@ -53,8 +53,8 @@ FVRuleEditor.prototype.update_type_fields = function(){
 
 	if (type) {
 		var rule_field = FVRule.FVRuleField.types[type].class;
-		if (rule_field.create_editor_ui !== undefined) {
-			rule_field.create_editor_ui(editor.val(), editor);
+		if (rule_field.add_editor_params !== undefined) {
+			rule_field.add_editor_params(editor);
 		}
 	}
 }

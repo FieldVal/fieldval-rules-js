@@ -80,16 +80,17 @@ var FVNumberRuleField = (function(){
         return field.validator.end();
     }
 
-    FVNumberRuleField.create_editor_ui = function(value, form) {
+    FVNumberRuleField.add_editor_params = function(editor) {
         var field = this;
 
-        form.add_field("minimum", new FVTextField("Minimum", {type: "number"}));
-        form.add_field("maximum", new FVTextField("Maximum", {type: "number"}));
-        form.add_field("integer", new FVBooleanField("Integer"));
+        editor.add_field("minimum", new FVTextField("Minimum", {type: "number"}));
+        editor.add_field("maximum", new FVTextField("Maximum", {type: "number"}));
+        editor.add_field("integer", new FVBooleanField("Integer"));
 
-        form.fields.minimum.val(value.minimum);
-        form.fields.maximum.val(value.maximum);
-        form.fields.integer.val(value.integer);
+        var value = editor.val();
+        editor.fields.minimum.val(value.minimum);
+        editor.fields.maximum.val(value.maximum);
+        editor.fields.integer.val(value.integer);
     }
 
     return FVNumberRuleField;
