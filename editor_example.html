@@ -1,0 +1,36 @@
+<script src="bower_components/jquery/dist/jquery.js"></script>
+
+<script src="node_modules/fieldval/fieldval.js"></script>
+<script src="node_modules/fieldval-ui/fieldval-ui.js"></script>
+<script src="fieldval-rules.js"></script>
+
+<!-- Apply the "minimal" theme to FieldVal-UI -->
+<link rel="stylesheet" type="text/css" href="node_modules/fieldval-ui/themes/minimal.css">
+<script src="node_modules/fieldval-ui/themes/minimal.js"></script>
+
+<script>
+    $(document).ready(function(){
+        var editor = new FVRuleEditor("Editor", {form:true});
+        $("body").append(
+            editor.element.append(
+                $("<button/>").text("Validate")
+            )            
+        )
+
+        var output = $("<pre/>");
+        output.appendTo("body");
+
+        editor.on_submit(function(value) {
+            var rule = new FVRule();
+            var error = rule.init(value);
+            editor.clear_errors();
+            if (error) {
+                editor.error(error);
+                output.text("Fix errors first!")
+            } else {
+                output.text(JSON.stringify(value, null, 4));
+            }
+        })
+
+    })
+</script>

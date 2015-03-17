@@ -109,6 +109,27 @@ var FVObjectRuleField = (function(){
         return field.ui_field;
     }
 
+    FVObjectRuleField.create_editor_ui = function(value, editor) {
+        var field = this;
+
+        var fields_field = new FVArrayField("Fields");
+        fields_field.new_field = function(index){
+            var inner_field = new editor.constructor(null, editor);
+            fields_field.add_field(null, inner_field);
+        }
+        editor.add_field("fields", fields_field);
+
+        var inner_fields = value.fields;
+        if(inner_fields){
+            for(var i = 0; i < editor.value.fields.length; i++){
+                var field_data = editor.value.fields[i];
+
+                var inner_field = new editor.constructor(field_data, editor);
+                fields_field.add_field(null, inner_field);
+            }
+        }
+    }
+
     FVObjectRuleField.prototype.new_field = function(index){
         var field = this;
 
