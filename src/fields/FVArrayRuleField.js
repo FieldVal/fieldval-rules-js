@@ -79,7 +79,7 @@ var FVArrayRuleField = (function(){
 
         var rule = field.rule_for_index(index);
         
-        return rule.create_ui(field.ui_field);
+        return rule.create_ui();
     }
 
     FVArrayRuleField.prototype.rule_for_index = function(index){
@@ -199,6 +199,21 @@ var FVArrayRuleField = (function(){
         });
 
         return field.validator.end();
+    }
+
+    FVArrayRuleField.add_editor_params = function(editor) {
+        var field = this;
+
+        var value = editor.val();
+
+        var indices = new FVKeyValueField("Indices");
+        indices.new_field = function() {
+            return new editor.constructor(null, editor);
+        }
+        indices.val(value.indices);
+
+        editor.add_field("indices", indices);
+
     }
 
     return FVArrayRuleField;

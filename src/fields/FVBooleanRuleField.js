@@ -70,6 +70,15 @@ var FVBooleanRuleField = (function(){
         return field.validator.end();
     }
 
+    FVBooleanRuleField.add_editor_params = function(editor) {
+        var field = this;
+
+        editor.add_field("equal_to", new FVChoiceField("Equal to", {choices: [true, false]} ));
+        
+        var value = editor.val();
+        editor.fields.equal_to.val(value.equal_to);
+    }
+
     return FVBooleanRuleField;
 }).call((typeof window !== 'undefined')?window:null);
 

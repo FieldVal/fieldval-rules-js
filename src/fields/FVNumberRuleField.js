@@ -80,6 +80,19 @@ var FVNumberRuleField = (function(){
         return field.validator.end();
     }
 
+    FVNumberRuleField.add_editor_params = function(editor) {
+        var field = this;
+
+        editor.add_field("minimum", new FVTextField("Minimum", {type: "number"}));
+        editor.add_field("maximum", new FVTextField("Maximum", {type: "number"}));
+        editor.add_field("integer", new FVBooleanField("Integer"));
+
+        var value = editor.val();
+        editor.fields.minimum.val(value.minimum);
+        editor.fields.maximum.val(value.maximum);
+        editor.fields.integer.val(value.integer);
+    }
+
     return FVNumberRuleField;
 }).call((typeof window !== 'undefined')?window:null);
 

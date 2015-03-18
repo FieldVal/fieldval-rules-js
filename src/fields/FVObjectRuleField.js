@@ -99,7 +99,7 @@ var FVObjectRuleField = (function(){
 
             for(var i in field.fields){
                 var inner_field = field.fields[i];
-                var inner_ui_field = inner_field.create_ui(field.ui_field);
+                var inner_ui_field = inner_field.create_ui();
                 field.ui_field.add_field(inner_field.name, inner_ui_field);
             }
 
@@ -109,6 +109,37 @@ var FVObjectRuleField = (function(){
         return field.ui_field;
     }
 
+    FVObjectRuleField.add_editor_params = function(editor) {
+        var fields_field = new FVArrayField("Fields");
+        fields_field.new_field = function(index){
+            var inner_field = new editor.constructor(null, editor);
+            fields_field.add_field(null, inner_field);
+        }
+
+        var any = new FVBooleanField("Any");
+        any.on_change(function(value) {
+            if (value) {
+                editor.remove_field("fields");
+            } else {
+                editor.add_field("fields", fields_field);
+            }
+        })
+
+        editor.add_field("any", any);
+
+        var value = editor.val();
+        any.val(value.any);
+        var inner_fields = value.fields;
+        if(inner_fields){
+            for(var i = 0; i < value.fields.length; i++){
+                var field_data = value.fields[i];
+
+                var inner_field = new editor.constructor(field_data, editor);
+                fields_field.add_field(null, inner_field);
+            }
+        }
+    }
+
     FVObjectRuleField.prototype.new_field = function(index){
         var field = this;
 
@@ -116,7 +147,7 @@ var FVObjectRuleField = (function(){
         var err = field_creation[0];
         var rule = field_creation[1];
         
-        return rule.create_ui(field.ui_field);
+        return rule.create_ui();
     }
 
     FVObjectRuleField.prototype.init = function() {

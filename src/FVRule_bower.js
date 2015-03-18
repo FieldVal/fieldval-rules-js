@@ -3,3 +3,4 @@
 @import("fields/FVRuleField_bower.js");
 
 @import("FVRule.js");
+@import("FVRuleEditor.js");
