@@ -79,7 +79,7 @@ var FVArrayRuleField = (function(){
 
         var rule = field.rule_for_index(index);
         
-        return rule.create_ui(field.ui_field);
+        return rule.create_ui();
     }
 
     FVArrayRuleField.prototype.rule_for_index = function(index){

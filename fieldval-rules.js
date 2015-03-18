@@ -552,7 +552,7 @@ var FVObjectRuleField = (function(){
 
             for(var i in field.fields){
                 var inner_field = field.fields[i];
-                var inner_ui_field = inner_field.create_ui(field.ui_field);
+                var inner_ui_field = inner_field.create_ui();
                 field.ui_field.add_field(inner_field.name, inner_ui_field);
             }
 
@@ -600,7 +600,7 @@ var FVObjectRuleField = (function(){
         var err = field_creation[0];
         var rule = field_creation[1];
         
-        return rule.create_ui(field.ui_field);
+        return rule.create_ui();
     }
 
     FVObjectRuleField.prototype.init = function() {
@@ -776,7 +776,7 @@ var FVArrayRuleField = (function(){
 
         var rule = field.rule_for_index(index);
         
-        return rule.create_ui(field.ui_field);
+        return rule.create_ui();
     }
 
     FVArrayRuleField.prototype.rule_for_index = function(index){
