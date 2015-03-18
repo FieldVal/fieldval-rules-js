@@ -10,7 +10,7 @@
 
 <script>
     $(document).ready(function(){
-        var editor = new FVRuleEditor("Editor", {form:true});
+        editor = new FVRuleEditor("Editor", {form:true});
         $("body").append(
             editor.element.append(
                 $("<button/>").text("Validate")
@@ -20,17 +20,133 @@
         var output = $("<pre/>");
         output.appendTo("body");
 
+        var form_container = $("<div/>");
+        form_container.appendTo("body");
+
         editor.on_submit(function(value) {
             var rule = new FVRule();
             var error = rule.init(value);
             editor.clear_errors();
+            form_container.empty();
             if (error) {
                 editor.error(error);
                 output.text("Fix errors first!")
             } else {
                 output.text(JSON.stringify(value, null, 4));
+
+                var form = rule.create_form();
+                form_container.append(
+                    form.element.append(
+                        $("<button/>").text("Submit")
+                    )
+                )
+
+                form.on_submit(function(value) {
+                    form.clear_errors();
+                    rule.validate(value, function(error) {
+                        if (error) {
+                            form.error(error);
+                        }
+                    })
+                })
             }
         })
+
+        var type_object = {
+            type: "object",
+            fields:[
+                {
+                    name: "first_name",
+                    display_name: "First Name",
+                    type: "text",
+                    min_length: 2
+                },{
+                    name: "last_name",
+                    display_name: "Last Name",
+                    type: "text",
+                    min_length: 2
+                },{
+                    name: "email",
+                    display_name: "Email",
+                    type: "email"
+                },{
+                    name: "description",
+                    display_name: "Description",
+                    type: "text",
+                    ui_type: "textarea"
+                },{
+                    name: "office_number",
+                    display_name: "Office Number",
+                    type: "number",
+                    description: "Please enter your office number",
+                    minimum: 1,
+                    maximum: 30,
+                    integer: true
+                },{
+                    name: "a_choice",
+                    display_name: "A Choice",
+                    type: "choice",
+                    description: "Please select an option using the dropdown below",
+                    allow_empty: true,
+                    empty_message: "Please select an option...",
+                    choices: [
+                        [1, "One"],
+                        "Two",
+                        [3, "Three"]
+                    ]
+                },{
+                    name: "key_value",
+                    display_name: "Key Value",
+                    type: "object",
+                    any: true,
+                    field_type: {
+                        type: "number"
+                    }
+                },{
+                    name: "address",
+                    display_name: "Address",
+                    type: "object",
+                    description: "Please enter your address",
+                    fields: [
+                        {
+                            name: "street_address",
+                            display_name: "Street Address",
+                            type: "text"
+                        },{
+                            name: "city",
+                            display_name: "City",
+                            type: "text"
+                        },{
+                            name: "zip_code",
+                            display_name: "Zip Code",
+                            type: "number",
+                            integer: true,
+                            minimum: 1,
+                            maximum: 99999
+                        }
+                    ]
+                },{
+                    name: "interests",
+                    display_name: "Interests",
+                    type: "array",
+                    description: "Please add your interests",
+                    indices: {
+                        "3n+0": {
+                            type: "text"
+                        },
+                        "3n+1": {
+                            type: "boolean"
+                        },
+                        "3n+2": {
+                            type: "number"
+                        }
+                    }
+                }
+            ]
+        }
+
+        editor.val(type_object);
+        editor.submit();
 
     })
 </script>
