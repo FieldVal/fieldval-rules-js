@@ -1,4 +1,4 @@
-fieldval_ui_extend(FVRuleEditor, FVObjectField);
+fieldval_ui_extend(FVRuleEditor, FVForm);
 
 function FVRuleEditor(name, options){
 	var editor = this;
@@ -41,7 +41,7 @@ function FVRuleEditor(name, options){
     editor.update_type_fields();
 }
 
-FVRuleEditor.prototype.update_type_fields = function(){
+FVRuleEditor.prototype.update_type_fields = function(value){
 	var editor = this;
 
 	var type = editor.fields.type.val();
@@ -54,7 +54,18 @@ FVRuleEditor.prototype.update_type_fields = function(){
 	if (type) {
 		var rule_field = FVRule.FVRuleField.types[type].class;
 		if (rule_field.add_editor_params !== undefined) {
-			rule_field.add_editor_params(editor);
+			rule_field.add_editor_params(editor, value);
 		}
 	}
+}
+
+FVRuleEditor.prototype.val = function(set_val, options) {
+	var editor = this;
+
+	if (set_val) {
+		editor.fields.type.val(set_val.type, {ignore_change: true});
+		editor.update_type_fields(set_val);
+		delete set_val.type;
+	}
+	return FVForm.prototype.val.apply(editor, arguments);
 }
