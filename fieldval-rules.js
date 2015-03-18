@@ -332,10 +332,16 @@ var FVTextRuleField = (function(){
 
         editor.add_field("min_length", new FVTextField("Minimum Length", {type: "number"}));
         editor.add_field("max_length", new FVTextField("Maximum Length", {type: "number"}));
-        
+
+        var ui_type = new FVChoiceField("UI Type", {
+            choices: ["text", "textarea", "password"]
+        })
+        editor.add_field("ui_type", ui_type);
+
         var value = editor.val();
         editor.fields.min_length.val(value.min_length);
         editor.fields.max_length.val(value.max_length);
+        editor.fields.ui_type.val(value.ui_type);
     }
 
     return FVTextRuleField;
