@@ -110,16 +110,25 @@ var FVObjectRuleField = (function(){
     }
 
     FVObjectRuleField.add_editor_params = function(editor) {
-        var field = this;
-
         var fields_field = new FVArrayField("Fields");
         fields_field.new_field = function(index){
             var inner_field = new editor.constructor(null, editor);
             fields_field.add_field(null, inner_field);
         }
-        editor.add_field("fields", fields_field);
+
+        var any = new FVBooleanField("Any");
+        any.on_change(function(value) {
+            if (value) {
+                editor.remove_field("fields");
+            } else {
+                editor.add_field("fields", fields_field);
+            }
+        })
+
+        editor.add_field("any", any);
 
         var value = editor.val();
+        any.val(value.any);
         var inner_fields = value.fields;
         if(inner_fields){
             for(var i = 0; i < value.fields.length; i++){
