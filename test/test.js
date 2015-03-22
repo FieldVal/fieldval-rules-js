@@ -10,7 +10,7 @@ describe('FVRule', function() {
 
     describe('Basic usage', function() {
 
-        it('should create a FVRule for a basic field', function(done) {
+        it('should create an FVRule for a basic field', function(done) {
 
         	var vr = new FVRule();
         	var init_output = vr.init({
@@ -109,7 +109,7 @@ describe('FVRule', function() {
             });
         });
 
-        it('should validate a FVRule', function(done) {
+        it('should validate an FVRule', function(done) {
             var vr = new FVRule();
             var type_object = {
                 "type": "string",
@@ -133,11 +133,73 @@ describe('FVRule', function() {
             done();
         });
 
-		it('should create a FVRule for a single field', function(done) {
+        it('shouldn\'t allow "object" fields to be created with any" and "fields"', function(done) {
+            var vr = new FVRule();
+            var type_object = {
+                "type": "object",
+                "any": true,
+                "fields": [
+                    {
+                        "name": "my_inner",
+                        "type": "text"
+                    }
+                ]
+            }
+            var init_result = vr.init(type_object);
+            assert.deepEqual(
+                {
+                    "invalid": {
+                        "any": {
+                            "error": 505,
+                            "error_message": "'any' can't be used with 'fields'."
+                        } 
+                    },
+                    "error_message": 'One or more errors.',
+                    "error": 5 
+                },
+                init_result
+            );
+
+            done();
+        });
+
+        it('should allow "object" fields to be created without "fields" or "any"', function(done) {
+            var vr = new FVRule();
+            var type_object = {
+                "type": "object",
+                "fields":[]
+            }
+            var init_result = vr.init(type_object);
+            assert.deepEqual(
+                null,
+                init_result
+            );
+
+            vr.validate({}, function(err){
+                assert.strictEqual(null,init_result);
+            })
+
+            vr.validate({"test":1}, function(err){
+                assert.deepEqual({ 
+                    "invalid": {
+                        "test": {
+                            "error_message": 'Unrecognized field.',
+                            "error": 3
+                        }
+                    },
+                    "error_message": 'One or more errors.',
+                    "error": 5
+                },err);
+            })
+
+            done();
+        });
+
+		it('should create an FVRule for a single field', function(done) {
             var vr = new FVRule();
             var type_object = {
                 "type": "number",
-                maximum: 20
+                "maximum": 20
             }
             var init_result = vr.init(type_object);
             assert.strictEqual(init_result,null);
@@ -154,7 +216,7 @@ describe('FVRule', function() {
             });
         });
 
-        it('should create a FVRule for an array field with 1 absolute index', function(done) {
+        it('should create an FVRule for an array field with 1 absolute index', function(done) {
             var vr = new FVRule();
             var type_object = {
                 "type": "array",
@@ -181,7 +243,145 @@ describe('FVRule', function() {
             });
         });
 
-        it('should create a FVRule for an array field with an interval rule', function(done) {
+        it('shouldn\'t allow an "array" field to be created with incomplete indices', function(done) {
+            var vr = new FVRule();
+            var type_object = {
+                "type": "array",
+                "indices": {}
+            }
+            var init_result = vr.init(type_object);
+            assert.deepEqual(
+                init_result,
+                {
+                    "invalid":{
+                        "indices":{
+                            "error":504,
+                            "error_message":"Incomplete indices pattern"
+                        }
+                    },
+                    "error_message":"One or more errors.",
+                    "error":5
+                }
+            );
+
+            var vr = new FVRule();
+            var type_object = {
+                "type": "array",
+                "indices": {
+                    "3n": {
+                        "type": "text"
+                    },
+                    "3n+0": {
+                        "type": "number"
+                    }
+                }
+            }
+            var init_result = vr.init(type_object);
+            assert.deepEqual(
+                init_result,
+                {
+                    "invalid":{
+                        "indices":{
+                            "invalid":{
+                                "3n+0":{
+                                    "error":502,
+                                    "error_message":"Index already present."
+                                }
+                            },
+                            "error_message":"One or more errors.",
+                            "error":5
+                        }
+                    },
+                    "error_message":"One or more errors.",
+                    "error":5
+                }
+            )
+
+            var vr = new FVRule();
+            var type_object = {
+                "type": "array",
+                "indices": {
+                    "2": {
+                        "type": "text"
+                    }
+                }
+            }
+            var init_result = vr.init(type_object);
+            assert.deepEqual(
+                init_result,
+                {
+                    "invalid":{
+                        "indices":{
+                            "error":504,
+                            "error_message":"Incomplete indices pattern"
+                        }
+                    },
+                    "error_message":"One or more errors.",
+                    "error":5
+                }
+            );
+
+            var vr = new FVRule();
+            var type_object = {
+                "type": "array",
+                "indices": {
+                    "3n": {
+                        "type": "text"
+                    },
+                    "3n+1": {
+                        "type": "number"
+                    }
+                }
+            }
+            var init_result = vr.init(type_object);
+            assert.deepEqual(
+                init_result,
+                {
+                    "invalid":{
+                        "indices":{
+                            "error":504,
+                            "error_message":"Incomplete indices pattern",
+                            "missing": ["3n+2"]
+                        }
+                    },
+                    "error_message":"One or more errors.",
+                    "error":5
+                }
+            );
+
+            var vr = new FVRule();
+            var type_object = {
+                "type": "array",
+                "max_length": 4,
+                "indices": {
+                    "0": {
+                        "type": "text"
+                    },
+                    "2": {
+                        "type": "number"
+                    }
+                }
+            }
+            var init_result = vr.init(type_object);
+            assert.deepEqual(
+                init_result,
+                {
+                    "invalid":{
+                        "indices":{
+                            "error":504,
+                            "error_message":"Incomplete indices pattern",
+                            "missing": ["1","3"]
+                        }
+                    },
+                    "error_message":"One or more errors.",
+                    "error":5
+                }
+            );
+
+            done();
+        });
+
+        it('should create an FVRule for an array field with an interval rule', function(done) {
             var vr = new FVRule();
             var type_object = {
                 "type": "array",
@@ -441,7 +641,7 @@ describe('FVRule', function() {
                 field.checks.push(BasicVal.object(field.required), function(val, emit){
                     var inner_validator = new FieldVal(val);
 
-                    var inner_checks = [BasicVal.number(true)];
+                    var inner_checks = [BasicVal.number(true,{})];
 
                     if(field.minimum){
                         inner_checks.push(BasicVal.minimum(field.minimum,{stop_on_error:false}));
