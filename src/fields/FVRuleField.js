@@ -35,6 +35,57 @@ var FVRuleField = (function(){
         }
     }
 
+    FVRuleField.errors = {
+        interval_conflict: function(this_interval, existing_interval) {
+            return {
+                error: 501,
+                error_message: "Only one interval can be used.",
+                interval: this_interval,
+                existing: existing_interval
+            }
+        },
+        index_already_present: function(){
+            return {
+                error: 502,
+                error_message: "Index already present."
+            }    
+        },
+        invalid_indices_format: function(){
+            return {
+                error: 503,
+                error_message: "Invalid format for an indices rule."
+            }    
+        },
+        incomplete_indicies: function(missing){
+            var error = {
+                error: 504,
+                error_message: "Incomplete indices pattern"
+            }
+            if(missing!==undefined){
+                error.missing = missing;
+            }
+            return error;
+        },
+        any_and_fields: function(){
+            return {
+                error: 505,
+                error_message: "'any' can't be used with 'fields'."
+            }    
+        },
+        max_length_not_greater_than_min_length: function(){
+            return {
+                error: 506,
+                error_message: "Must be greater than or equal to the minimum length"
+            }    
+        },
+        maximum_not_greater_than_minimum: function(){
+            return {
+                error: 507,
+                error_message: "Must be greater than or equal to the minimum"
+            }    
+        }
+    }
+
     FVRuleField.types = {};
 
     FVRuleField.add_field_type = function(field_type_data){

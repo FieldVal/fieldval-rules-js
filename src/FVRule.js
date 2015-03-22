@@ -25,29 +25,6 @@ var FVRule = (function(){
         var vr = this;
     }
 
-    FVRule.errors = {
-        interval_conflict: function(this_interval, existing_interval) {
-            return {
-                error: 501,
-                error_message: "Only one interval can be used.",
-                interval: this_interval,
-                existing: existing_interval
-            }
-        },
-        invalid_indices_format: function(){
-            return {
-                error: 502,
-                error_message: "Invalid format for an indices rule."
-            }    
-        },
-        field_type_without_any: function(){
-            return {
-                error: 503,
-                error_message: "field_type can't be used with setting any to true."
-            }    
-        }
-    }
-
     FVRule.FVRuleField = FVRuleField;
 
     //Performs validation required for saving
