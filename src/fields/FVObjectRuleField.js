@@ -185,53 +185,43 @@ var FVObjectRuleField = (function(){
             var fields_error = fields_validator.end();
             if(fields_error!=null){
                 field.validator.invalid("fields",fields_error);
+            } else {
+
+                field.checks.push(function(value,emit,done){
+
+                    var inner_validator = new FieldVal(value);
+
+                    for(var i in field.fields){
+                        var inner_field = field.fields[i];
+                        inner_field.validate_as_field(i, inner_validator);
+                    }
+
+                    return inner_validator.end(function(error){
+                        done(error);
+                    });
+                });
+
             }
         }
 
         field.any = field.validator.get("any", BasicVal.boolean(false));
-        if(!field.any){
-            field.checks.push(function(value,emit,done){
-
-                var inner_validator = new FieldVal(value);
-
-                for(var i in field.fields){
-                    var inner_field = field.fields[i];
-                    inner_field.validate_as_field(i, inner_validator);
-                }
-
-                return inner_validator.end(function(error){
-                    done(error);
-                });
-            });
-        }    
-
-        field.validator.get("field_type", BasicVal.object(false), {
-            check: function(val){
-                if(!field.any){
-                    return FVRule.errors.field_type_without_any();
-                }
-            },
-            stop_on_error: true
-        }, function(val, emit){
-            var field_creation = FVRuleField.create_field(val);
-            var err = field_creation[0];
-            field.field_type = field_creation[1];
-            if(err){
-                return err;
+        
+        if(field.any){
+            if(fields_json!==undefined){
+                field.validator.invalid("any", FVRuleField.errors.any_and_fields());
             }
-            field.checks.push(function(value,emit){
+        } else {
+            if(fields_json===undefined){
+                //No fields should be allowed in the object (empty object only)
 
-                var inner_validator = new FieldVal(value);
-
-                for(var i in value){
-                    if(value.hasOwnProperty(i)){
-                        field.field_type.validate_as_field(i, inner_validator);
-                    }
-                }
-
-                return inner_validator.end();
-            });
-        });
+                field.checks.push(function(value,emit,done){
+                    var inner_validator = new FieldVal(value);
+                    return inner_validator.end(function(error){
+                        done(error);
+                    });
+                });
+            }
+        }
 
         return field.validator.end();
     }
