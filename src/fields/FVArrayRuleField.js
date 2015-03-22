@@ -50,6 +50,7 @@ var FVArrayRuleField = (function(){
 
         field.rules = [];
         field.fields = [];
+        field.indices = {};
         field.interval = null;
         field.interval_offsets = [];
     }
@@ -120,7 +121,19 @@ var FVArrayRuleField = (function(){
 
         field.checks.push(BasicVal.array(field.required));
 
-        field.indices = {};
+        field.min_length = field.validator.get("min_length", BasicVal.integer(false), BasicVal.minimum(0));
+        if(field.min_length !== undefined){
+            field.checks.push(BasicVal.min_length(field.min_length,{stop_on_error:false}));
+        }
+
+        field.max_length = field.validator.get("max_length", BasicVal.integer(false), BasicVal.minimum(0), function(value){
+            if(field.min_length!==undefined && value<field.min_length){
+                return FVRuleField.errors.max_length_not_greater_than_min_length();
+            }
+        });
+        if(field.max_length !== undefined){
+            field.checks.push(BasicVal.max_length(field.max_length,{stop_on_error:false}));
+        }
 
         var indices_json = field.validator.get("indices", BasicVal.object(false));
 
@@ -147,16 +160,17 @@ var FVArrayRuleField = (function(){
                     if(field.interval && interval!==field.interval){
                         indices_validator.invalid(
                             index_string,
-                            FieldVal.create_error(
-                                FVRule.errors.interval_conflict,
-                                {},
-                                interval,
-                                field.interval
-                            )
+                            FVRuleField.errors.interval_conflict(interval,field.interval)
                         );
                         continue;   
                     }
                     field.interval = interval;
+                    if(field.interval_offsets[offset]!==undefined){
+                        indices_validator.invalid(
+                            index_string,
+                            FVRuleField.errors.index_already_present()
+                        );
+                    }
                     field.interval_offsets[offset] = field_json;
                 } else {
                     var integer_match = index_string.match(FVArrayRuleField.integer_regex);
@@ -168,10 +182,7 @@ var FVArrayRuleField = (function(){
                     } else {
                         indices_validator.invalid(
                             index_string,
-                            FieldVal.create_error(
-                                FVRule.errors.invalid_indices_format,
-                                {}
-                            )
+                            FVRuleField.errors.invalid_indices_format
                         );
                     }
                 }
@@ -180,6 +191,37 @@ var FVArrayRuleField = (function(){
             var indices_error = indices_validator.end();
             if(indices_error){
                 field.validator.invalid("indices", indices_error)
+            } else {
+
+                if(!field.indices['*']){
+                    //Doesn't have wildcard - must check that indices pattern is complete
+
+                    var missing = [];
+
+                    if(field.max_length!==undefined){
+                        for(var i = 0; i < field.max_length; i++){
+                            if(!field.rule_json_for_index(i)){
+                                missing.push(i);
+                            }
+                        }
+                    } else {
+
+                        if(field.interval){
+                            for(var i = 0; i < field.interval; i++){
+                                if(field.interval_offsets[i]===undefined){
+                                    missing.push(field.interval+"n"+(i===0?"":"+"+i));
+                                }
+                            }
+                        } else {
+                            //Doesn't have an interval - no patterns
+                            field.validator.invalid("indices", FVRuleField.errors.incomplete_indicies());    
+                        }
+                    }
+
+                    if(missing.length>0){
+                        field.validator.invalid("indices", FVRuleField.errors.incomplete_indicies(missing));
+                    }
+                }
             }
         }
 
