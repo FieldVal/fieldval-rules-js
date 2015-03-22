@@ -45,7 +45,7 @@ var FVBasicRuleField = (function(){
         var field = this;
         return field.ui_field.in_key_value.apply(field.ui_field, arguments);
     }
-    FVBasicRuleField.prototype.change_name = function(name) {
+    FVBasicRuleField.prototype.change_name = function() {
         var field = this;
         return field.ui_field.change_name.apply(field.ui_field, arguments);
     }
