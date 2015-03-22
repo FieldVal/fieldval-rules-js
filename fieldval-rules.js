@@ -49,6 +49,57 @@ var FVRuleField = (function(){
         }
     }
 
+    FVRuleField.errors = {
+        interval_conflict: function(this_interval, existing_interval) {
+            return {
+                error: 501,
+                error_message: "Only one interval can be used.",
+                interval: this_interval,
+                existing: existing_interval
+            }
+        },
+        index_already_present: function(){
+            return {
+                error: 502,
+                error_message: "Index already present."
+            }    
+        },
+        invalid_indices_format: function(){
+            return {
+                error: 503,
+                error_message: "Invalid format for an indices rule."
+            }    
+        },
+        incomplete_indicies: function(missing){
+            var error = {
+                error: 504,
+                error_message: "Incomplete indices pattern"
+            }
+            if(missing!==undefined){
+                error.missing = missing;
+            }
+            return error;
+        },
+        any_and_fields: function(){
+            return {
+                error: 505,
+                error_message: "'any' can't be used with 'fields'."
+            }    
+        },
+        max_length_not_greater_than_min_length: function(){
+            return {
+                error: 506,
+                error_message: "Must be greater than or equal to the minimum length"
+            }    
+        },
+        maximum_not_greater_than_minimum: function(){
+            return {
+                error: 507,
+                error_message: "Must be greater than or equal to the minimum"
+            }    
+        }
+    }
+
     FVRuleField.types = {};
 
     FVRuleField.add_field_type = function(field_type_data){
@@ -191,7 +242,7 @@ var FVBasicRuleField = (function(){
         var field = this;
         return field.ui_field.in_key_value.apply(field.ui_field, arguments);
     }
-    FVBasicRuleField.prototype.change_name = function(name) {
+    FVBasicRuleField.prototype.change_name = function() {
         var field = this;
         return field.ui_field.change_name.apply(field.ui_field, arguments);
     }
@@ -282,13 +333,14 @@ var FVTextRuleField = (function(){
         FVTextRuleField.superConstructor.call(this, json, validator);
     }
 
-    FVTextRuleField.prototype.create_ui = function(parent){
+    FVTextRuleField.prototype.create_ui = function(form){
         var field = this;
 
         field.ui_field = new FVTextField(field.display_name || field.name, {
-            name: field.json.name,
-            display_name: field.json.display_name,
-            type: field.json.ui_type
+            name: field.name,
+            display_name: field.display_name,
+            type: field.ui_type,
+            form: form
         });
 
         field.element = field.ui_field.element;
@@ -300,12 +352,16 @@ var FVTextRuleField = (function(){
 
         field.checks.push(BasicVal.string(field.required));
 
-        field.min_length = field.validator.get("min_length", BasicVal.integer(false));
+        field.min_length = field.validator.get("min_length", BasicVal.integer(false), BasicVal.minimum(0));
         if(field.min_length !== undefined){
             field.checks.push(BasicVal.min_length(field.min_length,{stop_on_error:false}));
         }
 
-        field.max_length = field.validator.get("max_length", BasicVal.integer(false));
+        field.max_length = field.validator.get("max_length", BasicVal.integer(false), BasicVal.minimum(0), function(value){
+            if(field.min_length!==undefined && value<field.min_length){
+                return FVRuleField.errors.max_length_not_greater_than_min_length();
+            }
+        });
         if(field.max_length !== undefined){
             field.checks.push(BasicVal.max_length(field.max_length,{stop_on_error:false}));
         }
@@ -315,14 +371,6 @@ var FVTextRuleField = (function(){
             "textarea",
             "password"
         ]));
-
-        //Currently unused
-        field.phrase = field.validator.get("phrase", BasicVal.string(false));
-        field.equal_to = field.validator.get("equal_to", BasicVal.string(false));
-        field.ci_equal_to = field.validator.get("ci_equal_to", BasicVal.string(false));
-        field.prefix = field.validator.get("prefix", BasicVal.string(false));
-        field.ci_prefix = field.validator.get("ci_prefix", BasicVal.string(false));
-        field.query = field.validator.get("query", BasicVal.string(false));
         
         return field.validator.end();
     }
@@ -638,53 +686,43 @@ var FVObjectRuleField = (function(){
             var fields_error = fields_validator.end();
             if(fields_error!=null){
                 field.validator.invalid("fields",fields_error);
+            } else {
+
+                field.checks.push(function(value,emit,done){
+
+                    var inner_validator = new FieldVal(value);
+
+                    for(var i in field.fields){
+                        var inner_field = field.fields[i];
+                        inner_field.validate_as_field(i, inner_validator);
+                    }
+
+                    return inner_validator.end(function(error){
+                        done(error);
+                    });
+                });
+
             }
         }
 
         field.any = field.validator.get("any", BasicVal.boolean(false));
-        if(!field.any){
-            field.checks.push(function(value,emit,done){
-
-                var inner_validator = new FieldVal(value);
-
-                for(var i in field.fields){
-                    var inner_field = field.fields[i];
-                    inner_field.validate_as_field(i, inner_validator);
-                }
-
-                return inner_validator.end(function(error){
-                    done(error);
-                });
-            });
-        }    
-
-        field.validator.get("field_type", BasicVal.object(false), {
-            check: function(val){
-                if(!field.any){
-                    return FVRule.errors.field_type_without_any();
-                }
-            },
-            stop_on_error: true
-        }, function(val, emit){
-            var field_creation = FVRuleField.create_field(val);
-            var err = field_creation[0];
-            field.field_type = field_creation[1];
-            if(err){
-                return err;
+        
+        if(field.any){
+            if(fields_json!==undefined){
+                field.validator.invalid("any", FVRuleField.errors.any_and_fields());
             }
-            field.checks.push(function(value,emit){
+        } else {
+            if(fields_json===undefined){
+                //No fields should be allowed in the object (empty object only)
 
-                var inner_validator = new FieldVal(value);
-
-                for(var i in value){
-                    if(value.hasOwnProperty(i)){
-                        field.field_type.validate_as_field(i, inner_validator);
-                    }
-                }
-
-                return inner_validator.end();
-            });
-        });
+                field.checks.push(function(value,emit,done){
+                    var inner_validator = new FieldVal(value);
+                    return inner_validator.end(function(error){
+                        done(error);
+                    });
+                });
+            }
+        }
 
         return field.validator.end();
     }
@@ -747,6 +785,7 @@ var FVArrayRuleField = (function(){
 
         field.rules = [];
         field.fields = [];
+        field.indices = {};
         field.interval = null;
         field.interval_offsets = [];
     }
@@ -817,7 +856,19 @@ var FVArrayRuleField = (function(){
 
         field.checks.push(BasicVal.array(field.required));
 
-        field.indices = {};
+        field.min_length = field.validator.get("min_length", BasicVal.integer(false), BasicVal.minimum(0));
+        if(field.min_length !== undefined){
+            field.checks.push(BasicVal.min_length(field.min_length,{stop_on_error:false}));
+        }
+
+        field.max_length = field.validator.get("max_length", BasicVal.integer(false), BasicVal.minimum(0), function(value){
+            if(field.min_length!==undefined && value<field.min_length){
+                return FVRuleField.errors.max_length_not_greater_than_min_length();
+            }
+        });
+        if(field.max_length !== undefined){
+            field.checks.push(BasicVal.max_length(field.max_length,{stop_on_error:false}));
+        }
 
         var indices_json = field.validator.get("indices", BasicVal.object(false));
 
@@ -844,16 +895,17 @@ var FVArrayRuleField = (function(){
                     if(field.interval && interval!==field.interval){
                         indices_validator.invalid(
                             index_string,
-                            FieldVal.create_error(
-                                FVRule.errors.interval_conflict,
-                                {},
-                                interval,
-                                field.interval
-                            )
+                            FVRuleField.errors.interval_conflict(interval,field.interval)
                         );
                         continue;   
                     }
                     field.interval = interval;
+                    if(field.interval_offsets[offset]!==undefined){
+                        indices_validator.invalid(
+                            index_string,
+                            FVRuleField.errors.index_already_present()
+                        );
+                    }
                     field.interval_offsets[offset] = field_json;
                 } else {
                     var integer_match = index_string.match(FVArrayRuleField.integer_regex);
@@ -865,10 +917,7 @@ var FVArrayRuleField = (function(){
                     } else {
                         indices_validator.invalid(
                             index_string,
-                            FieldVal.create_error(
-                                FVRule.errors.invalid_indices_format,
-                                {}
-                            )
+                            FVRuleField.errors.invalid_indices_format
                         );
                     }
                 }
@@ -877,6 +926,37 @@ var FVArrayRuleField = (function(){
             var indices_error = indices_validator.end();
             if(indices_error){
                 field.validator.invalid("indices", indices_error)
+            } else {
+
+                if(!field.indices['*']){
+                    //Doesn't have wildcard - must check that indices pattern is complete
+
+                    var missing = [];
+
+                    if(field.max_length!==undefined){
+                        for(var i = 0; i < field.max_length; i++){
+                            if(!field.rule_json_for_index(i)){
+                                missing.push(i);
+                            }
+                        }
+                    } else {
+
+                        if(field.interval){
+                            for(var i = 0; i < field.interval; i++){
+                                if(field.interval_offsets[i]===undefined){
+                                    missing.push(field.interval+"n"+(i===0?"":"+"+i));
+                                }
+                            }
+                        } else {
+                            //Doesn't have an interval - no patterns
+                            field.validator.invalid("indices", FVRuleField.errors.incomplete_indicies());    
+                        }
+                    }
+
+                    if(missing.length>0){
+                        field.validator.invalid("indices", FVRuleField.errors.incomplete_indicies(missing));
+                    }
+                }
             }
         }
 
@@ -1399,29 +1479,6 @@ var FVRule = (function(){
 
     function FVRule() {
         var vr = this;
-    }
-
-    FVRule.errors = {
-        interval_conflict: function(this_interval, existing_interval) {
-            return {
-                error: 501,
-                error_message: "Only one interval can be used.",
-                interval: this_interval,
-                existing: existing_interval
-            }
-        },
-        invalid_indices_format: function(){
-            return {
-                error: 502,
-                error_message: "Invalid format for an indices rule."
-            }    
-        },
-        field_type_without_any: function(){
-            return {
-                error: 503,
-                error_message: "field_type can't be used with setting any to true."
-            }    
-        }
     }
 
     FVRule.FVRuleField = FVRuleField;

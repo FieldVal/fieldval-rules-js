@@ -49,13 +49,14 @@ var FVTextRuleField = (function(){
         FVTextRuleField.superConstructor.call(this, json, validator);
     }
 
-    FVTextRuleField.prototype.create_ui = function(parent){
+    FVTextRuleField.prototype.create_ui = function(form){
         var field = this;
 
         field.ui_field = new FVTextField(field.display_name || field.name, {
-            name: field.json.name,
-            display_name: field.json.display_name,
-            type: field.json.ui_type
+            name: field.name,
+            display_name: field.display_name,
+            type: field.ui_type,
+            form: form
         });
 
         field.element = field.ui_field.element;
@@ -67,12 +68,16 @@ var FVTextRuleField = (function(){
 
         field.checks.push(BasicVal.string(field.required));
 
-        field.min_length = field.validator.get("min_length", BasicVal.integer(false));
+        field.min_length = field.validator.get("min_length", BasicVal.integer(false), BasicVal.minimum(0));
         if(field.min_length !== undefined){
             field.checks.push(BasicVal.min_length(field.min_length,{stop_on_error:false}));
         }
 
-        field.max_length = field.validator.get("max_length", BasicVal.integer(false));
+        field.max_length = field.validator.get("max_length", BasicVal.integer(false), BasicVal.minimum(0), function(value){
+            if(field.min_length!==undefined && value<field.min_length){
+                return FVRuleField.errors.max_length_not_greater_than_min_length();
+            }
+        });
         if(field.max_length !== undefined){
             field.checks.push(BasicVal.max_length(field.max_length,{stop_on_error:false}));
         }
@@ -82,14 +87,6 @@ var FVTextRuleField = (function(){
             "textarea",
             "password"
         ]));
-
-        //Currently unused
-        field.phrase = field.validator.get("phrase", BasicVal.string(false));
-        field.equal_to = field.validator.get("equal_to", BasicVal.string(false));
-        field.ci_equal_to = field.validator.get("ci_equal_to", BasicVal.string(false));
-        field.prefix = field.validator.get("prefix", BasicVal.string(false));
-        field.ci_prefix = field.validator.get("ci_prefix", BasicVal.string(false));
-        field.query = field.validator.get("query", BasicVal.string(false));
         
         return field.validator.end();
     }
