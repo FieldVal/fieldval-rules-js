@@ -10,6 +10,8 @@ var path = require('path');
 
 var mocha = require('gulp-mocha');
 
+var docs_to_json = require('sa-docs-to-json');
+
 gulp.task('js', function(){
     return gulp.src([
         'src/FVRule_bower.js'
@@ -31,8 +33,15 @@ gulp.task('test', function(){
     .pipe(mocha());
 });
 
+gulp.task('docs', function() {
+    return gulp.src('./docs_src/*.json')
+    .pipe(docs_to_json())
+    .pipe(gulp.dest('./docs/'))
+});
+
 gulp.task('default', function(){
+    gulp.start('js','docs');
     gulp.watch(['src/**/*.js'], ['js']);
     gulp.watch(['test/**/*.js'], ['test']);
-    gulp.start('js');
+    gulp.watch(['docs_src/**/*'], ['docs']);
 });

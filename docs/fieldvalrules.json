@@ -117,6 +117,15 @@
                     "text": "<p>Checks if the value is a valid email address.</p>\n"
                 },
                 {
+                    "name": "key_value",
+                    "code": [
+                        {
+                            "contents": "{\n\t\"type\": \"key_value\",\n\t\"name\": \"my_object\", //optional\n\t\"value_field\": {\n\t\t\"type\": \"number\",\n\t\t\"minimum\": 5\n\t}\n}"
+                        }
+                    ],
+                    "text": "<p>Checks if the value is an object and each value complies the specified <code>value_field</code> rule.</p>\n<ul>\n<li><code>value_field</code> is a rule. </li>\n</ul>\n"
+                },
+                {
                     "name": "number",
                     "code": [
                         {

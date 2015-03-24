@@ -11,16 +11,6 @@ var FVChoiceRuleField = (function(){
     var FieldVal = _FieldVal;
     var BasicVal = FieldVal.BasicVal;
 
-    var _FVBasicRuleField;
-    if(this.FVRuleField !== undefined){
-        _FVBasicRuleField = this.FVBasicRuleField;
-    } else if((typeof require) === 'function'){
-        _FVBasicRuleField = require('./FVBasicRuleField');    
-    } else {
-        throw new Error("FVBasicRuleField is missing");
-    }
-    var FVBasicRuleField = _FVBasicRuleField;
-
     var _FVRuleField;
     if(this.FVRuleField !== undefined){
         _FVRuleField = this.FVRuleField;
@@ -41,7 +31,7 @@ var FVChoiceRuleField = (function(){
     }
     var extend = _extend;
 
-    extend(FVChoiceRuleField, FVBasicRuleField);
+    extend(FVChoiceRuleField, FVRuleField);
 
     function FVChoiceRuleField(json, validator) {
         var field = this;
@@ -49,12 +39,17 @@ var FVChoiceRuleField = (function(){
         FVChoiceRuleField.superConstructor.call(this, json, validator);
     }
 
-    FVChoiceRuleField.prototype.create_ui = function(parent){
+    FVChoiceRuleField.prototype.create_ui = function(use_form){
         var field = this;
 
         field.json.choices = field.choices;
 
-        field.ui_field = new FVChoiceField(field.display_name || field.name, field.json);
+        field.ui_field = new FVChoiceField(field.display_name || field.name, {
+            name: field.name,
+            display_name: field.display_name,
+            choices: field.choices,
+            use_form: use_form
+        });
         field.element = field.ui_field.element;
         return field.ui_field;
     }

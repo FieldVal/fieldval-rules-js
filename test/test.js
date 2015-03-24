@@ -179,7 +179,9 @@ describe('FVRule', function() {
                 assert.strictEqual(null,init_result);
             })
 
-            vr.validate({"test":1}, function(err){
+            vr.validate({
+                "test": 1
+            }, function(err){
                 assert.deepEqual({ 
                     "invalid": {
                         "test": {
@@ -188,6 +190,45 @@ describe('FVRule', function() {
                         }
                     },
                     "error_message": 'One or more errors.',
+                    "error": 5
+                },err);
+            })
+
+            done();
+        });
+
+        it('should allow "key_value" fields to be created', function(done) {
+            var vr = new FVRule();
+            var type_object = {
+                "type": "key_value",
+                "value_field":{
+                    "type":"number"
+                }
+            }
+            var init_result = vr.init(type_object);
+            assert.deepEqual(
+                null,
+                init_result
+            );
+
+            vr.validate({}, function(err){
+                assert.strictEqual(null,init_result);
+            })
+
+            vr.validate({
+                "test":1,
+                "test_2":"abc"
+            }, function(err){
+                assert.deepEqual({
+                    "invalid": {
+                        "test_2": {
+                            "error_message": "Incorrect field type. Expected number, but received string.",
+                            "error": 2,
+                            "expected": "number",
+                            "received": "string"
+                        }
+                    },
+                    "error_message": "One or more errors.",
                     "error": 5
                 },err);
             })

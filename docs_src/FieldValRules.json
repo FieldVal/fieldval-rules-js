@@ -79,6 +79,11 @@
                     "code": "FieldTypes/email/email.code"
                 },
                 {
+                    "name": "key_value",
+                    "text": "FieldTypes/key_value/key_value.md",
+                    "code": "FieldTypes/key_value/key_value.code"
+                },
+                {
                     "name": "number",
                     "text": "FieldTypes/number/number.md",
                     "code": "FieldTypes/number/number.code"

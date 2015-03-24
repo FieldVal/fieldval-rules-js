@@ -11,16 +11,6 @@ var FVNumberRuleField = (function(){
     var FieldVal = _FieldVal;
     var BasicVal = FieldVal.BasicVal;
 
-    var _FVBasicRuleField;
-    if(this.FVRuleField !== undefined){
-        _FVBasicRuleField = this.FVBasicRuleField;
-    } else if((typeof require) === 'function'){
-        _FVBasicRuleField = require('./FVBasicRuleField');    
-    } else {
-        throw new Error("FVBasicRuleField is missing");
-    }
-    var FVBasicRuleField = _FVBasicRuleField;
-
     var _FVRuleField;
     if(this.FVRuleField !== undefined){
         _FVRuleField = this.FVRuleField;
@@ -41,7 +31,7 @@ var FVNumberRuleField = (function(){
     }
     var extend = _extend;
 
-    extend(FVNumberRuleField, FVBasicRuleField);
+    extend(FVNumberRuleField, FVRuleField);
 
     function FVNumberRuleField(json, validator) {
         var field = this;
@@ -49,10 +39,15 @@ var FVNumberRuleField = (function(){
         FVNumberRuleField.superConstructor.call(this, json, validator);
     }
 
-    FVNumberRuleField.prototype.create_ui = function(parent){
+    FVNumberRuleField.prototype.create_ui = function(use_form){
         var field = this;
 
-        field.ui_field = new FVTextField(field.display_name || field.name, field.json);
+        field.ui_field = new FVTextField(field.display_name || field.name, {
+            name: field.name,
+            display_name: field.display_name,
+            type: "number",
+            use_form: use_form
+        });
         field.element = field.ui_field.element;
         return field.ui_field;
     }

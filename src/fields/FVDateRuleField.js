@@ -11,16 +11,6 @@ var FVDateRuleField = (function(){
     var FieldVal = _FieldVal;
     var BasicVal = FieldVal.BasicVal;
 
-    var _FVBasicRuleField;
-    if(this.FVRuleField !== undefined){
-        _FVBasicRuleField = this.FVBasicRuleField;
-    } else if((typeof require) === 'function'){
-        _FVBasicRuleField = require('./FVBasicRuleField');    
-    } else {
-        throw new Error("FVBasicRuleField is missing");
-    }
-    var FVBasicRuleField = _FVBasicRuleField;
-
     var _FVRuleField;
     if(this.FVRuleField !== undefined){
         _FVRuleField = this.FVRuleField;
@@ -41,7 +31,7 @@ var FVDateRuleField = (function(){
     }
     var extend = _extend;
 
-    extend(FVDateRuleField, FVBasicRuleField);
+    extend(FVDateRuleField, FVRuleField);
 
     function FVDateRuleField(json, validator) {
         var field = this;
@@ -49,12 +39,13 @@ var FVDateRuleField = (function(){
         FVDateRuleField.superConstructor.call(this, json, validator);
     }
 
-    FVDateRuleField.prototype.create_ui = function(parent){
+    FVDateRuleField.prototype.create_ui = function(use_form){
         var field = this;
 
         field.ui_field = new FVDateField(field.display_name || field.name, {
-            name: field.json.name,
-            display_name: field.json.display_name,
+            name: field.name,
+            display_name: field.display_name,
+            use_form: use_form,
             format: field.date_format
         });
 
