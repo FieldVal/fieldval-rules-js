@@ -1,0 +1,104 @@
+{
+    "name": "FieldVal Rules",
+    "text": "FieldValRules.md",
+    "code": [{
+        "path": "FieldValRules.code",
+        "name": "Code",
+        "runnable_path": "FieldValRules_runnable.code",
+        "type": "js",
+        "runnable": true,
+        "demo": true,
+        "css_external": "__CURRENT_DOMAIN__/demo_files/minimal.css",
+        "js_library": "jquery",
+        "js_external": [
+            "__CURRENT_DOMAIN__/demo_files/fieldval.js",
+            "__CURRENT_DOMAIN__/demo_files/fieldval-ui.js",
+            "__CURRENT_DOMAIN__/demo_files/fieldval-rules.js"
+        ]
+    }],
+    "sections": [
+        {
+            "name": "Node Usage",
+            "text": "GetNode/GetNode.md",
+            "code": "GetNode/GetNode.code"
+        },
+    	{
+            "name": "Browser Usage",
+            "text": "GetBrowser/GetBrowser.md",
+            "code": "GetBrowser/GetBrowser.code",
+            "sections":[
+                {
+                    "name": "Bower",
+                    "text": "GetBrowser/BrowserBower/BrowserBower.md"
+                },
+                {
+                    "name": "Manual Install",
+                    "text": "GetBrowser/BrowserManual/BrowserManual.md"
+                }
+            ]
+        },
+        {
+            "name": "Examples",
+            "text": "Examples/Examples.md",
+            "sections" : [
+                {
+                    "name": "Endpoint Validation",
+                    "text": "Examples/EndpointValidation/EndpointValidation.md",
+                    "code": "Examples/EndpointValidation/EndpointValidation.code"
+                }
+            ]
+        },
+        {
+            "name": "Field Types",
+            "text": "FieldTypes/FieldTypes.md",
+            "code": "FieldTypes/FieldTypes.code",
+            "sections" : [
+                {
+                    "name": "array",
+                    "text": "FieldTypes/array/array.md",
+                    "code": "FieldTypes/array/array.code"
+                },
+                {
+                    "name": "boolean",
+                    "text": "FieldTypes/boolean/boolean.md",
+                    "code": "FieldTypes/boolean/boolean.code"
+                },
+                {
+                    "name": "choice",
+                    "text": "FieldTypes/choice/choice.md",
+                    "code": "FieldTypes/choice/choice.code"
+                },
+                {
+                    "name": "date",
+                    "text": "FieldTypes/date/date.md",
+                    "code": "FieldTypes/date/date.code"
+                },
+                {
+                    "name": "email",
+                    "text": "FieldTypes/email/email.md",
+                    "code": "FieldTypes/email/email.code"
+                },
+                {
+                    "name": "number",
+                    "text": "FieldTypes/number/number.md",
+                    "code": "FieldTypes/number/number.code"
+                },
+                {
+                    "name": "object",
+                    "text": "FieldTypes/object/object.md",
+                    "code": "FieldTypes/object/object.code"
+                },
+                {
+                    "name": "text",
+                    "text": "FieldTypes/text/text.md",
+                    "code": "FieldTypes/text/text.code"
+                }
+            ]
+        },
+        {
+            "name": "Custom Rules",
+            "text": "CustomRules/CustomRules.md",
+            "code": "CustomRules/CustomRules.code"
+        }
+    ]
+}

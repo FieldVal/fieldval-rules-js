@@ -1,0 +1,6 @@
+{
+	"type": "text",
+	"name": "my_text", //optional
+	"min_length": 5, //optional
+	"max_length": 10 //optional
+}

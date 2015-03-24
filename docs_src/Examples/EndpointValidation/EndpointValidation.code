@@ -1,0 +1,35 @@
+var FVRule = require('fieldval-rules');
+
+var express = require('express');
+var bodyParser = require('body-parser');
+
+var rule = new FVRule();
+var rule_error = rule.init({
+	"type": "object",
+	"fields":[
+		{
+			"name": "id",
+			"type": "number",
+			"integer": true
+		},{
+			"name": "username",
+			"type": "text"
+		}
+	]
+});
+
+var app = express();
+app.use(bodyParser.json());
+
+app.post('/', function (req, res) {
+	rule.validate(req.body, function(error){
+		if (error) {
+			return res.json(error);
+		}
+
+		//Proceed with the code
+		res.json({success:true})
+	});
+})
+
+app.listen(3000);

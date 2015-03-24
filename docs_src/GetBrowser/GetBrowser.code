@@ -1,0 +1,42 @@
+<script type="text/javascript" src="/PATH_TO/fieldval.js"></script>
+<script type="text/javascript" src="/PATH_TO/fieldval-ui.js"></script>
+<script type="text/javascript" src="/PATH_TO/fieldval-rules.js"></script>
+<script type="text/javascript">
+
+$(document).ready(function(){
+	var rule = new FVRule();
+	var rule_error = rule.init({
+		"type": "object",
+		"fields":[
+			{
+				"name": "my_email",
+				"type": "email"
+			},{
+				"name": "my_password",
+				"type": "text",
+				"min_length": 8,
+				"ui_type": "password"
+			}
+		]
+	});
+
+	var form = rule.create_form();
+
+	form.on_submit(function(value){
+		rule.validate(value, function(error){
+			form.error(error);
+			if(error){
+				console.log(error)
+			} else {
+				//Do something with the valid data
+				console.log(value);
+			}
+		});
+	})
+
+	form.element.append(
+		$("<button/>").text("Submit")
+	).appendTo("body");
+});
+
+</script>

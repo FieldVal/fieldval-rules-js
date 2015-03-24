@@ -1,0 +1,59 @@
+$(document).ready(function(){
+
+	var output = $("<pre/>");
+	var display_output = function(value) {
+		output.text("Form output:\n" + JSON.stringify(value, null, 4));
+	};
+
+	var rule = new FVRule();
+	var rule_error = rule.init({
+		"type": "object",
+		"fields":[
+			{
+				"name": "my_email",
+				"type": "email"
+			},{
+				"name": "my_integer",
+				"type": "number",
+				"integer": true
+			},{
+				"name": "optional_text",
+				"type": "text",
+				"required": false,
+				"min_length": 10,
+				"ui_type": "textarea"
+			},{
+				"name": "secret_key",
+				"type": "text",
+				"min_length": 8,
+				"ui_type": "password"
+			}
+		]
+	});
+
+	var form = rule.create_form();
+	
+	form.on_submit(function(value){
+		rule.validate(value, function(error){
+			form.error(error);
+			if(error){
+				display_output(error);
+			} else {
+				display_output(value);
+			}
+		});
+	});
+
+	form.val({
+		"my_email": "notanemail",
+		"my_integer": "1234.5",
+		"optional_text": "This is optional text",
+		"secret_key": "pswd"
+	});
+
+	form.element.append(
+		$("<button/>").text("Submit")
+	).appendTo("body");
+
+	output.appendTo("body");
+});

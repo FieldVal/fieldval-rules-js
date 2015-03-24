@@ -1,0 +1,7 @@
+{
+	"type": "number",
+	"name": "my_number", //optional
+	"minimum": 5, //optional
+	"maximum": 10, //optional
+	"integer": true //optional
+}

@@ -1,0 +1,7 @@
+{
+	"name": "my_field",
+	"display_name": "My Field",
+	"description": "This is an example field",
+	"type": "text",
+	"required": true
+}
