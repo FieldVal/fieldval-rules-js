@@ -21,17 +21,17 @@ var FVNumberRuleField = (function(){
     }
     var FVRuleField = _FVRuleField;
 
-    var _extend;
-    if(this.extend !== undefined){
-        _extend = this.extend;
+    var _fieldval_rules_extend;
+    if(this.fieldval_rules_extend !== undefined){
+        _fieldval_rules_extend = this.fieldval_rules_extend;
     } else if((typeof require) === 'function'){
-        _extend = require('extend');
+        _fieldval_rules_extend = require('../fieldval_rules_extend');
     } else {
-        throw new Error("extend() is missing");
+        throw new Error("fieldval_rules_extend() is missing");
     }
-    var extend = _extend;
+    var fieldval_rules_extend = _fieldval_rules_extend;
 
-    extend(FVNumberRuleField, FVRuleField);
+    fieldval_rules_extend(FVNumberRuleField, FVRuleField);
 
     function FVNumberRuleField(json, validator) {
         var field = this;

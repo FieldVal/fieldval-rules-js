@@ -15,7 +15,7 @@
         /* Extend FVRuleField to provide basic rule 
          * field functionality. This class expects the 
          * UI field created to be present at field.ui_field. */
-        extend(MyCustomFieldClass, FVRule.FVRuleField);
+        fieldval_rules_extend(MyCustomFieldClass, FVRule.FVRuleField);
 
         function MyCustomFieldClass(json, validator) {
             var field = this;
