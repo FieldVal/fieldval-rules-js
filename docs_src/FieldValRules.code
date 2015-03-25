@@ -31,10 +31,10 @@ var rule_error = rule.init({
 var form = rule.create_form();
 
 form.on_submit(function(value){
-	rule.validate(value, function(error){
-		form.error(error);
-		if(error){
-			console.log(error);
+	rule.validate(value, function(validation_error){
+		form.error(validation_error);
+		if(validation_error){
+			console.log(validation_error);
 		} else {
 			console.log(value);
 		}
