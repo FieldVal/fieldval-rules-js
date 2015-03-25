@@ -1,7 +1,7 @@
 var assert = require("assert")
 var FVRule = require('../src/FVRule')
 
-var extend = require('extend');
+var fieldval_rules_extend = require('../src/fieldval_rules_extend');
 
 var FieldVal = require('fieldval');
 var BasicVal = FieldVal.BasicVal;
@@ -665,7 +665,7 @@ describe('FVRule', function() {
     describe('Custom fields', function(){
         it('should allow adding custom field types', function(){
 
-            extend(CustomLocationRuleField, FVRule.FVRuleField);
+            fieldval_rules_extend(CustomLocationRuleField, FVRule.FVRuleField);
             function CustomLocationRuleField(json, validator) {
                 var field = this;
 
@@ -746,7 +746,7 @@ describe('FVRule', function() {
 
         it('should support async checks', function(done){
 
-            extend(CustomRuleField, FVRule.FVRuleField);
+            fieldval_rules_extend(CustomRuleField, FVRule.FVRuleField);
             function CustomRuleField(json, validator) {
                 var field = this;
 
