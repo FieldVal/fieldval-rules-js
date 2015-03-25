@@ -1,0 +1,180 @@
+<script src="bower_components/jquery/dist/jquery.js"></script>
+
+<script src="node_modules/fieldval/fieldval.js"></script>
+<script src="node_modules/fieldval-ui/fieldval-ui.js"></script>
+<script src="fieldval-rules.js"></script>
+
+<!-- Apply the "minimal" theme to FieldVal-UI -->
+<link rel="stylesheet" type="text/css" href="node_modules/fieldval-ui/themes/minimal.css">
+<script src="node_modules/fieldval-ui/themes/minimal.js"></script>
+
+<script>
+    $(document).ready(function(){
+
+
+        /* Extend FVRuleField to provide basic rule 
+         * field functionality. This class expects the 
+         * UI field created to be present at field.ui_field. */
+        extend(MyCustomFieldClass, FVRule.FVRuleField);
+
+        function MyCustomFieldClass(json, validator) {
+            var field = this;
+
+            MyCustomFieldClass.superConstructor.call(this, json, validator);
+        }
+
+        /* init is called to validate the content of the rule.
+         * Check for parameter values and return any errors. It 
+         * is also where you should build an array of checks to 
+         * run against the value. */
+        MyCustomFieldClass.prototype.init = function() {
+            var field = this;
+
+            field.prefix = field.validator.get("prefix", BasicVal.string(true), BasicVal.max_length(3));
+
+            field.minimum_id = field.validator.get("minimum_id", BasicVal.integer(true));
+
+            var parameter_error = field.validator.end();
+
+            /* Will return an error upon instantiating the rule if "prefix" 
+             * or "minimum_id" are missing or invalid */
+            if(parameter_error){
+                return parameter_error;
+            }
+
+            /* Add the checks that this rule will run against 
+             * the value */
+            field.checks.push(
+                /* Check that the value is a string (and is required) */
+                BasicVal.string(field.required),
+
+                /* Check for the specified prefix */
+                BasicVal.prefix(field.prefix),
+                
+                /* Removes the prefix from the value for subsequent checks */
+                function(val, emit){
+                    emit(val.substring(field.prefix.length));
+                },
+                
+                /* Checks that the value after the prefix is 
+                 * an integer */
+                BasicVal.integer({required: true, parse: true, error: {
+                    "error_message": "Non-integer after \""+field.prefix+"\" prefix",
+                    "error": 1000
+                }}),
+                
+                /* Checks that the integer value after the prefix 
+                 * is above the specified minimum */
+                BasicVal.minimum(field.minimum_id, {
+                    error:{
+                        "error_message": "Id after prefix is less than "+field.minimum_id,
+                        "error": 1001
+                    }
+                })
+            );
+        }
+
+        /* add_editor_params is a static function that adds 
+         * fields to the provided editor for the parameters 
+         * this rule type has. */
+        MyCustomFieldClass.add_editor_params = function(editor) {
+            var field = this;
+
+            editor.add_field("prefix", new FVTextField("Custom Prefix", {type: "number"}));
+            editor.add_field("minimum_id", new FVTextField("Minimum ID", {type: "number"}));
+        }
+
+        /* create_ui should build and return a FieldVal UI-compatible 
+         * field for this rule type. */
+        MyCustomFieldClass.prototype.create_ui = function(use_form){
+            var field = this;
+
+            field.ui_field = new FVTextField(field.display_name || field.name, {
+                name: field.name,
+                display_name: field.display_name,
+                type: "text",
+                use_form: use_form
+            });
+
+            field.element = field.ui_field.element;
+            return field.ui_field;
+        }
+
+        /* Adds this class to FVRule such that it can be referenced 
+         * by the specified name within other rules. */
+        FVRule.add_rule_type({
+            name: 'custom_field',
+            display_name: 'Custom Field',
+            class: MyCustomFieldClass
+        });
+
+
+
+        editor = new FVRuleEditor("Editor", {form:true});
+        $("body").append(
+            editor.element.append(
+                $("<button/>").text("Validate")
+            )            
+        )
+
+        var output = $("<pre/>");
+        output.appendTo("body");
+
+        var form_container = $("<div/>");
+        form_container.appendTo("body");
+
+        editor.on_submit(function(value) {
+            var rule = new FVRule();
+            var error = rule.init(value);
+            editor.clear_errors();
+            form_container.empty();
+            if (error) {
+                console.log(error);
+                editor.error(error);
+                output.text(JSON.stringify(error, null, 4));
+            } else {
+                output.text(JSON.stringify(value, null, 4));
+
+                var form = rule.create_form();
+                var form_output;
+                form_container.append(
+                    $("<button />").text("Enable").on('click',function(){
+                        form.enable();
+                    }),
+                    $("<button />").text("Disable").on('click',function(){
+                        form.disable();
+                    }),
+                    form.element.append(
+                        $("<button/>").text("Submit")
+                    ),
+                    form_output = $("<pre />")
+                )
+
+                form.on_submit(function(value) {
+                    form.clear_errors();
+                    rule.validate(value, function(error) {
+                        form.error(error)
+                        if(error){
+                            console.log(error);
+                            form_output.text('"error": '+JSON.stringify(error,null,4));
+                        } else {
+                            form_output.text('"object": '+JSON.stringify(value,null,4));
+                        }
+                    })
+                })
+            }
+        })
+
+        var type_object = {
+            "name": "custom_example",
+            "display_name": "Custom Field Example",
+            "type": "custom_field",
+            "prefix": "abc",
+            "minimum_id": 1000
+        };
+
+        editor.val(type_object);
+        editor.submit();
+
+    })
+</script>

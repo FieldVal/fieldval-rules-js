@@ -56,9 +56,8 @@ $(document).ready(function(){
             },{
                 name: "key_value",
                 display_name: "Key Value",
-                type: "object",
-                any: true,
-                field_type: {
+                type: "key_value",
+                value_field: {
                     type: "number"
                 }
             },{
@@ -135,6 +134,12 @@ $(document).ready(function(){
     })
 
     $("body").append(
+        $("<button />").text("Enable").on('click',function(){
+            form.enable();
+        }),
+        $("<button />").text("Disable").on('click',function(){
+            form.disable();
+        }),
         form.element.append(
             $("<button />").text("Submit")
         ),
