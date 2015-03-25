@@ -6,7 +6,7 @@ To create a rule, create a ```new FVRule()``` and call ```.init(rule_json)``` on
 
 The rule JSON is validated and any errors will be returned by ```.init```.
 
-In a browser, calling ```.create_form()``` on the ```FVRule``` will return a [FieldVal UI](/docs/fieldvalui/) field in a <form/> as shown.
+In a browser, calling ```.create_form()``` on the ```FVRule``` will return a [FieldVal UI](/docs/fieldvalui/) field in a ```<form/>``` as shown.
 
 Then use ```.validate(data,callback)``` on the ```FVRule``` to validate data against the rule and get a callback with the error, or ```null``` if there was no error.
 

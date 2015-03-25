@@ -1,12 +1,12 @@
-<script src="bower_components/jquery/dist/jquery.js"></script>
+<script src="../bower_components/jquery/dist/jquery.js"></script>
 
-<script src="node_modules/fieldval/fieldval.js"></script>
-<script src="node_modules/fieldval-ui/fieldval-ui.js"></script>
-<script src="fieldval-rules.js"></script>
+<script src="../node_modules/fieldval/fieldval.js"></script>
+<script src="../node_modules/fieldval-ui/fieldval-ui.js"></script>
+<script src="../fieldval-rules.js"></script>
 
 <!-- Apply the "minimal" theme to FieldVal-UI -->
-<link rel="stylesheet" type="text/css" href="node_modules/fieldval-ui/themes/minimal.css">
-<script src="node_modules/fieldval-ui/themes/minimal.js"></script>
+<link rel="stylesheet" type="text/css" href="../node_modules/fieldval-ui/themes/minimal.css">
+<script src="../node_modules/fieldval-ui/themes/minimal.js"></script>
 
 <script>
 
@@ -47,17 +47,17 @@ event_vr.init(event_rule);
 
 $(document).ready(function(){
 
-    extend(CustomAsyncClass, FVBasicRuleField);
+    extend(CustomAsyncClass, FVRuleField);
     function CustomAsyncClass(json,validator){
         var field = this;
 
         CustomAsyncClass.superConstructor.call(this, json, validator);
     }
-    CustomAsyncClass.prototype.create_ui = function(form){
+    CustomAsyncClass.prototype.create_ui = function(use_form){
         var field = this;
 
         field.ui_field = new FVProxyField(field.display_name || field.name, {
-            "form": form
+            "use_form": use_form
         });
         field.ui_field.on_change(function(){
             console.log("UI FIELD ON CHANGE",arguments);

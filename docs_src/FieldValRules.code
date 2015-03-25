@@ -4,19 +4,23 @@ var rule_error = rule.init({
 	"fields":[
 		{
 			"name": "my_email",
+			"display_name": "My Email",
 			"type": "email"
 		},{
 			"name": "my_integer",
+			"display_name": "My Integer",
 			"type": "number",
 			"integer": true
 		},{
 			"name": "optional_text",
+			"display_name": "Optional Text",
 			"type": "text",
 			"required": false,
 			"min_length": 10,
 			"ui_type": "textarea"
 		},{
 			"name": "secret_key",
+			"display_name": "Secret Key",
 			"type": "text",
 			"min_length": 8,
 			"ui_type": "password"
