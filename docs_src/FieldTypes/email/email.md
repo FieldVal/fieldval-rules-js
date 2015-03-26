@@ -1,0 +1,1 @@
+Checks if the value is a valid email address.

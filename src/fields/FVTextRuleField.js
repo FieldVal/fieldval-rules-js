@@ -11,16 +11,6 @@ var FVTextRuleField = (function(){
     var FieldVal = _FieldVal;
     var BasicVal = FieldVal.BasicVal;
 
-    var _FVBasicRuleField;
-    if(this.FVRuleField !== undefined){
-        _FVBasicRuleField = this.FVBasicRuleField;
-    } else if((typeof require) === 'function'){
-        _FVBasicRuleField = require('./FVBasicRuleField');    
-    } else {
-        throw new Error("FVBasicRuleField is missing");
-    }
-    var FVBasicRuleField = _FVBasicRuleField;
-
     var _FVRuleField;
     if(this.FVRuleField !== undefined){
         _FVRuleField = this.FVRuleField;
@@ -31,17 +21,17 @@ var FVTextRuleField = (function(){
     }
     var FVRuleField = _FVRuleField;
 
-    var _extend;
-    if(this.extend !== undefined){
-        _extend = this.extend;
+    var _fieldval_rules_extend;
+    if(this.fieldval_rules_extend !== undefined){
+        _fieldval_rules_extend = this.fieldval_rules_extend;
     } else if((typeof require) === 'function'){
-        _extend = require('extend');
+        _fieldval_rules_extend = require('../fieldval_rules_extend');
     } else {
-        throw new Error("extend() is missing");
+        throw new Error("fieldval_rules_extend() is missing");
     }
-    var extend = _extend;
+    var fieldval_rules_extend = _fieldval_rules_extend;
 
-    extend(FVTextRuleField, FVBasicRuleField);
+    fieldval_rules_extend(FVTextRuleField, FVRuleField);
 
     function FVTextRuleField(json, validator) {
         var field = this;
@@ -49,14 +39,14 @@ var FVTextRuleField = (function(){
         FVTextRuleField.superConstructor.call(this, json, validator);
     }
 
-    FVTextRuleField.prototype.create_ui = function(form){
+    FVTextRuleField.prototype.create_ui = function(use_form){
         var field = this;
 
         field.ui_field = new FVTextField(field.display_name || field.name, {
             name: field.name,
             display_name: field.display_name,
             type: field.ui_type,
-            form: form
+            use_form: use_form
         });
 
         field.element = field.ui_field.element;
@@ -101,11 +91,6 @@ var FVTextRuleField = (function(){
             choices: ["text", "textarea", "password"]
         })
         editor.add_field("ui_type", ui_type);
-
-        var value = editor.val();
-        editor.fields.min_length.val(value.min_length);
-        editor.fields.max_length.val(value.max_length);
-        editor.fields.ui_type.val(value.ui_type);
     }
 
     return FVTextRuleField;

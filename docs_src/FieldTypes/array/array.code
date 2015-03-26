@@ -1,0 +1,72 @@
+//wildcard index
+{
+	"type": "array",
+	"name": "my_array", //optional
+	"max_length": 6, //optional
+	"indices": {
+		"*": {
+			"type": "number",
+			"minimum": 10
+		}
+	}
+}
+//matches:
+[
+	1,
+	3,
+	4,
+	6,
+	8,
+	9
+]
+
+// simple "n" pattern
+{
+	"type": "array",
+	"indices": {
+		"2n": {
+			"type": "text"
+		},
+		"2n+1": {
+			"type": "number"
+		}
+	}
+}
+//matches:
+[
+	"one",
+	2,
+	"three",
+	4,
+	"five",
+	6
+]
+
+
+// "n" pattern with absolute override
+{
+	"type": "array",
+	"indices": {
+		"3n": {
+			"type": "text"
+		},
+		"3n+1": {
+			"type": "number"
+		},
+		"3n+2": {
+			"type": "number"
+		},
+		"1": {
+			"type": "email"
+		}
+	}
+}
+//matches:
+[
+	"one",
+	"john@example.com", // index "1" 
+	3,
+	"four",
+	5,
+	6
+]

@@ -7,7 +7,6 @@
         "test": "./node_modules/gulp/bin/gulp.js test"
     },
     "dependencies": {
-        "extend" : "MarcusLongmuir/extend",
         "fieldval" : "^0.4.0"
     },
     "devDependencies": {

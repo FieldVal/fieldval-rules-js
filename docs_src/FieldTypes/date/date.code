@@ -1,0 +1,5 @@
+{
+	"type": "date",
+	"name": "my_date", //optional
+	"format": "yyyy-MM-dd"
+}

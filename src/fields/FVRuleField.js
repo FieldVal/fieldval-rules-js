@@ -72,15 +72,21 @@ var FVRuleField = (function(){
                 error_message: "'any' can't be used with 'fields'."
             }    
         },
-        max_length_not_greater_than_min_length: function(){
+        key_value_field_without_any: function(){
             return {
                 error: 506,
+                error_message: "'key_value_field' can't be used without setting any to true."
+            }    
+        },
+        max_length_not_greater_than_min_length: function(){
+            return {
+                error: 507,
                 error_message: "Must be greater than or equal to the minimum length"
             }    
         },
         maximum_not_greater_than_minimum: function(){
             return {
-                error: 507,
+                error: 508,
                 error_message: "Must be greater than or equal to the minimum"
             }    
         }
@@ -88,12 +94,15 @@ var FVRuleField = (function(){
 
     FVRuleField.types = {};
 
-    FVRuleField.add_field_type = function(field_type_data){
+    FVRuleField.add_rule_type = function(field_type_data){
         FVRuleField.types[field_type_data.name] = {
             display_name: field_type_data.display_name,
             class: field_type_data.class
         }
     }
+
+    //add_field_type is deprecated
+    FVRuleField.add_field_type = FVRuleField.add_rule_type;
 
     FVRuleField.create_field = function(json, options) {
         var field = null;
@@ -162,17 +171,13 @@ var FVRuleField = (function(){
         });
     }
 
-    FVRuleField.prototype.make_nested = function(){}
-    FVRuleField.prototype.init = function(){}
-    FVRuleField.prototype.remove = function(){}
-    FVRuleField.prototype.view_mode = function(){}
-    FVRuleField.prototype.edit_mode = function(){}
-    FVRuleField.prototype.change_name = function(name) {}
-    FVRuleField.prototype.disable = function() {}
-    FVRuleField.prototype.enable = function() {}
-    FVRuleField.prototype.focus = function() {}
-    FVRuleField.prototype.blur = function() {}
-    FVRuleField.prototype.val = function(set_val) {}
+    FVRuleField.prototype.init = function(){
+        if(this.constructor.name){
+            throw new Error(".init not overriden for class: "+this.constructor.name);
+        } else {
+            throw new Error(".init not overriden for class: "+this.constructor);
+        }
+    }
 
     return FVRuleField;
 

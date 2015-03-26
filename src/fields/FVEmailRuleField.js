@@ -11,16 +11,6 @@ var FVEmailRuleField = (function(){
     var FieldVal = _FieldVal;
     var BasicVal = FieldVal.BasicVal;
 
-    var _FVBasicRuleField;
-    if(this.FVRuleField !== undefined){
-        _FVBasicRuleField = this.FVBasicRuleField;
-    } else if((typeof require) === 'function'){
-        _FVBasicRuleField = require('./FVBasicRuleField');    
-    } else {
-        throw new Error("FVBasicRuleField is missing");
-    }
-    var FVBasicRuleField = _FVBasicRuleField;
-
     var _FVRuleField;
     if(this.FVRuleField !== undefined){
         _FVRuleField = this.FVRuleField;
@@ -31,17 +21,17 @@ var FVEmailRuleField = (function(){
     }
     var FVRuleField = _FVRuleField;
 
-    var _extend;
-    if(this.extend !== undefined){
-        _extend = this.extend;
+    var _fieldval_rules_extend;
+    if(this.fieldval_rules_extend !== undefined){
+        _fieldval_rules_extend = this.fieldval_rules_extend;
     } else if((typeof require) === 'function'){
-        _extend = require('extend');
+        _fieldval_rules_extend = require('../fieldval_rules_extend');
     } else {
-        throw new Error("extend() is missing");
+        throw new Error("fieldval_rules_extend() is missing");
     }
-    var extend = _extend;
+    var fieldval_rules_extend = _fieldval_rules_extend;
 
-    extend(FVEmailRuleField, FVBasicRuleField);
+    fieldval_rules_extend(FVEmailRuleField, FVRuleField);
 
     function FVEmailRuleField(json, validator) {
         var field = this;
@@ -49,10 +39,14 @@ var FVEmailRuleField = (function(){
         FVEmailRuleField.superConstructor.call(this, json, validator);
     }
 
-    FVEmailRuleField.prototype.create_ui = function(parent){
+    FVEmailRuleField.prototype.create_ui = function(use_form){
         var field = this;
 
-        field.ui_field = new FVTextField(field.display_name || field.name, field.json);
+        field.ui_field = new FVTextField(field.display_name || field.name, {
+            name: field.name,
+            display_name: field.display_name,
+            use_form: use_form
+        });
         field.element = field.ui_field.element;
         return field.ui_field;
     }

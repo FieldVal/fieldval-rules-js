@@ -11,16 +11,6 @@ var FVObjectRuleField = (function(){
     var FieldVal = _FieldVal;
     var BasicVal = FieldVal.BasicVal;
 
-    var _FVBasicRuleField;
-    if(this.FVRuleField !== undefined){
-        _FVBasicRuleField = this.FVBasicRuleField;
-    } else if((typeof require) === 'function'){
-        _FVBasicRuleField = require('./FVBasicRuleField');    
-    } else {
-        throw new Error("FVBasicRuleField is missing");
-    }
-    var FVBasicRuleField = _FVBasicRuleField;
-
     var _FVRuleField;
     if(this.FVRuleField !== undefined){
         _FVRuleField = this.FVRuleField;
@@ -31,17 +21,17 @@ var FVObjectRuleField = (function(){
     }
     var FVRuleField = _FVRuleField;
 
-    var _extend;
-    if(this.extend !== undefined){
-        _extend = this.extend;
+    var _fieldval_rules_extend;
+    if(this.fieldval_rules_extend !== undefined){
+        _fieldval_rules_extend = this.fieldval_rules_extend;
     } else if((typeof require) === 'function'){
-        _extend = require('extend');
+        _fieldval_rules_extend = require('../fieldval_rules_extend');
     } else {
-        throw new Error("extend() is missing");
+        throw new Error("fieldval_rules_extend() is missing");
     }
-    var extend = _extend;
+    var fieldval_rules_extend = _fieldval_rules_extend;
 
-    extend(FVObjectRuleField, FVBasicRuleField);
+    fieldval_rules_extend(FVObjectRuleField, FVRuleField);
 
     function FVObjectRuleField(json, validator) {
         var field = this;
@@ -49,53 +39,34 @@ var FVObjectRuleField = (function(){
         FVObjectRuleField.superConstructor.call(this, json, validator);
     }
 
-    FVObjectRuleField.prototype.create_ui = function(form){
+    FVObjectRuleField.prototype.create_ui = function(use_form){
         var field = this;
 
         if(field.any){
-            if(field.field_type){
-                field.ui_field = new FVKeyValueField(field.display_name || field.name, {"form": form});
+            field.ui_field = new FVTextField(field.display_name || field.name, {"type": 'textarea', "use_form": use_form});//Empty options
 
-                field.element = field.ui_field.element;
-
-                field.ui_field.new_field = function(index){
-                    return field.new_field(index);
-                }
-                var original_remove_field = field.ui_field.remove_field;
-                field.ui_field.remove_field = function(inner_field){
-                    for(var i = 0; i < field.fields.length; i++){
-                        if(field.fields[i]===inner_field){
-                            field.fields.splice(i,1);
-                        }
+            field.ui_field.val = function(set_val){//Override the .val function
+                var ui_field = this;
+                if (arguments.length===0) {
+                    var value = ui_field.input.val();
+                    if(value.length===0){
+                        return null;
                     }
-                    return original_remove_field.call(field.ui_field, inner_field);
-                }
-            } else {
-                field.ui_field = new FVTextField(field.display_name || field.name, {"type": 'textarea', "form": form});//Empty options
-
-                field.ui_field.val = function(set_val){//Override the .val function
-                    var ui_field = this;
-                    if (arguments.length===0) {
-                        var value = ui_field.input.val();
-                        if(value.length===0){
-                            return null;
-                        }
-                        try{
-                            return JSON.parse(value);
-                        } catch (e){
-                            console.error("FAILED TO PARSE: ",value);
-                        }
-                        return value;
-                    } else {
-                        ui_field.input.val(JSON.stringify(set_val,null,4));
-                        return ui_field;
+                    try{
+                        return JSON.parse(value);
+                    } catch (e){
+                        console.error("FAILED TO PARSE: ",value);
                     }
+                    return value;
+                } else {
+                    ui_field.input.val(JSON.stringify(set_val,null,4));
+                    return ui_field;
                 }
-                field.element = field.ui_field.element;
             }
+            field.element = field.ui_field.element;
         } else {
 
-            field.ui_field = new FVObjectField(field.display_name || field.name, {"form": form});
+            field.ui_field = new FVObjectField(field.display_name || field.name, {"use_form": use_form});
 
             for(var i in field.fields){
                 var inner_field = field.fields[i];
@@ -126,28 +97,7 @@ var FVObjectRuleField = (function(){
         })
 
         editor.add_field("any", any);
-
-        var value = editor.val();
-        any.val(value.any);
-        var inner_fields = value.fields;
-        if(inner_fields){
-            for(var i = 0; i < value.fields.length; i++){
-                var field_data = value.fields[i];
-
-                var inner_field = new editor.constructor(field_data, editor);
-                fields_field.add_field(null, inner_field);
-            }
-        }
-    }
-
-    FVObjectRuleField.prototype.new_field = function(index){
-        var field = this;
-
-        var field_creation = FVRuleField.create_field(field.field_type.json);
-        var err = field_creation[0];
-        var rule = field_creation[1];
-        
-        return rule.create_ui();
+        editor.add_field("fields", fields_field);
     }
 
     FVObjectRuleField.prototype.init = function() {
@@ -204,13 +154,18 @@ var FVObjectRuleField = (function(){
             }
         }
 
-        field.any = field.validator.get("any", BasicVal.boolean(false));
-        
-        if(field.any){
-            if(fields_json!==undefined){
-                field.validator.invalid("any", FVRuleField.errors.any_and_fields());
+        field.any = field.validator.get("any", 
+            BasicVal.boolean(false),
+            function(val){
+                if(val){
+                    if(fields_json!==undefined){
+                        return FVRuleField.errors.any_and_fields();
+                    }
+                }
             }
-        } else {
+        );
+
+        if(!field.any){
             if(fields_json===undefined){
                 //No fields should be allowed in the object (empty object only)
 

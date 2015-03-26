@@ -1,0 +1,8 @@
+{
+	"type": "key_value",
+	"name": "my_object", //optional
+	"value_field": {
+		"type": "number",
+		"minimum": 5
+	}
+}

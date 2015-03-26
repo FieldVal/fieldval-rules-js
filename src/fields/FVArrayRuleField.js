@@ -11,16 +11,6 @@ var FVArrayRuleField = (function(){
     var FieldVal = _FieldVal;
     var BasicVal = FieldVal.BasicVal;
 
-    var _FVBasicRuleField;
-    if(this.FVRuleField !== undefined){
-        _FVBasicRuleField = this.FVBasicRuleField;
-    } else if((typeof require) === 'function'){
-        _FVBasicRuleField = require('./FVBasicRuleField');    
-    } else {
-        throw new Error("FVBasicRuleField is missing");
-    }
-    var FVBasicRuleField = _FVBasicRuleField;
-
     var _FVRuleField;
     if(this.FVRuleField !== undefined){
         _FVRuleField = this.FVRuleField;
@@ -31,17 +21,17 @@ var FVArrayRuleField = (function(){
     }
     var FVRuleField = _FVRuleField;
 
-    var _extend;
-    if(this.extend !== undefined){
-        _extend = this.extend;
+    var _fieldval_rules_extend;
+    if(this.fieldval_rules_extend !== undefined){
+        _fieldval_rules_extend = this.fieldval_rules_extend;
     } else if((typeof require) === 'function'){
-        _extend = require('extend');
+        _fieldval_rules_extend = require('../fieldval_rules_extend');
     } else {
-        throw new Error("extend() is missing");
+        throw new Error("fieldval_rules_extend() is missing");
     }
-    var extend = _extend;
+    var fieldval_rules_extend = _fieldval_rules_extend;
 
-    extend(FVArrayRuleField, FVBasicRuleField);
+    fieldval_rules_extend(FVArrayRuleField, FVRuleField);
 
     function FVArrayRuleField(json, validator) {
         var field = this;
@@ -55,10 +45,14 @@ var FVArrayRuleField = (function(){
         field.interval_offsets = [];
     }
 
-    FVArrayRuleField.prototype.create_ui = function(parent, form){
+    FVArrayRuleField.prototype.create_ui = function(use_form){
         var field = this;
 
-        field.ui_field = new FVArrayField(field.display_name || field.name, field.json);
+        field.ui_field = new FVArrayField(field.display_name || field.name, {
+            name: field.name,
+            display_name: field.display_name,
+            use_form: use_form
+        });
         field.ui_field.new_field = function(index){
             return field.new_field(index);
         }

@@ -1,0 +1,4 @@
+{
+	"type": "email",
+	"name": "my_email" //optional
+}

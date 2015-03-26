@@ -1,7 +1,7 @@
 var assert = require("assert")
 var FVRule = require('../src/FVRule')
 
-var extend = require('extend');
+var fieldval_rules_extend = require('../src/fieldval_rules_extend');
 
 var FieldVal = require('fieldval');
 var BasicVal = FieldVal.BasicVal;
@@ -179,7 +179,9 @@ describe('FVRule', function() {
                 assert.strictEqual(null,init_result);
             })
 
-            vr.validate({"test":1}, function(err){
+            vr.validate({
+                "test": 1
+            }, function(err){
                 assert.deepEqual({ 
                     "invalid": {
                         "test": {
@@ -188,6 +190,45 @@ describe('FVRule', function() {
                         }
                     },
                     "error_message": 'One or more errors.',
+                    "error": 5
+                },err);
+            })
+
+            done();
+        });
+
+        it('should allow "key_value" fields to be created', function(done) {
+            var vr = new FVRule();
+            var type_object = {
+                "type": "key_value",
+                "value_field":{
+                    "type":"number"
+                }
+            }
+            var init_result = vr.init(type_object);
+            assert.deepEqual(
+                null,
+                init_result
+            );
+
+            vr.validate({}, function(err){
+                assert.strictEqual(null,init_result);
+            })
+
+            vr.validate({
+                "test":1,
+                "test_2":"abc"
+            }, function(err){
+                assert.deepEqual({
+                    "invalid": {
+                        "test_2": {
+                            "error_message": "Incorrect field type. Expected number, but received string.",
+                            "error": 2,
+                            "expected": "number",
+                            "received": "string"
+                        }
+                    },
+                    "error_message": "One or more errors.",
                     "error": 5
                 },err);
             })
@@ -624,7 +665,7 @@ describe('FVRule', function() {
     describe('Custom fields', function(){
         it('should allow adding custom field types', function(){
 
-            extend(CustomLocationRuleField, FVRule.FVRuleField);
+            fieldval_rules_extend(CustomLocationRuleField, FVRule.FVRuleField);
             function CustomLocationRuleField(json, validator) {
                 var field = this;
 
@@ -705,7 +746,7 @@ describe('FVRule', function() {
 
         it('should support async checks', function(done){
 
-            extend(CustomRuleField, FVRule.FVRuleField);
+            fieldval_rules_extend(CustomRuleField, FVRule.FVRuleField);
             function CustomRuleField(json, validator) {
                 var field = this;
 

@@ -1,0 +1,22 @@
+//"object" field with two inner fields
+{
+	"type": "object",
+	"name": "my_object", //optional
+	"fields": [
+		{
+			"name": "my_nested_number",
+			"type": "number",
+			"minimum": 5
+		},{
+			"name": "my_nested_email",
+			"type": "email"
+		}
+	]
+}
+
+//"object" field that will accept any contents
+{
+	"type": "object",
+	"name": "my_object", //optional
+	"any": true
+}

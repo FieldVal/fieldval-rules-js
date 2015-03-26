@@ -1,0 +1,9 @@
+{
+	"type": "choice",
+	"name": "my_choice", //optional
+	"choices": [
+		[1, "one"], // "one" will be shown in the UI
+		2, // "2" will be shown in the UI
+		[3, "three"] // "three" will be shown in the UI
+	]
+}
