@@ -1,20 +1,17 @@
 {
     "name": "fieldval-rules",
-    "version": "0.3.0",
+    "version": "0.4.0",
     "description": "fieldval-rules",
     "main": "src/FVRule.js",
     "scripts": {
-        "test": "mocha test/test.js"
+        "test": "./node_modules/gulp/bin/gulp.js test"
     },
     "dependencies": {
-        "extend" : "MarcusLongmuir/extend",
-        "fieldval" : "^0.1.0",
-        "fieldval-basicval" : "^0.1.0",
-        "fieldval-dateval" : "^0.1.0"
+        "fieldval" : "^0.4.0"
     },
     "devDependencies": {
         "mocha": "*",
-        "fieldval-ui": "0.2.4",
+        "fieldval-ui": "0.3.4",
         "gulp-imports" : "MarcusLongmuir/gulp-imports",
         "gulp": "^3.6.1",
         "gulp-util": "^2.2.14",

@@ -1,0 +1,1 @@
+As FieldVal Rules uses [FieldVal](/docs/fieldval/) and [FieldVal UI](/docs/fieldvalui/) internally, include a script tag for each library as shown in the example to the right. All three libraries can be installed using Bower or downloaded from the repositories as described below.

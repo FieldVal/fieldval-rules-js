@@ -1,0 +1,27 @@
+var FVRule = require('fieldval-rules');
+
+var rule = new FVRule();
+var rule_error = rule.init({
+	"type": "object",
+	"fields":[
+		{
+			"name": "my_email",
+			"type": "email"
+		},{
+			"name": "my_password",
+			"type": "text",
+			"min_length": 8,
+			"ui_type": "password"
+		}
+	]
+});
+
+var data = {
+	"my_email": "notanemail",
+	"my_password": "pswd"
+}
+
+rule.validate(data, function(error){
+	//error will be null if there was no error
+	console.log(error);
+});

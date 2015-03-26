@@ -1,31 +1,66 @@
-if((typeof require) === 'function'){
-    extend = require('extend')
-    FVBasicRuleField = require('./FVBasicRuleField');
-}
-extend(FVEmailRuleField, FVBasicRuleField);
+var FVEmailRuleField = (function(){
 
-function FVEmailRuleField(json, validator) {
-    var field = this;
+    var _FieldVal;
+    if(this.FieldVal !== undefined){
+        _FieldVal = this.FieldVal;
+    } else if((typeof require) === 'function'){
+        _FieldVal = require('fieldval');
+    } else {
+        throw new Error("FieldVal Rules requires FieldVal");
+    }
+    var FieldVal = _FieldVal;
+    var BasicVal = FieldVal.BasicVal;
 
-    FVEmailRuleField.superConstructor.call(this, json, validator);
-}
+    var _FVRuleField;
+    if(this.FVRuleField !== undefined){
+        _FVRuleField = this.FVRuleField;
+    } else if((typeof require) === 'function'){
+        _FVRuleField = require('./FVRuleField');    
+    } else {
+        throw new Error("FVRuleField is missing");
+    }
+    var FVRuleField = _FVRuleField;
 
-FVEmailRuleField.prototype.create_ui = function(parent){
-    var field = this;
+    var _fieldval_rules_extend;
+    if(this.fieldval_rules_extend !== undefined){
+        _fieldval_rules_extend = this.fieldval_rules_extend;
+    } else if((typeof require) === 'function'){
+        _fieldval_rules_extend = require('../fieldval_rules_extend');
+    } else {
+        throw new Error("fieldval_rules_extend() is missing");
+    }
+    var fieldval_rules_extend = _fieldval_rules_extend;
 
-    field.ui_field = new FVTextField(field.display_name || field.name, field.json);
-    field.element = field.ui_field.element;
-    parent.add_field(field.name, field);
-    return field.ui_field;
-}
+    fieldval_rules_extend(FVEmailRuleField, FVRuleField);
 
-FVEmailRuleField.prototype.init = function() {
-    var field = this;
+    function FVEmailRuleField(json, validator) {
+        var field = this;
 
-    field.checks.push(BasicVal.string(field.required), BasicVal.email());
-    
-    return field.validator.end();
-}
+        FVEmailRuleField.superConstructor.call(this, json, validator);
+    }
+
+    FVEmailRuleField.prototype.create_ui = function(use_form){
+        var field = this;
+
+        field.ui_field = new FVTextField(field.display_name || field.name, {
+            name: field.name,
+            display_name: field.display_name,
+            use_form: use_form
+        });
+        field.element = field.ui_field.element;
+        return field.ui_field;
+    }
+
+    FVEmailRuleField.prototype.init = function() {
+        var field = this;
+
+        field.checks.push(BasicVal.string(field.required), BasicVal.email());
+        
+        return field.validator.end();
+    }
+
+    return FVEmailRuleField;
+}).call((typeof window !== 'undefined')?window:null);
 
 if (typeof module != 'undefined') {
     module.exports = FVEmailRuleField;

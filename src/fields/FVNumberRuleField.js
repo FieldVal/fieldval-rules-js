@@ -1,46 +1,95 @@
-if((typeof require) === 'function'){
-    extend = require('extend')
-    FVBasicRuleField = require('./FVBasicRuleField');
-}
-extend(FVNumberRuleField, FVBasicRuleField);
+var FVNumberRuleField = (function(){
 
-function FVNumberRuleField(json, validator) {
-    var field = this;
+    var _FieldVal;
+    if(this.FieldVal !== undefined){
+        _FieldVal = this.FieldVal;
+    } else if((typeof require) === 'function'){
+        _FieldVal = require('fieldval');
+    } else {
+        throw new Error("FieldVal Rules requires FieldVal");
+    }
+    var FieldVal = _FieldVal;
+    var BasicVal = FieldVal.BasicVal;
 
-    FVNumberRuleField.superConstructor.call(this, json, validator);
-}
+    var _FVRuleField;
+    if(this.FVRuleField !== undefined){
+        _FVRuleField = this.FVRuleField;
+    } else if((typeof require) === 'function'){
+        _FVRuleField = require('./FVRuleField');    
+    } else {
+        throw new Error("FVRuleField is missing");
+    }
+    var FVRuleField = _FVRuleField;
 
-FVNumberRuleField.prototype.create_ui = function(parent){
-    var field = this;
+    var _fieldval_rules_extend;
+    if(this.fieldval_rules_extend !== undefined){
+        _fieldval_rules_extend = this.fieldval_rules_extend;
+    } else if((typeof require) === 'function'){
+        _fieldval_rules_extend = require('../fieldval_rules_extend');
+    } else {
+        throw new Error("fieldval_rules_extend() is missing");
+    }
+    var fieldval_rules_extend = _fieldval_rules_extend;
 
-    field.ui_field = new FVTextField(field.display_name || field.name, field.json);
-    field.element = field.ui_field.element;
-    parent.add_field(field.name, field);
-    return field.ui_field;
-}
+    fieldval_rules_extend(FVNumberRuleField, FVRuleField);
 
-FVNumberRuleField.prototype.init = function() {
-    var field = this;
+    function FVNumberRuleField(json, validator) {
+        var field = this;
 
-    field.checks.push(BasicVal.number(field.required));
-
-    field.minimum = field.validator.get("minimum", BasicVal.number(false));
-    if (field.minimum != null) {
-        field.checks.push(BasicVal.minimum(field.minimum,{stop_on_error:false}));
+        FVNumberRuleField.superConstructor.call(this, json, validator);
     }
 
-    field.maximum = field.validator.get("maximum", BasicVal.number(false));
-    if (field.maximum != null) {
-        field.checks.push(BasicVal.maximum(field.maximum,{stop_on_error:false}));
+    FVNumberRuleField.prototype.create_ui = function(use_form){
+        var field = this;
+
+        field.ui_field = new FVTextField(field.display_name || field.name, {
+            name: field.name,
+            display_name: field.display_name,
+            type: "number",
+            use_form: use_form
+        });
+        field.element = field.ui_field.element;
+        return field.ui_field;
     }
 
-    field.integer = field.validator.get("integer", BasicVal.boolean(false));
-    if (field.integer) {
-        field.checks.push(BasicVal.integer(false,{stop_on_error:false}));
+    FVNumberRuleField.prototype.init = function() {
+        var field = this;
+
+        field.checks.push(BasicVal.number(field.required));
+
+        field.minimum = field.validator.get("minimum", BasicVal.number(false));
+        if (field.minimum != null) {
+            field.checks.push(BasicVal.minimum(field.minimum,{stop_on_error:false}));
+        }
+
+        field.maximum = field.validator.get("maximum", BasicVal.number(false));
+        if (field.maximum != null) {
+            field.checks.push(BasicVal.maximum(field.maximum,{stop_on_error:false}));
+        }
+
+        field.integer = field.validator.get("integer", BasicVal.boolean(false));
+        if (field.integer) {
+            field.checks.push(BasicVal.integer(false,{stop_on_error:false}));
+        }
+
+        return field.validator.end();
     }
 
-    return field.validator.end();
-}
+    FVNumberRuleField.add_editor_params = function(editor) {
+        var field = this;
+
+        editor.add_field("minimum", new FVTextField("Minimum", {type: "number"}));
+        editor.add_field("maximum", new FVTextField("Maximum", {type: "number"}));
+        editor.add_field("integer", new FVBooleanField("Integer"));
+
+        var value = editor.val();
+        editor.fields.minimum.val(value.minimum);
+        editor.fields.maximum.val(value.maximum);
+        editor.fields.integer.val(value.integer);
+    }
+
+    return FVNumberRuleField;
+}).call((typeof window !== 'undefined')?window:null);
 
 if (typeof module != 'undefined') {
     module.exports = FVNumberRuleField;
