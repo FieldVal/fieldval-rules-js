@@ -78,7 +78,8 @@ describe('FVRule', function() {
                     "invalid": {
                         "last_name": {
                             "error": 100,
-                            "error_message": "Length is less than 2"
+                            "error_message": "Length is less than 2",
+                            "min_length": 2
                         },
                         "address": {
                             "invalid": {
@@ -249,7 +250,8 @@ describe('FVRule', function() {
                 assert.deepEqual(
                     {
                         "error": 103,
-                        "error_message": "Value is greater than 20"
+                        "error_message": "Value is greater than 20",
+                        "maximum": 20
                     },
                     error
                 );

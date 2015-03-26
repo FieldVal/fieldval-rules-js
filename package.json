@@ -1,17 +1,21 @@
 {
     "name": "fieldval-rules",
-    "version": "0.4.1",
+    "version": "0.4.2",
     "description": "fieldval-rules",
     "main": "src/FVRule.js",
     "scripts": {
         "test": "./node_modules/gulp/bin/gulp.js test"
     },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/FieldVal/fieldval-rules-js.git"
+    },
     "dependencies": {
-        "fieldval" : "^0.4.0"
+        "fieldval" : "^0.4.2"
     },
     "devDependencies": {
         "mocha": "*",
-        "fieldval-ui": "0.3.4",
+        "fieldval-ui": "^0.4.0",
         "gulp-imports" : "MarcusLongmuir/gulp-imports",
         "gulp": "^3.6.1",
         "gulp-util": "^2.2.14",
