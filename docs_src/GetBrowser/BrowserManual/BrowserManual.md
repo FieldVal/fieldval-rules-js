@@ -2,7 +2,7 @@ To use FieldVal Rules in the browser without a package manager, download ```fiel
 
 * [FieldVal Repository](https://github.com/FieldVal/fieldval-js/).
 * [FieldVal UI Repository](https://github.com/FieldVal/fieldval-ui/).
-* [FieldVal Rules Repository](https://github.com/FieldVal/fieldval-rules/).
+* [FieldVal Rules Repository](https://github.com/FieldVal/fieldval-rules-js/).
 
 Alternatively, here are the direct links:
 
