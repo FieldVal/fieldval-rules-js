@@ -1,5 +1,5 @@
 //Used to subclass Javascript classes
-function fieldval_rules_extend(sub, sup) {
+function fv_rules_extend(sub, sup) {
 	function emptyclass() {}
 	emptyclass.prototype = sup.prototype;
 	sub.prototype = new emptyclass();
@@ -9,5 +9,5 @@ function fieldval_rules_extend(sub, sup) {
 }
 
 if (typeof module != "undefined") {
-    module.exports = fieldval_rules_extend;
+    module.exports = fv_rules_extend;
 }

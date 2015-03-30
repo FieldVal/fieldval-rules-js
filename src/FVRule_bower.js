@@ -1,4 +1,4 @@
-@import("fieldval_rules_extend.js");
+@import("fv_rules_extend.js");
 
 @import("fields/FVRuleField_bower.js");
 

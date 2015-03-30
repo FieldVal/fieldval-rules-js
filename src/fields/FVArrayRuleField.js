@@ -21,17 +21,17 @@ var FVArrayRuleField = (function(){
     }
     var FVRuleField = _FVRuleField;
 
-    var _fieldval_rules_extend;
-    if(this.fieldval_rules_extend !== undefined){
-        _fieldval_rules_extend = this.fieldval_rules_extend;
+    var _fv_rules_extend;
+    if(this.fv_rules_extend !== undefined){
+        _fv_rules_extend = this.fv_rules_extend;
     } else if((typeof require) === 'function'){
-        _fieldval_rules_extend = require('../fieldval_rules_extend');
+        _fv_rules_extend = require('../fv_rules_extend');
     } else {
-        throw new Error("fieldval_rules_extend() is missing");
+        throw new Error("fv_rules_extend() is missing");
     }
-    var fieldval_rules_extend = _fieldval_rules_extend;
+    var fv_rules_extend = _fv_rules_extend;
 
-    fieldval_rules_extend(FVArrayRuleField, FVRuleField);
+    fv_rules_extend(FVArrayRuleField, FVRuleField);
 
     function FVArrayRuleField(json, validator) {
         var field = this;
