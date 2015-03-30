@@ -21,11 +21,22 @@ var FVRule = (function(){
     }
     var FVRuleField = _FVRuleField;
 
+    var _fv_rules_extend;
+    if(this.fv_rules_extend !== undefined){
+        _fv_rules_extend = this.fv_rules_extend;
+    } else if((typeof require) === "function"){
+        _fv_rules_extend = require("./fv_rules_extend");    
+    } else {
+        throw new Error("fv_rules_extend is missing");
+    }
+    var fv_rules_extend = _fv_rules_extend;
+
     function FVRule() {
         var vr = this;
     }
 
     FVRule.FVRuleField = FVRuleField;
+    FVRule.extend = fv_rules_extend;
 
     //Performs validation required for saving
     FVRule.prototype.init = function(json, options) {
