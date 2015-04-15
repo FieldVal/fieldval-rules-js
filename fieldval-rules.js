@@ -1018,6 +1018,8 @@ var FVChoiceRuleField = (function(){
             name: field.name,
             display_name: field.display_name,
             choices: field.choices,
+            allow_empty: field.allow_empty,
+            empty_text: field.empty_text,
             use_form: use_form
         });
         field.element = field.ui_field.element;
@@ -1027,8 +1029,10 @@ var FVChoiceRuleField = (function(){
     FVChoiceRuleField.prototype.init = function() {
         var field = this;
 
-        field.allow_empty = field.validator.get("allow_empty", BasicVal.boolean(false));
-        field.empty_message = field.validator.get("empty_message", BasicVal.string(false));
+        field.checks.push(BasicVal.required(field.required));
+        
+        field.allow_empty = !field.required;
+        field.empty_text = field.validator.get("empty_text", BasicVal.string(false));
         field.choices = field.validator.get("choices", BasicVal.array(true));
 
         if(field.choices!==undefined){
