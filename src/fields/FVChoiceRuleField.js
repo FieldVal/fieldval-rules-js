@@ -57,6 +57,8 @@ var FVChoiceRuleField = (function(){
     FVChoiceRuleField.prototype.init = function() {
         var field = this;
 
+        field.checks.push(BasicVal.required(field.required));
+
         field.allow_empty = field.validator.get("allow_empty", BasicVal.boolean(false));
         field.empty_message = field.validator.get("empty_message", BasicVal.string(false));
         field.choices = field.validator.get("choices", BasicVal.array(true));

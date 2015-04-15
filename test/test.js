@@ -662,6 +662,22 @@ describe('FVRule', function() {
             });
         });
 
+        it('should not return an error if choice validation failed and required is false', function(done) {
+            var vr = new FVRule();
+            var type_object = {
+                "type": "choice",
+                "choices": ["one", "two"],
+                "required": false
+            };
+
+            var error = vr.init(type_object);
+            assert.equal(error, null);
+            vr.validate(null, function(error) {
+                assert.equal(error, null);
+                done();
+            });
+        });
+
     });
 
     describe('Custom fields', function(){
