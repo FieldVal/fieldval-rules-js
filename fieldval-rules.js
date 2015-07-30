@@ -483,8 +483,7 @@ var FVObjectRuleField = (function(){
     FVObjectRuleField.add_editor_params = function(editor) {
         var fields_field = new FVArrayField("Fields");
         fields_field.new_field = function(index){
-            var inner_field = new editor.constructor(null, editor);
-            fields_field.add_field(null, inner_field);
+            return new editor.constructor(null, editor);
         }
 
         var any = new FVBooleanField("Any");
@@ -587,6 +586,7 @@ var FVObjectRuleField = (function(){
 if (typeof module != 'undefined') {
     module.exports = FVObjectRuleField;
 }
+
 var FVKeyValueRuleField = (function(){
 
     var _FieldVal;
