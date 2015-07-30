@@ -72,7 +72,7 @@ describe('FVRule', function() {
                     country: "ESP"
                 }
             };
-            
+
             vr.validate(test_object, function(error){
                 assert.deepEqual({
                     "invalid": {
@@ -122,11 +122,11 @@ describe('FVRule', function() {
                     "invalid": {
                         "maximum": {
                             "error_message": 'Unrecognized field.',
-                            "error": 3 
+                            "error": 3
                         }
                     },
                     "error_message": 'One or more errors.',
-                    "error": 5 
+                    "error": 5
                 },
                 init_result
             );
@@ -153,10 +153,10 @@ describe('FVRule', function() {
                         "any": {
                             "error": 505,
                             "error_message": "'any' can't be used with 'fields'."
-                        } 
+                        }
                     },
                     "error_message": 'One or more errors.',
-                    "error": 5 
+                    "error": 5
                 },
                 init_result
             );
@@ -183,7 +183,7 @@ describe('FVRule', function() {
             vr.validate({
                 "test": 1
             }, function(err){
-                assert.deepEqual({ 
+                assert.deepEqual({
                     "invalid": {
                         "test": {
                             "error_message": 'Unrecognized field.',
@@ -245,7 +245,7 @@ describe('FVRule', function() {
             }
             var init_result = vr.init(type_object);
             assert.strictEqual(init_result,null);
-            
+
             vr.validate(57, function(error){
                 assert.deepEqual(
                     {
@@ -274,7 +274,7 @@ describe('FVRule', function() {
             }
             var init_result = vr.init(type_object);
             assert.strictEqual(init_result,null);
-            
+
             vr.validate([
                 "One",2,"Three"
             ],function(error){
@@ -282,7 +282,7 @@ describe('FVRule', function() {
                     null,
                     error
                 );
-                done();    
+                done();
             });
         });
 
@@ -442,7 +442,7 @@ describe('FVRule', function() {
             }
             var init_result = vr.init(type_object);
             assert.strictEqual(init_result,null);
-            
+
             vr.validate([
                 "One",true,3,"Four",true,6,"Seven",false,9
             ], function(error){
@@ -508,7 +508,7 @@ describe('FVRule', function() {
             var ObjectRuleField = FVRule.FVRuleField.types['object'].class;
             var object_rule_field = new ObjectRuleField(type_object);
             object_rule_field.init();
-            
+
             var my_data = {
                 "one": "not a number",
                 "first_inner": {
@@ -580,12 +580,14 @@ describe('FVRule', function() {
                     error
                 );
 
-                var validator = new FieldVal(my_data, error);
+                var validator = new FieldVal(my_data, {
+                    "error": error
+                });
                 assert.deepEqual(
                     expected_error,
                     validator.end()
                 )
-                
+
                 var path_to_third_inner = ["first_inner","second_inner","third_inner"];
                 var dug = validator.dig(path_to_third_inner);
 
@@ -696,7 +698,7 @@ describe('FVRule', function() {
                 field.minimum = field.validator.get("minimum", BasicVal.number(false));
                 field.maximum = field.validator.get("maximum", BasicVal.number(false));
                 field.integer = field.validator.get("integer", BasicVal.boolean(false));
-                
+
                 field.checks.push(BasicVal.object(field.required), function(val, emit){
                     var inner_validator = new FieldVal(val);
 
@@ -746,13 +748,13 @@ describe('FVRule', function() {
                             error_message: 'Incorrect field type. Expected integer, but received number.',
                             error: 2,
                             expected: 'integer',
-                            received: 'number' 
+                            received: 'number'
                         },
                         y:{
                             error_message: 'Incorrect field type. Expected number, but received string.',
                             error: 2,
                             expected: 'number',
-                            received: 'string' 
+                            received: 'string'
                         }
                     },
                     error_message: 'One or more errors.',
@@ -773,7 +775,7 @@ describe('FVRule', function() {
 
             CustomRuleField.prototype.init = function() {
                 var field = this;
-                
+
                 field.checks.push(BasicVal.number(field.required), function(val, emit, done){
                     setTimeout(function(){
                         done({

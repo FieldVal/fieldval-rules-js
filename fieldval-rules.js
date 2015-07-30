@@ -483,8 +483,7 @@ var FVObjectRuleField = (function(){
     FVObjectRuleField.add_editor_params = function(editor) {
         var fields_field = new FVArrayField("Fields");
         fields_field.new_field = function(index){
-            var inner_field = new editor.constructor(null, editor);
-            fields_field.add_field(null, inner_field);
+            return new editor.constructor(null, editor);
         }
 
         var any = new FVBooleanField("Any");
@@ -587,6 +586,7 @@ var FVObjectRuleField = (function(){
 if (typeof module != 'undefined') {
     module.exports = FVObjectRuleField;
 }
+
 var FVKeyValueRuleField = (function(){
 
     var _FieldVal;
@@ -1157,8 +1157,7 @@ var FVChoiceRuleField = (function(){
 
         editor.add_field("choices", choices_field);
 
-        editor.add_field("allow_empty", new FVBooleanField("Allow empty"));
-        editor.add_field("empty_message", new FVTextField("Empty message"));
+        editor.add_field("empty_text", new FVTextField("Empty Text"));
 
         editor.fields.allow_empty.val(value.allow_empty);
         editor.fields.empty_message.val(value.empty_message);
@@ -1172,6 +1171,7 @@ var FVChoiceRuleField = (function(){
 if (typeof module != 'undefined') {
     module.exports = FVChoiceRuleField;
 }
+
 var FVBooleanRuleField = (function(){
 
     var _FieldVal;
@@ -1595,6 +1595,7 @@ var FVRuleEditor = (function(){
 
 		editor.add_field("name", new FVTextField("Name"));
 		editor.add_field("display_name", new FVTextField("Display Name"));
+        editor.add_field("required", new FVBooleanField("Required"));
 		editor.add_field("type", new FVChoiceField("Type", {
 			choices: field_type_choices
 		}).on_change(function(){
