@@ -11,11 +11,11 @@
         "url": "https://github.com/FieldVal/fieldval-rules-js.git"
     },
     "dependencies": {
-        "fieldval" : "^0.4.3"
+        "fieldval" : "^0.5.0"
     },
     "devDependencies": {
         "mocha": "^2.2.5",
-        "fieldval-ui": "^0.4.0",
+        "fieldval-ui": "^0.6.0",
         "gulp-imports" : "MarcusLongmuir/gulp-imports",
         "gulp": "^3.6.1",
         "gulp-util": "^2.2.14",
