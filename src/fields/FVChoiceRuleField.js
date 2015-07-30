@@ -187,8 +187,7 @@ var FVChoiceRuleField = (function(){
 
         editor.add_field("choices", choices_field);
 
-        editor.add_field("allow_empty", new FVBooleanField("Allow empty"));
-        editor.add_field("empty_message", new FVTextField("Empty message"));
+        editor.add_field("empty_text", new FVTextField("Empty Text"));
 
         editor.fields.allow_empty.val(value.allow_empty);
         editor.fields.empty_message.val(value.empty_message);

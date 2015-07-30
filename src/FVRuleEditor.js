@@ -47,6 +47,7 @@ var FVRuleEditor = (function(){
 
 		editor.add_field("name", new FVTextField("Name"));
 		editor.add_field("display_name", new FVTextField("Display Name"));
+        editor.add_field("required", new FVBooleanField("Required"));
 		editor.add_field("type", new FVChoiceField("Type", {
 			choices: field_type_choices
 		}).on_change(function(){
